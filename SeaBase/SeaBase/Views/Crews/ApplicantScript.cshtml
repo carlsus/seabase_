@@ -361,7 +361,30 @@
     }
     function COE() {
             $('#COE').modal('show');
-        }
+    }
+
+    function POEAInfoSheet() {
+        var formData = new FormData();
+
+        formData.append('Id', $('#Id').val());
+        $.ajax({
+            type: "POST",
+            url: "/Reports/ShowInfoSheet",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (response) {
+                window.open('/Reports/POEAInfoSheet/', '_blank').focus();
+            },
+            failure: function (response) {
+                alert('faile');
+            },
+            error: function (response) {
+                alert('error');
+            }
+        });
+    }
 
     
     window.onload = function () {

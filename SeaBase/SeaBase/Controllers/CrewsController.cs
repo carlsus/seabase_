@@ -187,7 +187,7 @@ namespace SeaBase.Controllers
                 update.RecommendedBy = crew.RecommendedBy;
                 update.OtherInfo = crew.OtherInfo;
 
-
+                update.CrewAddress = crew.CrewAddress;
 
                 update.VesselId = crew.VesselId;
                 _context.SaveChanges();

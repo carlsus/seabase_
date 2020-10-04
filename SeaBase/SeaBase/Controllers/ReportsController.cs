@@ -461,5 +461,89 @@ namespace SeaBase.Controllers
 
             return new FileStreamResult(stream, "application/pdf");
         }
+
+        public ActionResult ShowInfoSheet(int Id)
+        {
+            TempData["id"] = Id;
+            return Json(new { Success = "Success" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult POEAInfoSheet()
+        {
+            int id = (int)TempData["id"];
+           
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/Reports"), "InfoSheet.rpt"));
+            var result = (from c in _context.Crews
+                          
+                          from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
+                                          .DefaultIfEmpty()
+                          //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
+                          join e in _context.Ranks on d.RankId equals e.Id
+                          join f in _context.Embarkations on d.EmbarkationId equals f.Id
+                          join g in _context.Principals on f.PrincipalId equals g.Id
+                          join h in _context.Vessels on f.VesselId equals h.Id
+                          join i in _context.AirPorts on f.DepartureAirportId equals i.Id
+                          join j in _context.Flags on h.FlagId equals j.Id
+                          from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
+                                          .DefaultIfEmpty()
+                          from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
+                                          .DefaultIfEmpty()
+                          join m in _context.VesselTypes on h.VesselTypeId equals m.Id
+                          join n in _context.CrewFamilyBackgrounds on c.Id equals n.CrewId
+                          where c.Id == id
+                          select new
+                          {
+                              c.Id,
+                              c.Firstname,
+                              c.Lastname,
+                              c.MiddleName,
+                              c.Nationality,
+                              c.Religion,
+                              c.CivilStatus,
+                              RankName = e.RankName,
+                              c.BirthDate,
+                              c.BirthPlace,
+                              c.PassportNo,
+                              c.SeamanBookNo,
+                              g.PrincipalName,
+                              g.Address,
+                              h.VesselName,
+                              h.IMONumber,
+                              f.PointOfHire,
+                              g.CBA,
+                              i.AirPortName,
+                              f.DepartureDate,
+                              f.EmbarkationDate,
+                              j.FlagName,
+                              MonthlySalary = k.Monthly,
+                              OvertimeSalary = l.Monthly,
+                              f.ContractDuration,
+                              OverTimeRemarks = l.Remarks,
+                              h.GTR,
+                              h.YearBuilt,
+                              h.ClassificationSociety,
+                              m.VesselTypeName,
+                              c.SSSNo,
+                              c.PhilhealthNo,
+                              c.EmailAddress,
+                              Spouse=n.SpouseFirstname + " " + n.SpouseMiddlename + " " + n.SpouseLastname,
+                              MothersMaidenName=n.MothersName
+                          }).ToList();
+            rd.SetDataSource(result);
+
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+
+
+            rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Portrait;
+            rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA4;
+
+            Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return new FileStreamResult(stream, "application/pdf");
+        }
     }
 }

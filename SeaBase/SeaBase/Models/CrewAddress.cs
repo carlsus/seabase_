@@ -9,7 +9,7 @@ namespace SeaBase.Models
 {
     public class CrewAddress
     {
-        [Key,ForeignKey("Crew")]
+        [ForeignKey("Crew")]
         public int CrewId { get; set; }
         [StringLength(10)]
         [Display(Name = "No./Bldg")]

@@ -5,13 +5,14 @@
     <div class="panel-body">
 
 
+        @Html.HiddenFor(m => m.CrewAddress.CrewId)
+        <div class="col-md-2">
+            
+            @Html.LabelFor(m => m.CrewAddress.NoBldg)
+            @Html.TextBoxFor(m => m.CrewAddress.NoBldg, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.CrewAddress.NoBldg)
 
-            <div class="col-md-2">
-                @Html.LabelFor(m => m.CrewAddress.NoBldg)
-                @Html.TextBoxFor(m => m.CrewAddress.NoBldg, new { @class = "form-control" })
-                @Html.ValidationMessageFor(m => m.CrewAddress.NoBldg)
-
-            </div>
+        </div>
             
             <div class="col-md-3">
                 @Html.LabelFor(m => m.CrewAddress.StreetBarangay)

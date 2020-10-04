@@ -10,13 +10,14 @@ namespace SeaBase.ViewModel
         public int Id { get; set; }
         public string Firstname { get; set; }
         public string Lastname { get; set; }
+        public string Middlename { get; set; }
         public string Address { get; set; }
         public DateTime BirthDate { get; set; }
         public string BirthPlace { get; set; }
         public string PassportNo { get; set; }
         public string InternationalSeamansBook { get; set; }
         public string LocalSeamansBook { get; set; }
-
+        public string SRCNo { get; set; }
         public string Nationality { get; set; }
         public string RankName { get; set; }
         public DateTime LastMedical { get; set; }
@@ -43,6 +44,15 @@ namespace SeaBase.ViewModel
         public string HoursWorked { get; set; }
         public string  UserName { get; set; }
         public string Position { get; set; }
-
+        public string EmailAddress { get; set; }
+        public string Gender { get; set; }
+        public string CivilStatus { get; set; }
+        public string TelephoneNo { get; set; }
+        public string MobileNo { get; set; }
+        public int Age { get; set; }
+        public string SSSNo { get; set; }
+        public string PhilhealthNo { get; set; }
+        public string Spouse { get; set; }
+        public string MothersMaidenName { get; set; }
     }
 }
