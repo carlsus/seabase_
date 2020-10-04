@@ -16,14 +16,14 @@ namespace SeaBase.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class CV_Standard : ReportClass {
+    public class CV_StandardWorkExperience : ReportClass {
         
-        public CV_Standard() {
+        public CV_StandardWorkExperience() {
         }
         
         public override string ResourceName {
             get {
-                return "CV_Standard.rpt";
+                return "CV_StandardWorkExperience.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace SeaBase.Reports {
         
         public override string FullResourceName {
             get {
-                return "SeaBase.Reports.CV_Standard.rpt";
+                return "SeaBase.Reports.CV_StandardWorkExperience.rpt";
             }
             set {
                 // Do nothing
@@ -74,7 +74,7 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection2 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,33 +82,17 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
-            get {
-                return this.ReportDefinition.Sections[4];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[5];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
         public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
-                return this.ReportDefinition.Sections[6];
+                return this.ReportDefinition.Sections[4];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedCV_Standard : Component, ICachedReport {
+    public class CachedCV_StandardWorkExperience : Component, ICachedReport {
         
-        public CachedCV_Standard() {
+        public CachedCV_StandardWorkExperience() {
         }
         
         [Browsable(false)]
@@ -145,7 +129,7 @@ namespace SeaBase.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            CV_Standard rpt = new CV_Standard();
+            CV_StandardWorkExperience rpt = new CV_StandardWorkExperience();
             rpt.Site = this.Site;
             return rpt;
         }

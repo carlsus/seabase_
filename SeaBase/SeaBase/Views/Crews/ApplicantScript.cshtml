@@ -197,7 +197,7 @@
                 processData: false,
                 dataType: "json",
                 success: function (response) {
-                    $('#DutchContract').modal('hide');
+                    $('#JSU').modal('hide');
                     window.open('/Reports/JSUContract/', '_blank').focus();
 
                 },
@@ -229,6 +229,30 @@
                     $('#COE').modal('hide');
                     window.open('/Reports/ContractOfEmployement/', '_blank').focus();
 
+                },
+                failure: function (response) {
+                    alert('faile');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
+        });
+        $('#btnViewEmploymentContract').on('click', function (e) {
+            var formData = new FormData();
+
+            formData.append('HoursWorked', $('#echours').val());
+            formData.append('Id', $('#Id').val());
+            $.ajax({
+                type: "POST",
+                url: "/Reports/ShowEmploymentContract",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $("#EmploymentContract").modal('hide');
+                    window.open('/Reports/EmploymentContract/', '_blank').focus();
                 },
                 failure: function (response) {
                     alert('faile');
@@ -320,26 +344,8 @@
     }
 
     function EmploymentContract() {
-        var formData = new FormData();
-
-        formData.append('id', $('#Id').val());
-        $.ajax({
-            type: "POST",
-            url: "/Reports/ShowEmploymentContract",
-            data: formData,
-            contentType: false,
-            processData: false,
-            dataType: "json",
-            success: function (response) {
-                window.open('/Reports/EmploymentContract/', '_blank').focus();
-            },
-            failure: function (response) {
-                alert('faile');
-            },
-            error: function (response) {
-                alert('error');
-            }
-        });
+        $('#EmploymentContract').modal('show');
+        
     }
     
     function LOG() {

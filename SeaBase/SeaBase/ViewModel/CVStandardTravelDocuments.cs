@@ -6,7 +6,7 @@ using System.Web;
 
 namespace SeaBase.ViewModel
 {
-    public class CVStandardTrainings
+    public class CVStandardTravelDocuments
     {
         public int Id { get; set; }
         public int CrewId { get; set; }

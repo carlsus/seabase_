@@ -334,6 +334,18 @@
       <DependentUpon>CV_Standard.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\CV_StandardTravelDocuments.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CV_StandardTravelDocuments.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\CV_StandardWorkExperience.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CV_StandardWorkExperience.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\DutchContract.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -368,11 +380,12 @@
     <Compile Include="Scheduler\JobScheduler.cs" />
     <Compile Include="ViewModel\ApplicantViewModel.cs" />
     <Compile Include="ViewModel\COE.cs" />
-    <Compile Include="ViewModel\CVStandardTrainings.cs" />
+    <Compile Include="ViewModel\CVStandardTravelDocuments.cs" />
+    <Compile Include="ViewModel\CVStandardWorkExperience.cs" />
     <Compile Include="ViewModel\DutchContract.cs" />
     <Compile Include="ViewModel\DutchContractReport.cs" />
     <Compile Include="ViewModel\EmbarkationViewModel.cs" />
-    <Compile Include="ViewModel\EmployementContract.cs" />
+    <Compile Include="ViewModel\EmploymentContract.cs" />
     <Compile Include="ViewModel\JobOpeningViewModel.cs" />
     <Compile Include="ViewModel\JSU.cs" />
     <Compile Include="ViewModel\LOG.cs" />
@@ -1691,6 +1704,14 @@
     <EmbeddedResource Include="Reports\CV_Standard.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CV_Standard.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CV_StandardTravelDocuments.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CV_StandardTravelDocuments.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CV_StandardWorkExperience.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CV_StandardWorkExperience.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\DutchContract.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

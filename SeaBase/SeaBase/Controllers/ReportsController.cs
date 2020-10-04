@@ -52,7 +52,6 @@ namespace SeaBase.Controllers
                               c.ForeignLanguage
                           }).ToList();
             rd.SetDataSource(result);
-            rd.Subreports[0].DataSourceConnections.Clear();
             var travel_documents = (from c in _context.CrewTravelDocuments
                                     join d in _context.Documents on c.DocumentId equals d.Id
                                     where c.CrewId==id
@@ -67,7 +66,24 @@ namespace SeaBase.Controllers
                                         d.DocumentName,
                                         c.DocumentNo
                                     }).ToList();
-            rd.Subreports[0].SetDataSource(travel_documents);
+            rd.Subreports["CV_StandardTravelDocuments.rpt"].SetDataSource(travel_documents);
+            var work_experience = (from c in _context.CrewWorkExperiences
+                                   join d in _context.Ranks on c.RankId equals d.Id
+                                   join e in _context.VesselTypes on c.VesselTypeId equals e.Id
+                                   join f in _context.ManningAgencies on c.ManningAgencyId equals f.Id
+                                   where c.CrewId == id
+                                   select new
+                                   {
+                                       c.Id,
+                                       c.CrewId,
+                                       c.StartDate,
+                                       c.EndDate,
+                                       c.VesselName,
+                                       d.RankName,
+                                       e.VesselTypeName,
+                                       ManningAgencyName = f.AgencyName
+                                   }).ToList();
+            rd.Subreports["CV_StandardWorkExperience.rpt"].SetDataSource(work_experience);
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();
@@ -75,22 +91,21 @@ namespace SeaBase.Controllers
 
             rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Portrait;
             rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA4;
-
             Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
             stream.Seek(0, SeekOrigin.Begin);
 
             return new FileStreamResult(stream, "application/pdf");
         }
 
-        public ActionResult ShowEmploymentContract(int id)
+        public ActionResult ShowEmploymentContract(EmploymentContract ec)
         {
-            TempData["id"] = id;
+            TempData["ec"] = ec;
             return Json(new { Success = "Success" }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult EmploymentContract()
         {
-            int id = (int) TempData["id"];
+            EmploymentContract ec = (EmploymentContract) TempData["ec"];
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "EmploymentContract.rpt"));
             var result = (from c in _context.Crews
@@ -107,7 +122,7 @@ namespace SeaBase.Controllers
                                           .DefaultIfEmpty()
                           from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId==d.RankId)
                                           .DefaultIfEmpty()
-                          where c.Id == id
+                          where c.Id == ec.Id
                           select new
                           {
                               c.Id,
@@ -135,7 +150,8 @@ namespace SeaBase.Controllers
                               MonthlySalary=k.Monthly,
                               OvertimeSalary=l.Monthly,
                               f.ContractDuration,
-                              OverTimeRemarks=l.Remarks
+                              OverTimeRemarks=l.Remarks,
+                              HoursWorked=ec.HoursWorked
                           }).ToList();
             rd.SetDataSource(result);
             

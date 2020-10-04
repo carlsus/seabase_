@@ -5,7 +5,7 @@ using System.Web;
 
 namespace SeaBase.ViewModel
 {
-    public class EmployementContract
+    public class EmploymentContract
     {
         public int Id { get; set; }
         public string Firstname { get; set; }
