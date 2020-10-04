@@ -1,0 +1,226 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>NEPTUNE | @ViewBag.Title</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    @Styles.Render("~/AdminLTE/plugins/font-awesome/styles")
+    @Styles.Render("~/AdminLTE/plugins/ionicons/styles")
+    @Styles.Render("~/AdminLTE/dist/styles")
+    @Styles.Render("~/AdminLTE/bootstrap/styles")
+    @Styles.Render("~/AdminLTE/dist/css/skins/styles")
+
+</head>
+
+<body class="hold-transition skin-black-light sidebar-mini fixed">
+    <div class="wrapper">
+        <header class="main-header">
+            <a href="@Url.Action("Index", "Home")" class="logo">
+                <span class="logo-mini"><b>P</b></span>
+                <span class="logo-lg"><b>NEPTUNE</b> </span>
+            </a>
+            <nav class="navbar navbar-static-top" role="navigation">
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+
+                        @Html.Partial("_LoginPartial")
+
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <aside class="main-sidebar">
+            <section class="sidebar">
+                @*<div class="user-panel">
+                    <div class="pull-left image">
+                        <img src="~/user.png" class="img-circle" alt="User Image">
+                    </div>
+                    @{
+                        Users usr = UserRepository.Details(User.Identity.Name);
+                    }
+                    <div class="pull-left info">
+                        <p>@usr.firstname</p>
+                        <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                    </div>
+                </div>*@
+               
+                <ul class="sidebar-menu">
+                    <li class="header">MAIN NAVIGATION</li>
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="@Url.Action("Index", "Home")">
+                            <i class="fa fa-home fa-lg"></i> <span>Home</span>
+                        </a>
+
+                    </li>
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-users fa-lg"></i> <span>Manning</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li id="left-sidebar-menu-dashboard-dashboardV1"><a href="@Url.Action("Index", "JobOpenings")"><i class="fa fa-caret-right"></i> Post Job Openings</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV2"><a href="@Url.Action("Index", "Applicants")"><i class="fa fa-caret-right"></i> Applicants</a></li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="@Url.Action("Index", "Crews")">
+                            <i class="fa fa-anchor fa-lg"></i> <span>Crew Management</span>
+                        </a>
+
+                    </li>
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-clipboard fa-lg"></i> <span>On-Board Management</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li id="left-sidebar-menu-dashboard-dashboardV1"><a href="@Url.Action("Index", "VesselAssignments")"><i class="fa fa-caret-right"></i> Vessel Management</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV1"><a href="@Url.Action("Index", "Document Monitoring")"><i class="fa fa-caret-right"></i> Document Monitoring</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV1"><a href="@Url.Action("Index", "Embarkations")"><i class="fa fa-caret-right"></i> Embarkation</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV2"><a href="@Url.Action("Index", "Disembarkations")"><i class="fa fa-caret-right"></i> Disembarkation</a></li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-credit-card fa-lg"></i> <span>Human Resource</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li id="left-sidebar-menu-dashboard-dashboardV1"><a href="@Url.Action("Index", "CrewPayslip")"><i class="fa fa-caret-right"></i> Crew Payslip</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV2"><a href="@Url.Action("DashboardV2", "Home")"><i class="fa fa-caret-right"></i> Payroll</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV2"><a href="@Url.Action("DashboardV2", "Home")"><i class="fa fa-caret-right"></i> Payroll Summary</a></li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-binoculars fa-lg"></i> <span>Vessel and Principal</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li id="left-sidebar-menu-dashboard-dashboardV1"><a href="@Url.Action("Index", "Principals")"><i class="fa fa-caret-right"></i> Principal Management</a></li>
+                            <li id="left-sidebar-menu-dashboard-dashboardV2"><a href="@Url.Action("Index", "Vessels")"><i class="fa fa-caret-right"></i> Vessel Management</a></li>
+                        </ul>
+                    </li>
+                    <li id="left-sidebar-menu-widgets">
+                        @*<a href="@Url.Action("Index", "Widgets")">
+                                <i class="fa fa-th"></i> <span>Widgets</span>
+                                <small class="label pull-right bg-green">new</small>
+                            </a>*@
+                    </li>
+
+                    
+                    <!-- #region maintenance -->
+
+                    <li id="left-sidebar-menu-multilevel" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-cog fa-lg"></i> <span>Maintenance</span>
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("Index", "Announcements")"><i class="fa fa-caret-right"></i> Announcement</a></li>
+                            <li><a href="@Url.Action("Index", "Agents")"><i class="fa fa-caret-right"></i> Agents</a></li>
+                            <li><a href="@Url.Action("Index", "Banks")"><i class="fa fa-caret-right"></i> Banks</a></li>
+                            <li><a href="@Url.Action("Index", "Branches")"><i class="fa fa-caret-right"></i> Branches</a></li>
+                            <li><a href="@Url.Action("Index", "Departments")"><i class="fa fa-caret-right"></i> Departments</a></li>
+                            <li><a href="@Url.Action("Index", "VesselTypes")"><i class="fa fa-caret-right"></i> Vessel Types</a></li>
+                            <li><a href="@Url.Action("Index", "SeaPorts")"><i class="fa fa-caret-right"></i> SeaPorts</a></li>
+                            <li><a href="@Url.Action("Index", "AirPorts")"><i class="fa fa-caret-right"></i> AirPorts</a></li>
+                            <li><a href="@Url.Action("Index", "Flags")"><i class="fa fa-caret-right"></i> Flags</a></li>
+                            <li><a href="@Url.Action("Index", "VesselUnions")"><i class="fa fa-caret-right"></i> Vessel Union and Affiliated</a></li>
+                            <li><a href="@Url.Action("Index", "Licenses")"><i class="fa fa-caret-right"></i> Licenses</a></li>
+                            <li><a href="@Url.Action("Index", "MedicalCertificates")"><i class="fa fa-caret-right"></i> Medical Certificates</a></li>
+                            <li><a href="@Url.Action("Index", "MedicalClinics")"><i class="fa fa-caret-right"></i> Medical Clinics</a></li>
+                            <li><a href="@Url.Action("Index", "ManningAgencies")"><i class="fa fa-caret-right"></i> Manning Agencies</a></li>
+                            <li><a href="@Url.Action("Index", "WorkingGears")"><i class="fa fa-caret-right"></i> Working Gears</a></li>
+                            <li><a href="@Url.Action("Index", "TradingAreas")"><i class="fa fa-caret-right"></i> Routing and Trading Area</a></li>
+                            <li><a href="@Url.Action("Index", "Ranks")"><i class="fa fa-caret-right"></i> Ranks</a></li>
+                            <li><a href="@Url.Action("Index", "AirLines")"><i class="fa fa-caret-right"></i> Airlines</a></li>
+                            <li><a href="@Url.Action("Index", "TravelAgencies")"><i class="fa fa-caret-right"></i> Travel Agencies</a></li>
+                            <li><a href="@Url.Action("Index", "TrainingCenters")"><i class="fa fa-caret-right"></i> Training Centers</a></li>
+
+
+                        </ul>
+                    </li>
+
+                    <!-- #endregion -->
+
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-users fa-lg"></i> <span>Document Manager</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("Index", "Documents")"><i class="fa fa-caret-right"></i> Documents</a></li>
+                            <li><a href="@Url.Action("Index", "Vaccines")"><i class="fa fa-caret-right"></i> Vaccines</a></li>
+                            <li><a href="@Url.Action("Index", "Seminars")"><i class="fa fa-caret-right"></i> Seminars and Trainings</a></li>
+
+                        </ul>
+                    </li>
+
+
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-table fa-lg"></i> <span>Reports</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("Index", "Documents")"><i class="fa fa-caret-right"></i> Documents</a></li>
+                            <li><a href="@Url.Action("Index", "Vaccines")"><i class="fa fa-caret-right"></i> Vaccines</a></li>
+                            <li><a href="@Url.Action("Index", "Seminars")"><i class="fa fa-caret-right"></i> Seminars and Trainings</a></li>
+
+                        </ul>
+                    </li>
+
+                    <li id="left-sidebar-menu-dashboard" class="treeview">
+                        <a href="#">
+                            <i class="fa fa-lock fa-lg"></i> <span>Security</span> <i class="fa fa-angle-left pull-right"></i>
+                        </a>
+                        <ul class="treeview-menu">
+                            <li><a href="@Url.Action("Index", "Users")"><i class="fa fa-caret-right"></i> User Accounts</a></li>
+                            <li><a href="@Url.Action("Index", "UserRoles")"><i class="fa fa-caret-right"></i> User Roles</a></li>
+                            <li><a href="@Url.Action("Index", "Logs")"><i class="fa fa-caret-right"></i> Activity Logs</a></li>
+
+                        </ul>
+                    </li>
+
+
+                </ul>
+            </section>
+        </aside>
+
+        <div class="content-wrapper">
+            <!--
+            <section class="content-header">
+                <h1>
+                    @*@ViewBag.Title*@
+                    <small>@ViewBag.SubTitle</small>
+                </h1>
+                <ol class="breadcrumb">
+                    <li><a href="#"><i class="fa fa-dashboard"></i>@ViewBag.SubTitle</a></li>
+                    <li class="active">@ViewBag.Title</li>
+                </ol>
+            </section>
+                -->
+            <section class="content">
+                @RenderBody()
+            </section>
+        </div>
+        @*<footer class="main-footer navbar-fixed-bottom">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> 1.1
+            </div>
+            <strong>Crewing System </strong> All rights reserved.
+        </footer>*@
+
+        <div class="control-sidebar-bg"></div>
+    </div>
+
+    @Scripts.Render("~/AdminLTE/plugins/jquery/script")
+    @Scripts.Render("~/AdminLTE/bootstrap/script")
+    @Scripts.Render("~/AdminLTE/plugins/slimscroll/script")
+    @Scripts.Render("~/AdminLTE/plugins/fastclick/script")
+    @Scripts.Render("~/AdminLTE/dist/script")
+    @Scripts.Render("~/bundles/jqueryval")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

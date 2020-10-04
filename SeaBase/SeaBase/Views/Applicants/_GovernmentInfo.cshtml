@@ -1,0 +1,51 @@
+﻿@model SeaBase.ViewModel.ApplicantViewModel
+<div class="panel panel-default">
+    <div class="panel-heading">Government Info</div>
+    <div class="panel-body">
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.SSSNo)
+            @Html.TextBoxFor(m => m.SSSNo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.SSSNo)
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.PhilhealthNo)
+            @Html.TextBoxFor(m => m.PhilhealthNo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PhilhealthNo)
+        </div>
+        <div class="col-md-4">
+            @Html.LabelFor(m => m.PagibigIdNo)
+            @Html.TextBoxFor(m => m.PagibigIdNo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PagibigIdNo)
+        </div>
+        <div class="col-md-3 mb-3">
+            @Html.LabelFor(m => m.PSUIdNo)
+            @Html.TextBoxFor(m => m.PSUIdNo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PSUIdNo)
+        </div>
+        <div class="col-md-3 mb-3">
+            @Html.LabelFor(m => m.PSUIssuanceDate)
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                @Html.TextBoxFor(m => m.PSUIssuanceDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PSUIssuanceDate)
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            @Html.LabelFor(m => m.NBINo)
+            @Html.TextBoxFor(m => m.NBINo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.NBINo)
+        </div>
+        <div class="col-md-3 mb-3">
+            @Html.LabelFor(m => m.NBIValidity)
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                @Html.TextBoxFor(m => m.NBIValidity, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.NBIValidity)
+            </div>
+        </div>
+    </div>
+</div>

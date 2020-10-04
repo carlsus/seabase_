@@ -1,0 +1,131 @@
+﻿@model SeaBase.ViewModel.EmbarkationViewModel
+@Styles.Render("~/AdminLTE/plugins/datepicker/styles")
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create Embarkation";
+}
+
+<!--
+
+    Principal
+
+-->
+
+<div class="box">
+    <div class="box-body">
+        @using (Html.BeginForm("Save", "Embarkations", FormMethod.Post,
+            new { id = "form0", name = "form0" }))
+        {
+            @Html.ValidationSummary(true, "Please fix the following errors.")
+            
+            <div class="form-group col-md-2">
+                @Html.LabelFor(m => m.EmbarkationCode)
+                @Html.TextBoxFor(m => m.EmbarkationCode, new { @class = "form-control" ,@readonly="readonly"})
+                @Html.ValidationMessageFor(m => m.EmbarkationCode)
+            </div>
+            <div class="form-group col-md-5">
+                @Html.LabelFor(m => m.PrincipalId)
+                @Html.DropDownListFor(m => m.PrincipalId, new SelectList(Model.Principals, "Id", "PrincipalName"), "Select Principal", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PrincipalId)
+            </div>
+            <div class="form-group col-md-5">
+                @Html.LabelFor(m => m.VesselId)
+                <select id="VesselId" name="VesselId" class="form-control"></select>
+                @*@Html.DropDownListFor(m => m.VesselId, new SelectList(Model.Vessels, "Id", "VesselName"), "Select Vessel", new { @class = "form-control" })*@
+                @Html.ValidationMessageFor(m => m.VesselId)
+            </div>
+            <div class="form-group col-md-9">
+                @Html.LabelFor(m => m.DepartureAirportId)
+                @Html.DropDownListFor(m => m.DepartureAirportId, new SelectList(Model.AirPorts, "Id", "AirportName"), "Select Airport", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.DepartureAirportId)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.DepartureDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.DepartureDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.DepartureDate)
+                </div>
+            </div>
+            
+            <div class="form-group col-md-9">
+                @Html.LabelFor(m => m.PortOfEmbarkationId)
+                @Html.DropDownListFor(m => m.PortOfEmbarkationId, new SelectList(Model.AirPorts, "Id", "AirportName"), "Select Airport", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.PortOfEmbarkationId)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.EmbarkationDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+
+                    @Html.TextBoxFor(m => m.EmbarkationDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.EmbarkationDate)
+                </div>
+            </div>
+            <div class="form-group col-md-9">
+                @Html.LabelFor(m => m.ArrivalAirportId)
+                @Html.DropDownListFor(m => m.ArrivalAirportId, new SelectList(Model.AirPorts, "Id", "AirportName"), "Select Airport", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ArrivalAirportId)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.TentativeDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+
+                    @Html.TextBoxFor(m => m.TentativeDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.TentativeDate)
+                </div>
+            </div>
+            
+            <div class="form-group col-md-9">
+                @Html.LabelFor(m => m.PortOfDisembarkationId)
+                @Html.DropDownListFor(m => m.PortOfDisembarkationId, new SelectList(Model.AirPorts, "Id", "AirportName"), "Select Airport", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PortOfDisembarkationId)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.DisembarkationDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.DisembarkationDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.DisembarkationDate)
+                </div>
+            </div>
+            
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ContractDuration)
+                @Html.TextBoxFor(m => m.ContractDuration,  new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ContractDuration)
+            </div>
+            <div>&nbsp;</div>
+            @Html.HiddenFor(m => m.Id)
+            @Html.AntiForgeryToken()
+            <footer class="main-footer navbar-fixed-bottom" style="padding-top: 4px; padding-bottom: 4px">
+                <div class="pull-right hidden-xs">
+
+                    <button type="submit" class="btn btn-primary" id="btnSave" name="btnSave">Save Embarkation</button>
+                </div>
+            </footer>
+
+        }
+    </div>
+</div>
+
+
+@Html.Partial("_Crew")
+
+<div>&nbsp;</div>
+@section Scripts {
+    @RenderPage("~/Views/Embarkations/EmbarkationFormScripts.cshtml")
+}
+

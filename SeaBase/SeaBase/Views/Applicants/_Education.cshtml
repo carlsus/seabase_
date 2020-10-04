@@ -1,0 +1,199 @@
+﻿der("~/AdminLTE/plugins/datatables/styles")
+
+<div class="panel panel-default">
+    <div class="panel-heading">Education</div>
+    <div class="panel-body">
+
+
+        <div class="tab-content">
+            <table id="data-table-education" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Course/Degree</th>
+                        <th>Name of School</th>
+                        <th>Attendance Date</th>
+                        
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+
+
+    </div>
+</div>
+
+
+<!-- #region modal -->
+
+<div class="modal fade" id="AddOrEditEducation">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="educ" method="post" name="educ">
+                    <div class="row-fluid">
+                        <div class="form-group">
+                            <label>Course/Degree</label>
+                            <input type="text" class="form-control" id="coursedegree" name="coursedegree" />
+                        </div>
+                        <div class="form-group">
+                            <label>School Name</label>
+                            <input type="text" class="form-control" id="schoolname" name="schoolname" />
+                        </div>
+                        <div class="form-group">
+                            <label>Attendance Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" id="attendancedate" name="attendancedate" />
+                            </div>
+                        </div>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnEduc">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- #endregion -->
+
+<script>
+    var table_education;
+    $(document).ready(function () {
+        $('#attendancedate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        table_education = $("#data-table-education").DataTable({
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetEducation", "Applicants")",
+            "type": "GET",
+            "datatype": "application/json",
+            "data": { 'id': $('#Id').val() }
+            },
+            "lengthChange": false,
+            "searching": false,
+        dom: "Bfrtip",
+        buttons: {
+            buttons: [
+                {
+                    text: "New Education",
+                    action: function (e, dt, node, config) {
+                        $('#modal-title').text("Add New");
+                        $("#AddOrEditEducation").modal();
+                    }
+                }
+            ],
+            dom: {
+                button: {
+                        tag: "button",
+                        className: "btn btn-default btn-sm"
+                },
+                buttonLiner: {
+                    tag: null
+                }
+            }
+        },
+        "columns": [
+            { data: "CourseDegree" },
+            { data: "SchoolName" },
+            {
+                'data': 'AttendanceDate',
+                'render': function (data) {
+                    return moment(data).format("MMM DD,YYYY");
+                }
+            },
+           
+            {
+                data: "Id",
+                render: function (data) {
+                    return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_education(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                }
+            }
+        ],
+        "columnDefs": [
+            { "width": "30%", "targets": 0 },
+            { "width": "30%", "targets": 1 },
+            { "width": "15%", "targets": 2},
+
+            { "className": "text-center", "width": "5%", "targets": 3 }
+        ]
+
+        });
+
+        $('#btnEduc').on('click',function (e) {
+            e.preventDefault();
+            var form1 = {
+                CourseDegree: $('#coursedegree').val(),
+                SchoolName: $('#schoolname').val(),
+                AttendanceDate: $('#attendancedate').val(),
+                CrewId:$('#CrewId').val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Applicants/AddEducation",
+                data: JSON.stringify(form1),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#AddOrEditEducation').modal('hide');
+                    $('#schoolname').val('');
+                    $('#coursedegree').val('');
+                    $('#attendancedate').val('');
+                    
+                    table_education.ajax.reload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+      
+
+    });
+
+
+    function remove_education(id) {
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("DeleteEducation","Applicants")/" + id,
+
+                    success: function () {
+                        table_education.ajax.reload();
+                    }
+            });
+        }
+        });
+    }
+</script>

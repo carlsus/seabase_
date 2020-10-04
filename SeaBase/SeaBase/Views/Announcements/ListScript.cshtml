@@ -1,0 +1,156 @@
+﻿<script type="text/javascript">
+    var table;
+    $(document).ready(function () {
+        $('.textarea').wysihtml5();
+       table = $("#data-table").DataTable({
+            "scrollY": "400px",
+            //"scrollCollapse": true,
+            "ajax": {
+                "url": "@Url.Action("GetAnnouncement", "Announcements")",
+
+                "type": "GET",
+                //"datatype": "application/json",
+            },
+            "lengthChange": false,
+            "searching": true,
+            "columns": [
+                { data: "AnnouncementName" },
+                { data: "AnnouncementName" },
+                { data: "FilePath" },
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-primary" title="Edit" data-toggle="modal" data-target="#AddOrEdit" onclick="Edit(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button class="btn btn-danger js-delete" title="Delete" data-id="' + data + '"><i class="fa fa-trash"></i></button>';
+                    }
+                }
+            ],
+            dom: "Bfrtip",
+            buttons: {
+                buttons: [
+                    {
+                        text: "New Announcement",
+                        action: function (e, dt, node, config) {
+                            $("#form0")[0].reset();
+                            $('#modal-title').text("Add New");
+                            $("#AddOrEdit").modal();
+                            
+                        }
+                    }
+                ],
+                dom: {
+                    button: {
+                        tag: "button",
+                        className: "btn btn-default"
+                    },
+                    buttonLiner: {
+                        tag: null
+                    }
+                }
+            },
+            "columnDefs": [
+                     { "width": "40%px", "targets": 0 },
+                     { "width": "30%", "targets": 1 },
+                     { "width": "15%", "targets": 2 },
+                     { "className":"text-center", "width": "12%", "targets": 3 },
+                     //{ "width": "10px", "targets": 3 }
+            ]
+        });
+
+
+        //form submit
+        $('#form0').submit(function (event) {
+            event.preventDefault();
+            $('#btnSave').attr('disabled', 'disabled');
+            var formData = new FormData();
+            var files = $('#FileAttachment')[0].files[0];
+            formData.append('Id', $('#Id').val());
+            formData.append('FileAttachment', files);
+            formData.append('AnnoucementName', $('#AnnouncementName').val());
+            formData.append('Description', $('#Description').val());
+
+            $.ajax({
+                type: "POST",
+                url: "/Announcements/Save",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#AddOrEdit').modal('hide');
+                    $.notify({
+                        title: '<strong>Announcment Created </strong>',
+                        message: 'The announcement has been created successfully.'
+                    }, {
+                        type: 'success'
+                    });
+                    table.ajax.reload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        //$('#form0').submit(function() {
+        //    $.notify({
+        //        title: '<strong>Agent Deleted </strong>',
+        //        message: 'The agent has been deleted successfully.'
+        //    }, {
+        //        type: 'danger'
+        //    });
+        //});
+    });
+
+
+    //FUNCTIONS
+    function Edit(id) {
+        $.ajax({
+            url: "@Url.Action("Edit", "Announcements")",
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            data: { 'id': id },
+            success: function (result) {
+                $("#form0")[0].reset();
+                $('#modal-title').text("Edit");
+                $('#Id').val(result.Id);
+                $('#AgentName').val(result.AgentName);
+                $('#Telephone').val(result.Telephone);
+                $('#Fax').val(result.Fax);
+                $('#AddOrEdit').modal('show');
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        return false;
+    }
+
+    $("#data-table").on("click", ".js-delete", function () {
+        var button = $(this);
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("Delete","Announcements")/" + button.attr("data-id"),
+                   
+                    success: function () {
+                        table.row(button.parents("tr")).remove().draw();
+                        table.ajax.reload();
+                        $.notify({
+                            title: '<strong>Announcment Deleted </strong>',
+                            message: 'The announcement has been deleted successfully.'
+                        }, {
+                            type: 'danger'
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")
+@Scripts.Render("~/AdminLTE/plugins/bootstrap-wysihtml5/script")

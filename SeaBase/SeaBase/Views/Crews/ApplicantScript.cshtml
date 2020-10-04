@@ -1,0 +1,373 @@
+﻿<script>
+    var button_text;
+    var button_status;
+    $(document).ready(function () {
+        if ($('#Id').val() == 0) {
+            $("#form0 input").prop("disabled", false);
+            $("#form0 select").prop("disabled", false);
+            $("#form0 textarea").prop("disabled", false);
+        } else {
+            $("#form0 input").prop("disabled", true);
+            $("#form0 select").prop("disabled", true);
+            $("#form0 textarea").prop("disabled", true);
+        }
+        
+        $("#data-table").DataTable({
+            //"scrollCollapse": true,
+            "ajax": {
+                "url": "@Url.Action("GetPrincipalVessel", "Crews")",
+            "type": "GET",
+            //"datatype": "application/json",
+        },
+            "responsive": true,
+            "lengthChange": false,
+            "searching": true,
+            "columns": [
+                { data: "PrincipalName" },
+                { data: "VesselName" },
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-warning btn-sm"  onclick="Assign(\'' + data + '\')">Assign Crew</button> ';
+                    }
+                }
+            ],
+            
+            "columnDefs": [
+                { "width": "60%", "targets": 0 },
+                { "width": "30%", "targets": 1 },
+                { "width": "10%", "targets": 2 }
+               
+            ]
+        });
+
+        
+        
+            button_text = "Edit Information";
+            $('#btnSave').text(button_text);
+      
+       
+        $('#ApplicationDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose:true,
+            todayHighlight: true
+        });
+        $('#BirthDate').datepicker({
+            format: 'mm/dd/yyyy',
+            endDate: '-20y',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#KinBirthDate').datepicker({
+            format: 'mm/dd/yyyy',
+            //startDate: '-30y',
+            endDate: '-20y',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#PSUIssuanceDate').datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true
+        });
+        $('#NBIValidity').datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true
+        });
+        $('#logDateGenerated').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#logDateTravelling').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#logDateEmbarkation').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#dcdate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#jsudateaccomplished').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#imgupload').click(function() {
+            $('#ImageFile').trigger('click');
+        });
+        $("#ImageFile").change(function () {
+            readURL(this);
+        });
+        $('#btnSave').on('click', function() {
+            if ($('#btnSave').text() == "Edit Information") {
+                $("#form0 input").prop("disabled", false);
+                $("#form0 select").prop("disabled", false);
+                $("#form0 textarea").prop("disabled", false);
+                $('#btnSave').text('Save Application');
+            } else {
+                $('#form0').submit();
+            }
+        });
+
+        $('#btnSaveLog').on('click', function(e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('AgentId', $('#logAgentId').val());
+            formData.append('DateTravelling', $('#logDateTravelling').val());
+            formData.append('DateGenerated', $('#logDateGenerated').val());
+            formData.append('Position', $("#logPositionId option:selected").text());
+            formData.append('Id', $('#Id').val());
+            $.ajax({
+                type: "POST",
+                url: "/Reports/ShowLOG",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#LOG').modal('hide');
+                    window.open('/Reports/LetterOfGuarantee/', '_blank').focus();
+
+                },
+                failure: function (response) {
+                    alert('faile');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
+        });
+
+        $('#btnViewDutchContract').on('click', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('ScaleNo', $('#dcscaleno').val());
+            formData.append('Date', $('#dcdate').val());
+            formData.append('Principal', $('#logDateGenerated').val());
+            formData.append('Position', $("#dcprincipal option:selected").text());
+            formData.append('Id', $('#Id').val());
+            $.ajax({
+                type: "POST",
+                url: "/Reports/ShowDutchContract",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#DutchContract').modal('hide');
+                    window.open('/Reports/DutchContract/', '_blank').focus();
+
+                },
+                failure: function (response) {
+                    alert('faile');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
+        });
+
+
+        $('#btnViewJSU').on('click', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('PositionId', $('#jsuPositionId').val());
+            formData.append('DateAccomplished', $('#jsudateaccomplished').val());
+            formData.append('Id', $('#Id').val());
+            $.ajax({
+                type: "POST",
+                url: "/Reports/ShowJSU",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#DutchContract').modal('hide');
+                    window.open('/Reports/JSUContract/', '_blank').focus();
+
+                },
+                failure: function (response) {
+                    alert('faile');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
+        });
+
+
+        $('#btnViewCOE').on('click', function (e) {
+            e.preventDefault();
+
+            var formData = new FormData();
+            formData.append('PositionId', $('#coePositionId').val());
+            formData.append('HoursWorked', $('#coehours').val());
+            formData.append('Id', $('#Id').val());
+            $.ajax({
+                type: "POST",
+                url: "/Reports/ShowCOE",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#COE').modal('hide');
+                    window.open('/Reports/ContractOfEmployement/', '_blank').focus();
+
+                },
+                failure: function (response) {
+                    alert('faile');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
+        });
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#imgupload').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        var uploadField = document.getElementById("ImageFile");
+
+        uploadField.onchange = function () {
+            if (this.files[0].size > 1048576) {
+                alert("File is too big!");
+                this.value = "";
+            };
+        };
+    });
+    
+    function viewFile(id) {
+        var crewid = $('#Id').val();
+        window.open("/Crews/Attachment?id=" + crewid + "&file=" + id, "_blank", 'location=yes,height=570,width=520,scrollbars=yes,status=yes').focus();
+    }
+    function Save() {
+        if ($('#StatusId').val() <= 2) {
+            bootbox.confirm("Are you sure you want to " + button_text + "?", function (result) {
+                if (result) {
+                    enable();
+                    $('#form0').submit();
+                }
+            });
+        } else if ($('#StatusId').val() == 3) {
+            $("#AddOrEdit").modal();
+        }
+    }
+
+    function enable() {
+        $("#form0 input").prop("disabled", false);
+        $("#form0 select").prop("disabled", false);
+        $("#form0 textarea").prop("disabled", false);
+    }
+    function Reject() {
+        if ($('#StatusId').val() <= 2) {
+            bootbox.confirm("Are you sure you want to reject application?", function (result) {
+                if (result) {
+                    
+                    $('#StatusId').val(4);
+                    $('#form0').submit();
+                }
+            });
+        } 
+    }
+
+    function CVStandard() {
+        var formData = new FormData();
+       
+        formData.append('id', $('#Id').val());
+        $.ajax({
+            type: "POST",
+            url: "/Reports/ShowCVStandard",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (response) {
+                window.open('/Reports/CVStandard/', '_blank').focus();
+
+            },
+            failure: function (response) {
+                alert('faile');
+            },
+            error: function (response) {
+                alert('error');
+            }
+        });
+    }
+
+    function EmploymentContract() {
+        var formData = new FormData();
+
+        formData.append('id', $('#Id').val());
+        $.ajax({
+            type: "POST",
+            url: "/Reports/ShowEmploymentContract",
+            data: formData,
+            contentType: false,
+            processData: false,
+            dataType: "json",
+            success: function (response) {
+                window.open('/Reports/EmploymentContract/', '_blank').focus();
+            },
+            failure: function (response) {
+                alert('faile');
+            },
+            error: function (response) {
+                alert('error');
+            }
+        });
+    }
+    
+    function LOG() {
+        $('#LOG').modal('show');
+    }
+
+    function DutchContract() {
+        $('#DutchContract').modal('show');
+    }
+
+    function JSU() {
+        $('#JSU').modal('show');
+    }
+    function COE() {
+            $('#COE').modal('show');
+        }
+
+    
+    window.onload = function () {
+        if ($('#ImagePath').val()==='') {
+            $("#imgupload").attr('src', "/Images/default.jpeg");
+        } else {
+            $("#imgupload").attr('src', "/Images/" + $('#ImagePath').val());
+        }
+        
+        
+    };
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datepicker/script")
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")
+@Scripts.Render("~/AdminLTE/plugins/momentjs/script")

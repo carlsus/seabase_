@@ -1,0 +1,246 @@
+﻿
+@using SeaBase.Models
+@model SeaBase.ViewModel.ApplicantViewModel
+
+<div class="panel panel-default">
+    <div class="panel-heading">Travel Documents</div>
+    <div class="panel-body">
+
+
+        <div class="tab-content">
+            <table id="data-table-traveldocuments" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Document</th>
+                        <th>Document No.</th>
+                        <th>Issue Date</th>
+                        <th>Expiry Date</th>
+                        <th>Place Issued</th>
+                        <th>Issued By</th>
+                        <th>File</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<!-- #region modal -->
+
+<div class="modal fade" id="AddOrEditTravelDocuments">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="flags" method="post" name="flags">
+
+                    <input type="hidden" id="CrewId" name="CrewId" value="@Html.DisplayFor(m=>m.CrewFamilyBackground.CrewId)" />
+
+                    <div class="row-fluid">
+                        <div class="form-group col-md-6">
+                            <label>Document Type</label>
+                            @Html.DropDownList("tdDocumentId", new SelectList(Model.Documents, "Id", "DocumentName"), "Select Document", new { @class = "form-control" })
+                        </div>
+                       
+                        <div class="form-group col-md-6">
+                            <label>Document Number</label>
+                            <input type="text" class="form-control" id="tdDocumentNo" name="tdDocumentNo" />
+                        </div>
+                        
+                        <div class="form-group col-md-6">
+                            <label>Issue Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" id="tdIssueDate" name="tdIssueDate" />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Expiry Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" id="tdExpiryDate" name="tdExpiryDate" />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Issued by</label>
+                            <input type="text" class="form-control" id="tdIssuedBy" name="tdIssuedBy" />
+                        </div>
+                        <div class="form-group col-md-6">
+                            <label>Place Issued</label>
+                            <input type="text" class="form-control" id="tdPlaceIssued" name="tdPlaceIssued" />
+                        </div>
+                        <div class="form-group col-md-12">
+                            <label>File Attachment</label>
+                            <input id="TravelFileAttachment" title="Upload a attachment"
+                                   type="file" name="TravelFileAttachment" />
+                        </div>
+                    </div>
+                    @Html.AntiForgeryToken()
+                    &nbsp;
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="btnTravelDocuments">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- #endregion -->
+
+<script>
+    var table_travel_documents;
+    $(document).ready(function () {
+        $('#tdIssueDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#tdExpiryDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        table_travel_documents = $("#data-table-traveldocuments").DataTable({
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetTravelDocuments", "Applicants")",
+                "type": "GET",
+                "datatype": "application/json",
+                "data": { 'id': $('#Id').val() }
+            },
+            "lengthChange": false,
+            "searching": false,
+            dom: "Bfrtip",
+            buttons: {
+                buttons: [
+                    {
+                        text: "New Document",
+                        action: function (e, dt, node, config) {
+                            $('#modal-title').text("Add New");
+                            $("#AddOrEditTravelDocuments").modal();
+                        }
+                    }
+                ],
+                dom: {
+                    button: {
+                        tag: "button",
+                        className: "btn btn-default btn-sm"
+                    },
+                    buttonLiner: {
+                        tag: null
+                    }
+                }
+            },
+            "columns": [
+                { data: "DocumentName" },
+                { data: "DocumentNo" },
+                {
+                    'data': 'IssueDate',
+                    'render': function (data) {
+                        return moment(data).format("MMM DD,YYYY");
+                    }
+                },
+                {
+                    'data': 'ExpiryDate',
+                    'render': function (data) {
+                        return moment(data).format("MMM DD,YYYY");
+                    }
+                },
+                { data: "PlaceIssued" },
+                { data: "IssuedBy" },
+                {
+                    data: "FilePath",
+                    render: function (data, type, row, meta) {
+                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                    }
+                },
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_travel_document(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                    }
+                }
+            ],
+
+        });
+
+        $('#btnTravelDocuments').on('click',function (e) {
+            e.preventDefault();
+            
+            var formData = new FormData();
+            var files = $('#TravelFileAttachment')[0].files[0];
+                formData.append('FileAttachment', files);
+                formData.append('DocumentId', $('#tdDocumentId').val());
+                formData.append('DocumentNo', $('#tdDocumentNo').val());
+                formData.append('IssueDate', $('#tdIssueDate').val());
+                formData.append('ExpiryDate', $('#tdExpiryDate').val());
+                formData.append('PlaceIssued', $('#tdPlaceIssued').val());
+                formData.append('IssuedBy', $('#tdIssuedBy').val());
+                formData.append('CrewId', $('#Id').val());
+            $.ajax({
+                type: "POST",
+                url: "/Applicants/AddTravelDocument",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#AddOrEditTravelDocuments').modal('hide');
+                    $('#tdDocumentId').val('');
+                    $('#tdDocumentNo').val('');
+                    $('#tdIssueDate').val('');
+                    $('#tdExpiryDate').val('');
+                    $('#tdPlaceIssued').val('');
+                    $('#tdIssuedBy').val('');
+
+                    table_travel_documents.ajax.reload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+
+
+        });
+
+
+        function remove_travel_document(id) {
+            bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+                if (result) {
+                    $.ajax({
+                        url: "@Url.Action("DeleteTravelDocument","Applicants")/" + id,
+
+                        success: function () {
+                            table_travel_documents.ajax.reload();
+                        }
+                    });
+                }
+            });
+        }
+</script>

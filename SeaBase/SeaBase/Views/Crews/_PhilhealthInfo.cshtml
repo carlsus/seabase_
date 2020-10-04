@@ -1,0 +1,41 @@
+﻿@model SeaBase.ViewModel.ApplicantViewModel
+<div class="panel panel-default">
+    <div class="panel-heading">For Philhealth Info </div>
+    <div class="panel-body">
+        <div class="col-md-12">
+            <label>Type of Individually Paying Member</label>
+        </div>
+        <div class="col-md-3">
+            <label>@Html.RadioButtonFor(m => m.IndividualPayingMember, 1) Self-Employed</label>
+        </div>
+
+        <div class="col-md-2">
+            <label>@Html.RadioButtonFor(m => m.IndividualPayingMember, 2) OFW</label>
+        </div>
+
+        <div class="col-md-3">
+            <label>@Html.RadioButtonFor(m => m.IndividualPayingMember, 3) Seperated from Employment</label>
+        </div>
+        <div class="col-md-4">
+            <label>@Html.RadioButtonFor(m => m.IndividualPayingMember, 4) Others (specify)</label>
+            @Html.TextBoxFor(m => m.OthersSpecify, new { @class = "form-control" })
+        </div>
+
+        <div class="col-md-12">
+            <label>Character Check/Recommendation/Remarks</label>
+            @Html.TextAreaFor(m => m.Remarks, new { @class = "form-control", @rows = "1" })
+            @Html.ValidationMessageFor(m => m.Remarks)
+        </div>
+        <div class="col-md-12">
+            @Html.LabelFor(m => m.RecommendedBy)
+            @Html.TextBoxFor(m => m.RecommendedBy, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.RecommendedBy)
+        </div>
+        <div class="col-md-12">
+            @Html.LabelFor(m => m.OtherInfo)
+            @Html.TextAreaFor(m => m.OtherInfo, new { @class = "form-control", @rows = "1" })
+            @Html.ValidationMessageFor(m => m.OtherInfo)
+        </div>
+
+        </div>
+</div>

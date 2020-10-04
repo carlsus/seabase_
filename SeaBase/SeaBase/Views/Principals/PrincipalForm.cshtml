@@ -1,0 +1,263 @@
+﻿@model SeaBase.ViewModel.PrincipalViewModel
+@Styles.Render("~/AdminLTE/plugins/datepicker/styles")
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create Principal";
+}
+@{
+    <style scoped>
+        img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 180px;
+            height: 205px;
+            object-fit: contain;
+        }
+        label.error {
+    color: red;
+    font-size: 1rem;
+    display: block;
+    margin-top: 5px;
+}
+
+input.error {
+    border: 1px dashed red;
+    font-weight: 300;
+    color: red;
+}
+select.error {
+    border: 1px dashed red;
+    font-weight: 300;
+    color: red;
+}
+    </style>
+}
+
+<!--
+
+    Principal 
+
+-->
+
+<div class="box">
+    <div class="box-body">
+        @using (Html.BeginForm("Save", "Principals", FormMethod.Post,
+            new {id = "form0", name = "form0"}))
+        {
+            @Html.ValidationSummary(true, "Please fix the following errors.")
+            <div class="form-group col-md-3">
+                <a href="#">
+                    <img class="media-object center" src="" alt="..." id="imgupload" name="imgupload">
+                    <input id="ImageFile" title="Upload a product image"
+                           type="file" name="ImageFile" style="display: none" accept="image/*" />
+                </a>
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.PrincipalCode)
+                @Html.TextBoxFor(m => m.PrincipalCode, new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(m => m.PrincipalCode)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.PrincipalName)
+                @Html.TextBoxFor(m => m.PrincipalName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PrincipalName)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.AccreditationDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.AccreditationDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.AccreditationDate)
+                </div>
+            </div>
+
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ExpirationDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.ExpirationDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.ExpirationDate)
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ContactPerson)
+                @Html.TextBoxFor(m => m.ContactPerson, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.ContactPerson)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ContactPersonNo)
+                @Html.TextBoxFor(m => m.ContactPersonNo, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ContactPersonNo)
+            </div>
+            <div class="form-group col-md-9">
+                @Html.LabelFor(m => m.Address)
+                @Html.TextBoxFor(m => m.Address, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Address)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.Phone1)
+                @Html.TextBoxFor(m => m.Phone1, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Phone1)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.Phone2)
+                @Html.TextBoxFor(m => m.Phone2, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Phone2)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.Fax)
+                @Html.TextBoxFor(m => m.Fax, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Fax)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.EmailAddress)
+                @Html.TextBoxFor(m => m.EmailAddress, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.EmailAddress)
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(m => m.CountryId)
+                @Html.DropDownListFor(m => m.CountryId, new SelectList(Model.Countries, "Id", "Name"), "Select Country", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.CountryId)
+            </div>
+            <div class="form-group col-md-6">
+                @Html.LabelFor(m => m.CBA)
+                @Html.TextBoxFor(m => m.CBA, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.CBA)
+            </div>
+            <div>&nbsp;</div>
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.SalaryScaleId)
+            @Html.AntiForgeryToken()
+            <footer class="main-footer navbar-fixed-bottom" style="padding-top: 4px; padding-bottom: 4px">
+                <div class="pull-right hidden-xs">
+
+                    <button type="submit" class="btn btn-primary" id="btnSave" name="btnSave">Save Principal</button>
+                </div>
+            </footer>
+
+        }
+    </div>
+</div>
+@if (ViewBag.Status != "New")
+{
+    @Html.Partial("_Document")
+
+}
+<div class="box">
+    <div class="box-header with-border">
+        <div class="form-inline">
+            <h3 class="box-title">Salary Scale</h3> &nbsp;
+            @if (ViewBag.Status!="New")
+            {
+                @Html.DropDownList("SalaryScaleId", new SelectList(Model.SalaryScales, "Id", "SalaryScaleName"), "Select Salary Scale", new { @class = "form-control" })
+
+            }
+</div>
+        
+
+
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="form-inline">
+            @*<div class="form-group">
+                <label for="SalaryScaleName">Salary Scale:</label>
+                <input type="text" class="form-control" id="SalaryScaleName">
+            </div>*@
+            <div class="form-group">
+                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#AddOrEdit">
+                    Add New Salary
+                </button>
+            </div>
+        </div>
+ 
+            &nbsp;
+            <table id="data-table-salary" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th>Rank/Position</th>
+                    <th>Description</th>
+                    <th>Monthly (USD)</th>
+                    <th>Daily (USD)</th>
+                    <th>Percentage</th>
+                    <th>Days</th>
+                    <th>Remarks</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+    </div>
+    <!-- ./box-body -->
+</div>
+
+<div class="modal fade" id="AddOrEdit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="formSalaryDetails" action="" method="post" onsubmit="event.preventDefault(); validateMyForm();">
+                    <div class=" form-group col-md-6">
+                    <label for="RankId">Rank</label>
+                    @Html.DropDownList("RankId", new SelectList(Model.Ranks, "Id", "RankName"), "Select Rank", new { @class = "form-control" })
+</div>
+                    <input type="hidden" id="IdSalaryDetails" />
+                    <div class="form-group col-md-6">
+                        <label for="Description">Description </label>
+                        <input type="text" id="Description" name="Description" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Monthly (USD)</label>
+                        <input type="text" id="Monthly" name="Monthly" class="form-control" required="" value="0" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Daily (USD)</label>
+                        <input type="text" id="Daily" name="Daily" class="form-control" required="" value="0" readonly="readonly"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Percentage</label>
+                        <input type="text" id="Percentage" name="Percentage" class="form-control" value="0" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Days</label>
+                        <input type="text" id="Days" name="Days" class="form-control" value="0" />
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label>Remarks</label>
+                        <input type="text" id="Remarks" class="form-control" value="" />
+                    </div>
+                    <div class="form-group">
+                        <label>Add to Total</label>
+                        <input type="checkbox" id="AddToTotal" />
+                    </div>
+
+                    <div>&nbsp;</div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="btnSaveSalaryDetail">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<div>&nbsp;</div>
+@section Scripts {
+    @RenderPage("~/Views/Principals/PrincipalFormScripts.cshtml")
+}
+

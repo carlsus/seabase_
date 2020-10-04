@@ -1,0 +1,194 @@
+﻿
+@model SeaBase.ViewModel.ApplicantViewModel
+
+<div class="profile-user-box card-box ">
+
+    <div class="row">
+        <div class="col-sm-2">
+            <span class="float-left">
+                <img src="~/Images/default.jpeg" alt="" class="thumb-lg rounded-circle">
+            </span>
+            
+        </div>
+        <div class="col-sm-8">
+            <div class="media-body float-left">
+                <h4 class="mt-1 font-18">@Html.DisplayFor(m => m.Firstname) @Html.DisplayFor(m => m.Lastname)</h4>
+                <h6>@Html.DisplayFor(m=>m.RankId) <small>Applied Position</small></h6>
+                <h6>@Html.DisplayFor(m => m.VesselId) <small>Vessel</small></h6>
+                <h6>@Html.DisplayFor(m => m.StatusId) <small>Status</small></h6>
+                <h6>@Html.DisplayFor(m => m.ApplicationDate) <small>Application Date</small></h6>
+               
+                
+            </div>
+        </div>
+        <div class="col-sm-2">
+            <div class="text-right">
+                <button type="button" class="btn btn-light waves-effect"><i class="mdi mdi-account-settings-variant mr-1"></i> Edit Profile</button>
+            </div>
+        </div>
+        
+    </div>
+    <table  width="100%" class="table table-bordered table-condensed">
+        <tr>
+            <td width="150px"><label>Contact Address</label></td>
+            <td>@Html.DisplayFor(m => m.ContactAddress)</td>
+            <td width="150px"><label>Telephone No.</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.TelephoneNo)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Permanent Address</label></td>
+            <td>@Html.DisplayFor(m => m.CrewAddress.NoBldg)
+                @Html.DisplayFor(m => m.CrewAddress.StreetBarangay)
+                @Html.DisplayFor(m => m.CrewAddress.MunicipalityCity)
+                @Html.DisplayFor(m => m.CrewAddress.Province)
+            </td>
+            <td width="150px"><label>Telephone No.</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.CrewAddress.AddressTelephoneNo)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Mobile No,</label></td>
+            <td>@Html.DisplayFor(m => m.MobileNo)</td>
+            <td width="150px"><label>Email Address</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.EmailAddress)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Age</label></td>
+            <td>@Html.DisplayFor(m => m.BirthDate)</td>
+            <td width="150px"><label>Recommended By</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.RecommendedBy)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Birthdate</label></td>
+            <td>@Html.DisplayFor(m => m.BirthDate)</td>
+            <td width="150px"><label>More information </label></td>
+            <td width="150px">@Html.DisplayFor(m => m.OtherInfo)</td>
+        </tr>
+        <tr>
+            <td width="150px" ><label>Birthplace</label></td>
+            <td colspan="4">@Html.DisplayFor(m => m.BirthPlace)</td>
+
+        </tr>
+        <tr>
+            <td width="150px"><label>Civil Status</label></td>
+            <td>@Html.DisplayFor(m => m.CivilStatus)</td>
+            <td width="150px"><label>Gender</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.Gender)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Height</label></td>
+            <td>@Html.DisplayFor(m => m.Height)</td>
+            <td width="150px"><label>Weight</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.Weight)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Blood Type</label></td>
+            <td>@Html.DisplayFor(m => m.BloodType)</td>
+            <td width="150px"><label>Eye Color</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.EyeColor)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Nationality</label></td>
+            <td>@Html.DisplayFor(m => m.Nationality)</td>
+            <td width="150px"><label>Religion</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.Religion)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Race</label></td>
+            <td>@Html.DisplayFor(m => m.Race)</td>
+            <td width="150px"><label>Foreign Language</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.ForeignLanguage)</td>
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>Next of Kin</label></td>
+
+        </tr>
+        <tr>
+            <td width="150px"><label>Fullname</label></td>
+            <td>@Html.DisplayFor(m => m.KinFullName)</td>
+            <td width="150px"><label>Birthdate</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.KinBirthDate)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Relationship</label></td>
+            <td>@Html.DisplayFor(m => m.KinRelationship)</td>
+            <td width="150px"><label>Address</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.KinAddress)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Tel. No</label></td>
+            <td>@Html.DisplayFor(m => m.KinTelNo)</td>
+            <td width="150px"><label>H/P No.</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.KinHPNo)</td>
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>Uniforms</label></td>
+
+        </tr>
+        <tr>
+            <td width="150px"><label>Cover-All</label></td>
+            <td>@Html.DisplayFor(m => m.CoverAll)</td>
+            <td width="150px"><label>Safety Shoes</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.SafetyShoes)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>White Polo</label></td>
+            <td>@Html.DisplayFor(m => m.WhitePolo)</td>
+            <td width="150px"><label>Black Pants</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.BlackPants)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Winter Jacket</label></td>
+            <td>@Html.DisplayFor(m => m.WinterJacket)</td>
+            <td width="150px"><label>Winter Pants</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.WinterPants)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Raincoat</label></td>
+            <td>@Html.DisplayFor(m => m.Raincoat)</td>
+            <td width="150px"><label></label></td>
+            <td width="150px"></td>
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>Government Info</label></td>
+
+        </tr>
+        <tr>
+            <td width="150px"><label>SSS No.</label></td>
+            <td>@Html.DisplayFor(m => m.SSSNo)</td>
+            <td width="150px"><label>Philhealth No.</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.PhilhealthNo)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>Pag-IBIG Id No.</label></td>
+            <td colspan="3">@Html.DisplayFor(m => m.PagibigIdNo)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>PSU Id No.</label></td>
+            <td>@Html.DisplayFor(m => m.PSUIdNo)</td>
+            <td width="150px"><label>PSU Issuance Date</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.PSUIssuanceDate)</td>
+        </tr>
+        <tr>
+            <td width="150px"><label>NBI No.</label></td>
+            <td>@Html.DisplayFor(m => m.NBINo)</td>
+            <td width="150px"><label>NBI Validity Date</label></td>
+            <td width="150px">@Html.DisplayFor(m => m.NBIValidity)</td>
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>For Philhealth Info:</label></td>
+
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>Type of Individually Paying Member: @Html.DisplayFor(m => m.IndividualPayingMember)</label></td>
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>Monthly Net Income: @Html.DisplayFor(m => m.NetMonthlyIncome) </label></td>
+        </tr>
+        <tr>
+            <td width="150px" colspan="4"><label>Member of:  </label></td>
+        </tr>
+    </table>
+
+</div>
+
+

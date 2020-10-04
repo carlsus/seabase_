@@ -1,0 +1,471 @@
+﻿<script type="text/javascript">
+    var table;
+    var sd = [];
+    var salary_details = 0;
+    var add_to_total = 0;
+    $().ready(function() {
+        $('#formSalaryDetails').validate({
+            rules: {
+                RankId: {
+                    required: true
+                },
+                Description: {
+                    required: true,
+                    maxlength: 30
+                },
+                Monthly: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                Daily: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                Percentage: {
+                    required: true,
+                    number: true,
+                    min: 0
+                },
+                Days: {
+                    required: true,
+                    number: true,
+                    min: 0
+                }
+            }
+        });
+        if ($('#Id').val() == 0) {
+            Enable();
+        } else {
+            $("#form0 input").prop("disabled", true);
+            $("#form0 select").prop("disabled", true);
+            $("#form0 textarea").prop("disabled", true);
+            $('#btnSave').text('Edit Vessel');
+        }
+        $('#EnrollmentDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#EffectiveDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#ExpiryDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#Monthly').change(function() {
+
+            var daily = this.value / 30.41;
+            $('#Daily').val(daily.toFixed(2));
+        });
+        if ($('#Id').val() != 0) {
+            GetExistingSalaryScaleDetails();
+        }
+        //form submit
+        $('#form0').submit(function(event) {
+            event.preventDefault();
+            if ($('#btnSave').text() == 'Edit Vessel') {
+                Enable();
+            } else {
+                $('#btnSave').attr('disabled', 'disabled');
+                var url = $(this).attr("action");
+                var formImage = new FormData();
+                var files = $('#ImageFile')[0].files[0];
+                formImage.append('ImageFile', files);
+                formImage.append('VesselCode', $('#VesselCode').val());
+                var formData = {
+                    VesselCode: $('#VesselCode').val(),
+                    VesselName: $('#VesselName').val(),
+                    CallSign: $('#CallSign').val(),
+                    VesselTypeId: $('#VesselTypeId').val(),
+                    PrincipalId: $('#PrincipalId').val(),
+                    CurrentLocationId: $('#CurrentLocationId').val(),
+                    NextDestinationId: $('#NextDestinationId').val(),
+                    EnrolledWith: $('#EnrolledWith').val(),
+                    EnrollmentDate: $('#EnrollmentDate').val(),
+                    TradingAreaId: $('#TradingAreaId').val(),
+                    WorkingGearId: $('#WorkingGearId').val(),
+                    ContractCOB: $('#ContractCOB').val(),
+                    Manager: $('#Manager').val(),
+                    ContactPerson: $('#ContactPerson').val(),
+                    ContactPersonNo: $('#ContactPersonNo').val(),
+                    VesselUnionId: $('#VesselUnionId').val(),
+                    EffectiveDate: $('#EffectiveDate').val(),
+                    ExpiryDate: $('#ExpiryDate').val(),
+                    FlagId: $('#FlagId').val(),
+                    ExFlag: $('#ExFlag').val(),
+                    PortOfRegistry: $('#PortOfRegistry').val(),
+                    YearBuilt: $('#YearBuilt').val(),
+                    OwnedBy: $('#OwnedBy').val(),
+                    OwnerName: $('#OwnerName').val(),
+                    ExName: $('#ExName').val(),
+                    OfficialNumber: $('#OfficialNumber').val(),
+                    IMONumber: $('#IMONumber').val(),
+                    MainEngine: $('#MainEngine').val(),
+                    Capacity: $('#Capacity').val(),
+                    PropulsionPower: $('#PropulsionPower').val(),
+                    GTR: $('#GTR').val(),
+                    DWT: $('#DWT').val(),
+                    ClassificationSociety: $('#ClassificationSociety').val(),
+                    NRT: $('#NRT').val(),
+                    Particulars: $('#Particulars').val(),
+                }
+
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: JSON.stringify({ 'vessel': formData }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function(response) {
+                        SaveImage(formImage);
+                        SaveSalary(response.Success);
+                    },
+                    error: function(response) {
+                        console.log(response);
+                    },
+                    complete: function() {
+
+                        $('#btnSave').removeAttr('disabled');
+                    }
+                });
+
+            }
+        });
+
+        //Change principial load salary scale
+        $('#PrincipalId').change(function() {
+            //get ranks
+            if ($('#Id').val() == 0) {
+                $.ajax({
+                    type: 'GET',
+                    url: "@Url.Action("GetPrincipalSalaryScale", "Vessels")",
+                    //contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: { 'id': this.value },
+                    success: function(data) {
+                        sd = [];
+                        $.each(data, function(index, item) {
+                            $('#SalaryName').text(item.SalaryScaleName);
+                            salary_details++;
+                            var form = {
+                                Id: salary_details,
+                                RankId: item.RankId,
+                                RankName: item.RankName,
+                                Description: item.Description,
+                                Monthly: item.Monthly,
+                                Daily: item.Daily,
+                                Percentage: item.Percentage,
+                                Days: item.Days,
+                                Remarks: item.Remarks,
+                                AddToTotal: item.AddToTotal
+                            };
+                            sd.push(form);
+
+                        });
+                        SalaryScale();
+                    }
+                });
+            } else {
+                GetExistingSalaryScaleDetails();
+            }
+        });
+
+        $('#imgupload').click(function () {
+            $('#ImageFile').trigger('click');
+        });
+        $("#ImageFile").change(function () {
+            readURL(this);
+        });
+        
+
+        
+
+    });
+
+    function SaveSalary(id) {
+        $.ajax({
+            url: "/Vessels/SaveSalary",
+            type: "POST",
+            data: JSON.stringify({ 'model': sd, 'VesselId': id }),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (response) {
+                
+                $.notify({
+                    title: '<strong>Vessel Created </strong>',
+                    message: 'The vessel has been created successfully.'
+                }, {
+                    type: 'success'
+                });
+                $('#form0')[0].reset();
+                setTimeout(function () {
+                    location.href = './';
+                }, 2000);
+            },
+            error: function (response) {
+                console.log(response);
+            },
+            complete: function () {
+               
+            }
+        });
+    }
+
+    function Enable() {
+        $("#form0 input").prop("disabled", false);
+        $("#form0 select").prop("disabled", false);
+        $("#form0 textarea").prop("disabled", false);
+        $('#btnSave').text('Save Vessel');
+
+    }
+    function SaveImage(formImage) {
+        $.ajax({
+            url: '@Url.Action("SaveImage","Vessels")',
+            data: formImage,
+            contentType: false,
+            processData: false,
+            type: 'POST',
+            success: function (data) {
+
+            }
+        });
+    }
+    //functions
+
+    function GetExistingSalaryScaleDetails() {
+       
+        $.ajax({
+            type: 'GET',
+            url: "@Url.Action("GetSalaryScaleDetails", "Vessels")",
+            contentType: 'application/json; charset=utf-8',
+        data:{'vesselid':$('#Id').val()},
+        dataType: 'json',
+        success: function(data) {
+            sd = [];
+            $.each(data, function(i, item) {
+                var db_data = {
+                    Id: item.Id,
+                    RankId: item.RankId,
+                    RankName: item.RankName,
+                    Description: item.Description,
+                    Monthly: item.Monthly,
+                    Daily: item.Daily,
+                    Percentage: item.Percentage,
+                    Days: item.Days,
+                    Remarks: item.Remarks,
+                    AddToTotal: item.AddToTotal
+                };
+                sd.push(db_data);
+            });
+            SalaryScale();
+            }
+        });
+        }
+    function validateMyForm() {
+        if ($("#RankId :selected").val() == "") return;
+        if ($("#Description").val() == "") return;
+        if ($("#Monthly").val() == "") return;
+        if ($("#Daily").val() == "") return;
+        if ($("#Percentage").val() == "") return;
+        if ($("#Days").val() == "") return;
+        var checkBox = document.getElementById("AddToTotal");
+        if (checkBox.checked == true) {
+            add_to_total = 1;
+        } else {
+            add_to_total = 0;
+        }
+        if ($('#Id').val() == 0) {
+           
+            if ($('#IdSalaryDetails').val() != 0) {
+                var i = sd.findIndex((obj => obj.Id == $('#IdSalaryDetails').val()));
+                sd[i].RankId = $('#RankId').val();
+                sd[i].Description = $('#Description').val();
+                sd[i].Monthly = $('#Monthly').val();
+                sd[i].Daily = $('#Daily').val();
+                sd[i].Percentage = $('#Percentage').val();
+                sd[i].Days = $('#Days').val();
+                sd[i].Remarks = $('#Remarks').val();
+                sd[i].AddToTotal =add_to_total;
+                $('#AddOrEdit').modal('hide');
+                SalaryScale();
+
+            } else {
+                salary_details++;
+                var salary_new = {
+                    Id: salary_details,
+                    RankId: parseInt($("#RankId :selected").val()),
+                    RankName: $("#RankId :selected").text(),
+                    Description: $('#Description').val(),
+                    Monthly: $('#Monthly').val(),
+                    Daily: $('#Daily').val(),
+                    Percentage: $('#Percentage').val(),
+                    Days: $('#Days').val(),
+                    Remarks: $('#Remarks').val(),
+                    AddToTotal: add_to_total
+                };
+                sd.push(salary_new);
+                $('#AddOrEdit').modal('hide');
+                SalaryScale();
+            }
+        } else {
+           
+            var formData = {
+                Id: $('#IdSalaryDetails').val(),
+                RankId: parseInt($("#RankId :selected").val()),
+                RankName: $("#RankId :selected").text(),
+                Description: $('#Description').val(),
+                Monthly: $('#Monthly').val(),
+                Daily: $('#Daily').val(),
+                Percentage: $('#Percentage').val(),
+                Days: $('#Days').val(),
+                Remarks: $('#Remarks').val(),
+                VesselId: $('#Id').val(),
+                AddToTotal: add_to_total
+            };
+
+            $.ajax({
+                url: "/Vessels/SaveSalaryDetails",
+                type: "POST",
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(response) {
+
+                    $.notify({
+                        title: '<strong>Salary '+ response.Success +' </strong>',
+                        message: 'The salary has been '+ response.Success +' successfully.'
+                    }, {
+                        type: 'success'
+                    });
+
+                    $('#AddOrEdit').modal('hide');
+                    GetExistingSalaryScaleDetails();
+                },
+                error: function(response) {
+                    console.log(response);
+                },
+                complete: function() {
+                    $('#btnSave').removeAttr('disabled');
+                }
+            });
+
+
+        }
+    }
+
+    function SalaryScale() {
+        $("#data-table-salary").find("tr:gt(0)").remove();
+        var table_salary = document.getElementById("data-table-salary");
+
+        var markup;
+        var total_row;
+
+        var result = sd.reduce(function(r, a) {
+            r[a.RankName] = r[a.RankName] || [];
+            r[a.RankName].push(a);
+            return r;
+        }, Object.create(null));
+
+        $.each(result, function(i, item) {
+            var totalmonthly = 0;
+            var totaldaily = 0;
+            //var a = table_salary.insertRow().innerHTML = "<tr><td>" + item[0]["RankName"] + "</td>";
+            var newArray = sd.filter(function(el) {
+                return el.RankName == item[0]["RankName"];
+            });
+            $.each(newArray, function(j, detail) {
+                if (j == 0) {
+                    markup = "<tr><td>" + item[0]["RankName"] + "</td>";
+                } else {
+                    markup = "<tr><td></td>";
+                }
+
+                if (detail.AddToTotal == 1) {
+                    totalmonthly += parseFloat(detail.Monthly);
+                    totaldaily += parseFloat(detail.Daily);
+                    markup += "<td>" + detail.Description + "</td>" +
+                    "<td>" + detail.Monthly + "</td>" +
+                    "<td>" + detail.Daily + "</td>" +
+                    "<td>" + detail.Percentage + "</td>" +
+                    "<td>" + detail.Days + "</td>" +
+                    "<td>" + detail.Remarks + "</td>" +
+                    "<td><button class='btn btn-primary' title='Edit' data-toggle='modal' data-target='#AddOrEdit' onclick='Edit(" + detail.Id + ")'><i class='fa fa-edit'></i></button></td></tr>";
+                    $("#data-table-salary tbody").append(markup);
+                } else {
+                    markup += "<td>" + detail.Description + "</td>" +
+                    "<td>" + detail.Monthly + "</td>" +
+                    "<td>" + detail.Daily + "</td>" +
+                    "<td>" + detail.Percentage + "</td>" +
+                    "<td>" + detail.Days + "</td>" +
+                    "<td>" + detail.Remarks + "</td>" +
+                    "<td><button class='btn btn-primary' title='Edit' data-toggle='modal' data-target='#AddOrEdit' onclick='Edit(" + detail.Id + ")'><i class='fa fa-edit'></i></button></td></tr>";
+                    $("#data-table-salary tbody").append(markup);
+                }
+
+            });
+            total_row = "<tr><td></td><td><label>Total</label></td>" +
+                "<td><label>" + totalmonthly.toFixed(2) + "</label></td>" +
+                "<td><label>" + totaldaily.toFixed(2) + "</label></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>";
+            $("#data-table-salary tbody").append(total_row);
+
+        });
+        $('#IdSalaryDetails').val(0);
+        document.getElementById("AddToTotal").checked = false;
+        $('#formSalaryDetails')[0].reset();
+    }
+
+    //Edit Salary Details
+    function Edit(id) {
+        $('#formSalaryDetails')[0].reset();
+        var i = sd.findIndex((obj => obj.Id == id));
+        $('#IdSalaryDetails').val(sd[i].Id);
+        $('#RankId').val(sd[i].RankId);
+        $('#Description').val(sd[i].Description);
+        $('#Monthly').val(sd[i].Monthly);
+        $('#Daily').val(sd[i].Daily);
+        $('#Percentage').val(sd[i].Percentage);
+        $('#Days').val(sd[i].Days);
+        $('#Remarks').val(sd[i].Remarks);
+        if (sd[i].AddToTotal == 1) {
+            document.getElementById("AddToTotal").checked = true;
+        } else {
+            document.getElementById("AddToTotal").checked = false;
+        }
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#imgupload').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    var uploadField = document.getElementById("ImageFile");
+
+    uploadField.onchange = function () {
+        if (this.files[0].size > 1048576) {
+            alert("File is too big!");
+            this.value = "";
+        };
+    };
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datepicker/script")
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")

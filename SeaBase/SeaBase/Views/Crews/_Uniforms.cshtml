@@ -1,0 +1,43 @@
+﻿
+@model SeaBase.ViewModel.ApplicantViewModel
+<div class="panel panel-default">
+    <div class="panel-heading">Uniforms</div>
+<div class="panel-body">
+
+    <div class="col-sm-2">
+        @Html.LabelFor(m => m.CoverAll)
+        @Html.TextBoxFor(m => m.CoverAll, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.CoverAll)
+    </div>
+    <div class="col-md-2">
+        @Html.LabelFor(m => m.SafetyShoes)
+        @Html.TextBoxFor(m => m.SafetyShoes, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.SafetyShoes)
+    </div>
+    <div class="col-md-2">
+        @Html.LabelFor(m => m.WhitePolo)
+        @Html.TextBoxFor(m => m.WhitePolo, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.WhitePolo)
+    </div>
+    <div class="col-md-2">
+        @Html.LabelFor(m => m.BlackPants)
+        @Html.TextBoxFor(m => m.BlackPants, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.BlackPants)
+    </div>
+    <div class="col-md-2">
+        @Html.LabelFor(m => m.WinterJacket)
+        @Html.TextBoxFor(m => m.WinterJacket, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.WinterJacket)
+    </div>
+    <div class="col-md-2">
+        @Html.LabelFor(m => m.WinterPants)
+        @Html.TextBoxFor(m => m.WinterPants, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.WinterPants)
+    </div>
+    <div class="col-md-2">
+        @Html.LabelFor(m => m.Raincoat)
+        @Html.TextBoxFor(m => m.Raincoat, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.Raincoat)
+    </div>
+</div>
+    </div>

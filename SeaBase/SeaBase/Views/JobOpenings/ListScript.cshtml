@@ -1,0 +1,167 @@
+﻿<script type="text/javascript">
+    var table;
+    $(document).ready(function () {
+        $('.textarea').wysihtml5();
+       table = $("#data-table").DataTable({
+            "scrollY": "400px",
+            //"scrollCollapse": true,
+            "ajax": {
+                "url": "@Url.Action("GetJobOpenings", "JobOpenings")",
+
+                "type": "GET",
+                //"datatype": "application/json",
+            },
+            "lengthChange": false,
+            "searching": true,
+            "columns": [
+                { data: "RankName" },
+                { data: "PrincipalName" },
+                { data: "Slot" },
+                { data: "Status" },
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-primary" title="Edit" data-toggle="modal" data-target="#AddOrEdit" onclick="Edit(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button class="btn btn-danger js-delete" title="Delete" data-id="' + data + '"><i class="fa fa-trash"></i></button>';
+                    }
+                }
+            ],
+            dom: "Bfrtip",
+            buttons: {
+                buttons: [
+                    {
+                        text: "New Job Opening",
+                        action: function (e, dt, node, config) {
+                            $("#form0")[0].reset();
+                            $('#modal-title').text("Add New");
+                            $("#AddOrEdit").modal();
+                            
+                        }
+                    }
+                ],
+                dom: {
+                    button: {
+                        tag: "button",
+                        className: "btn btn-default"
+                    },
+                    buttonLiner: {
+                        tag: null
+                    }
+                }
+            },
+            "columnDefs": [
+                     { "width": "40%px", "targets": 0 },
+                     { "width": "30%", "targets": 1 },
+                     { "width": "15%", "targets": 2 },
+                     { "className":"text-center", "width": "12%", "targets": 3 },
+                     //{ "width": "10px", "targets": 3 }
+            ]
+        });
+
+
+        //form submit
+        $('#form0').submit(function (event) {
+            event.preventDefault();
+            $('#btnSave').attr('disabled', 'disabled');
+            var url = $(this).attr("action");
+            var formData = {
+                Id:$('#Id').val(),
+                RankId: $('#RankId').val(),
+                PrincipalId: $('#PrincipalId').val(),
+                Gender: $('#Gender').val(),
+                Status: $('#Status').val(),
+                MinAge: $('#MinAge').val(),
+                Slot: $('#Slot').val(),
+                SalaryRange: $('#SalaryRange').val(),
+                Description: $('#Description').val()
+            };
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify(formData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    
+                    $.notify({
+                        title: '<strong>Job Openings Created </strong>',
+                        message: 'The job has been created successfully.'
+                    }, {
+                        type: 'success'
+                    });
+                    table.ajax.reload();
+                    $('#AddOrEdit').modal('hide');
+                },
+                error: function (response) {
+                    console.log(response);
+                },
+                complete: function () {
+                    $('#btnSave').removeAttr('disabled');
+                }
+            })
+        });
+
+        //$('#form0').submit(function() {
+        //    $.notify({
+        //        title: '<strong>Agent Deleted </strong>',
+        //        message: 'The agent has been deleted successfully.'
+        //    }, {
+        //        type: 'danger'
+        //    });
+        //});
+    });
+
+
+    //FUNCTIONS
+    function Edit(id) {
+        $.ajax({
+            url: "@Url.Action("Edit", "JobOpenings")",
+            type: "GET",
+            contentType: "application/json;charset=UTF-8",
+            dataType: "json",
+            data: { 'id': id },
+            success: function (result) {
+                $("#form0")[0].reset();
+                $('#modal-title').text("Edit");
+                $('#Id').val(result.Id);
+                $('#PrincipalId').val(result.PrincipalId);
+                $('#RankId').val(result.RankId);
+                $('#Slot').val(result.Slot);
+                $('#Description').val(result.Description);
+                $('#MinAge').val(result.MinAge);
+                $('#SalaryRange').val(result.SalaryRange);
+                $('#Gender').val(result.Gender);
+                $('#Status').val(result.Status);
+                $('#AddOrEdit').modal('show');
+            },
+            error: function (errormessage) {
+                alert(errormessage.responseText);
+            }
+        });
+        return false;
+    }
+
+    $("#data-table").on("click", ".js-delete", function () {
+        var button = $(this);
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("Delete","JobOpenings")/" + button.attr("data-id"),
+                   
+                    success: function () {
+                        table.row(button.parents("tr")).remove().draw();
+                        table.ajax.reload();
+                        $.notify({
+                            title: '<strong>Job Opening Deleted </strong>',
+                            message: 'The job has been deleted successfully.'
+                        }, {
+                            type: 'danger'
+                        });
+                    }
+                });
+            }
+        });
+    });
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")
+@Scripts.Render("~/AdminLTE/plugins/bootstrap-wysihtml5/script")

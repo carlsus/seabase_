@@ -1,0 +1,185 @@
+﻿<script>
+    var button_text;
+    var button_status;
+    $(document).ready(function () {
+        if ($('#Id').val() == 0) {
+            $("#form0 input").prop("disabled", false);
+            $("#form0 select").prop("disabled", false);
+            $("#form0 textarea").prop("disabled", false);
+        } else {
+            $("#form0 input").prop("disabled", true);
+            $("#form0 select").prop("disabled", true);
+            $("#form0 textarea").prop("disabled", true);
+        }
+        
+        $("#data-table").DataTable({
+            //"scrollCollapse": true,
+            "ajax": {
+                "url": "@Url.Action("GetPrincipalVessel", "Crews")",
+            "type": "GET",
+            //"datatype": "application/json",
+        },
+            "responsive": true,
+            "lengthChange": false,
+            "searching": true,
+            "columns": [
+                { data: "PrincipalName" },
+                { data: "VesselName" },
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-warning btn-sm"  onclick="Assign(\'' + data + '\')">Assign Crew</button> ';
+                    }
+                }
+            ],
+            
+            "columnDefs": [
+                { "width": "60%", "targets": 0 },
+                { "width": "30%", "targets": 1 },
+                { "width": "10%", "targets": 2 }
+               
+            ]
+        });
+
+        
+       if ($('#StatusId').val()!=0) {
+           button_text = "Edit Application";
+           $('#btnSaveApplication').text(button_text);
+       }
+
+       switch ($('#StatusId').val()) {
+        case 1:
+            button_status = "Proceed to Pool";
+        case 2:
+            button_status = "Proceed to Operation";
+        default:
+        }
+       
+        $('#ApplicationDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose:true,
+            todayHighlight: true
+        });
+        $('#BirthDate').datepicker({
+            format: 'mm/dd/yyyy',
+            endDate: '-20y',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#KinBirthDate').datepicker({
+            format: 'mm/dd/yyyy',
+            //startDate: '-30y',
+            endDate: '-20y',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#PSUIssuanceDate').datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true
+        });
+        $('#NBIValidity').datepicker({
+            format: 'mm/dd/yyyy',
+            autoclose: true
+        });
+        $('#imgupload').click(function() {
+            $('#ImageFile').trigger('click');
+        });
+        $("#ImageFile").change(function () {
+            readURL(this);
+        });
+        $('#btnSaveApplication').on('click', function () {
+            if ($('#btnSaveApplication').text() == "Edit Application") {
+                $("#form0 input").prop("disabled", false);
+                $("#form0 select").prop("disabled", false);
+                $("#form0 textarea").prop("disabled", false);
+                $('#btnSaveApplication').text('Save Application');
+            } else {
+                $('#form0').submit();
+            }
+        });
+
+
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#imgupload').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        var uploadField = document.getElementById("ImageFile");
+
+        uploadField.onchange = function () {
+            if (this.files[0].size > 1048576) {
+                alert("File is too big!");
+                this.value = "";
+            };
+        };
+    });
+    
+   
+    function SaveStatus(id) {
+        if ($('#StatusId').val() <= 2) {
+            bootbox.confirm("Are you sure you want to " + button_status + "?", function (result) {
+                if (result) {
+                    enable();
+                    $('#StatusId').val(id);
+                    $('#form0').submit();
+                }
+            });
+        } else if ($('#StatusId').val() == 3) {
+            $("#AddOrEdit").modal();
+        }
+    }
+
+    function enable() {
+        $("#form0 input").prop("disabled", false);
+        $("#form0 select").prop("disabled", false);
+        $("#form0 textarea").prop("disabled", false);
+    }
+    function Reject() {
+        if ($('#StatusId').val() <= 2) {
+            bootbox.confirm("Are you sure you want to reject application?", function (result) {
+                if (result) {
+                    
+                    $('#StatusId').val(4);
+                    $('#form0').submit();
+                }
+            });
+        } 
+    }
+    function viewFile(id) {
+        var crewid = $('#CrewId').val();
+        window.open("/Applicants/Attachment?id=" + crewid + "&file=" + id, "_blank", 'location=yes,height=570,width=520,scrollbars=yes,status=yes').focus();
+    }
+    function viewVessels() {
+        $("#AddOrEdit").modal();
+    }
+    function Assign(vesselId) {
+        enable();
+        $('#VesselId').val(vesselId);
+        $('#StatusId').val(5);
+        $('#form0').submit();
+    }
+
+    window.onload = function () {
+        if ($('#ImagePath').val()==='') {
+            $("#imgupload").attr('src', "/Images/default.jpeg");
+        } else {
+            $("#imgupload").attr('src', "/Images/" + $('#ImagePath').val());
+        }
+        
+        
+    };
+    window.addEventListener('load', function() {
+        $('#loading').hide();
+    });
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datepicker/script")
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")
+@Scripts.Render("~/AdminLTE/plugins/momentjs/script")

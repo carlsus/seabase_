@@ -1,0 +1,398 @@
+﻿@model SeaBase.ViewModel.VesselsViewModel
+@Styles.Render("~/AdminLTE/plugins/datepicker/styles")
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Create Vessel";
+}
+@{
+    <style scoped>
+        img {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 180px;
+            height: 205px;
+            object-fit: contain;
+        }
+
+        label.error {
+            color: red;
+            font-size: 1rem;
+            display: block;
+            margin-top: 5px;
+        }
+
+        input.error {
+            border: 1px dashed red;
+            font-weight: 300;
+            color: red;
+        }
+
+        select.error {
+            border: 1px dashed red;
+            font-weight: 300;
+            color: red;
+        }
+    </style>
+}
+
+@using (Html.BeginForm("Save", "Vessels", FormMethod.Post,
+            new
+            {
+                id = "form0",
+                name = "form0",
+                enctype = "multipart/form-data",
+            }))
+        {
+<div class="box">
+    <div class="box-body">
+       
+            @Html.ValidationSummary(true, "Please fix the following errors.")
+            <div class="form-group col-md-3">
+                <a href="#">
+                    <img class="media-object center" src="" alt="..." id="imgupload" name="imgupload">
+                    <input id="ImageFile" title="Upload a product image"
+                           type="file" name="ImageFile" style="display: none" accept="image/*" />
+                </a>
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.VesselCode)
+                @Html.TextBoxFor(m => m.VesselCode, new { @class = "form-control", @readonly = "readonly" })
+                @Html.ValidationMessageFor(m => m.VesselCode)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.VesselName)
+                @Html.TextBoxFor(m => m.VesselName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.VesselName)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.CallSign)
+                @Html.TextBoxFor(m => m.CallSign, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.CallSign)
+            </div>
+
+            <div class="col-md-3">
+                @Html.LabelFor(m => m.VesselTypeId)
+                @Html.DropDownListFor(m => m.VesselTypeId, new SelectList(Model.VesselTypes, "Id", "VesselTypeName"), "Select Vessel Type", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.VesselTypeId)
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(m => m.PrincipalId)
+                @Html.DropDownListFor(m => m.PrincipalId, new SelectList(Model.Principals, "Id", "PrincipalName"), "Select Principal", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PrincipalId)
+            </div>
+
+            <div class="col-md-4">
+                @Html.LabelFor(m => m.CurrentLocationId)
+                @Html.DropDownListFor(m => m.CurrentLocationId, new SelectList(Model.Countries, "Id", "Name"), "Select Country", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.CurrentLocationId)
+            </div>
+            <div class="col-md-5">
+                @Html.LabelFor(m => m.NextDestinationId)
+                @Html.DropDownListFor(m => m.NextDestinationId, new SelectList(Model.Countries, "Id", "Name"), "Select Country", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.NextDestinationId)
+            </div>
+
+            <div class="form-group col-md-6">
+                @Html.LabelFor(m => m.EnrolledWith)
+                @Html.TextBoxFor(m => m.EnrolledWith, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.EnrolledWith)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.EnrollmentDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.EnrollmentDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.EnrollmentDate)
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                @Html.LabelFor(m => m.TradingAreaId)
+                @Html.DropDownListFor(m => m.TradingAreaId, new SelectList(Model.TradingAreas, "Id", "TradingAreaName"), "Select Route", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.TradingAreaId)
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(m => m.WorkingGearId)
+                @Html.DropDownListFor(m => m.WorkingGearId, new SelectList(Model.WorkingGears, "Id", "WorkingGearName"), "Select Gear", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.WorkingGearId)
+            </div>
+
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ContractCOB)
+                @Html.TextBoxFor(m => m.ContractCOB, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ContractCOB)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.Manager)
+                @Html.TextBoxFor(m => m.Manager, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Manager)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ContactPerson)
+                @Html.TextBoxFor(m => m.ContactPerson, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ContactPerson)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ContactPersonNo)
+                @Html.TextBoxFor(m => m.ContactPersonNo, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ContactPersonNo)
+            </div>
+            <div class="col-md-6">
+                @Html.LabelFor(m => m.VesselUnionId)
+                @Html.DropDownListFor(m => m.VesselUnionId, new SelectList(Model.VesselUnions, "Id", "VesselUnionName"), "Select Union", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.NextDestinationId)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.EffectiveDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.EffectiveDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.EffectiveDate)
+                </div>
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ExpiryDate)
+                <div class="input-group date">
+                    <div class="input-group-addon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+                    @Html.TextBoxFor(m => m.ExpiryDate, "{0:MM/dd/yyyy}", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.ExpiryDate)
+                </div>
+            </div>
+
+            
+
+       
+    </div>
+</div>
+
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">Technical Specs</h3>
+
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        
+            <div class="col-md-3">
+                @Html.LabelFor(m => m.FlagId)
+                @Html.DropDownListFor(m => m.FlagId, new SelectList(Model.Flags, "Id", "FlagName"), "Select Flag", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.FlagId)
+            </div>
+
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ExFlag)
+                @Html.TextBoxFor(m => m.ExFlag, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ExFlag)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.PortOfRegistry)
+                @Html.TextBoxFor(m => m.PortOfRegistry, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PortOfRegistry)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.YearBuilt)
+                @Html.TextBoxFor(m => m.YearBuilt, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.YearBuilt)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.OwnedBy)
+                @Html.TextBoxFor(m => m.OwnedBy, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.OwnedBy)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.OwnerName)
+                @Html.TextBoxFor(m => m.OwnerName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.OwnerName)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ExName)
+                @Html.TextBoxFor(m => m.ExName, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ExName)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.OfficialNumber)
+                @Html.TextBoxFor(m => m.OfficialNumber, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.OfficialNumber)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.IMONumber)
+                @Html.TextBoxFor(m => m.IMONumber, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.IMONumber)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.MainEngine)
+                @Html.TextBoxFor(m => m.MainEngine, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.MainEngine)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.Capacity)
+                @Html.TextBoxFor(m => m.Capacity, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Capacity)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.PropulsionPower)
+                @Html.TextBoxFor(m => m.PropulsionPower, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PropulsionPower)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.GTR)
+                @Html.TextBoxFor(m => m.GTR, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.GTR)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.DWT)
+                @Html.TextBoxFor(m => m.DWT, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.DWT)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.ClassificationSociety)
+                @Html.TextBoxFor(m => m.ClassificationSociety, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ClassificationSociety)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.NRT)
+                @Html.TextBoxFor(m => m.NRT, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.NRT)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.Particulars)
+                @Html.TextBoxFor(m => m.Particulars, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.Particulars)
+            </div>
+
+        
+    </div>
+    <!-- ./box-body -->
+</div>
+    <div>&nbsp;</div>
+    @Html.HiddenFor(m => m.Id)
+    @Html.AntiForgeryToken()
+    <footer class="main-footer navbar-fixed-bottom" style="padding-top: 4px; padding-bottom: 4px">
+        <div class="pull-right hidden-xs">
+
+            <button type="submit" class="btn btn-primary" id="btnSave" name="btnSave">Save Vessel</button>
+        </div>
+    </footer>
+        }
+
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">Salary Scale <label id="SalaryName"></label>
+        </h3>
+
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+
+        <div class="form-inline">
+            @*<div class="form-group">
+                <label for="SalaryScaleName">Salary Scale:</label>
+                <input type="text" class="form-control" id="SalaryScaleName">
+            </div>*@
+            <div class="form-group">
+                <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#AddOrEdit">
+                    Add New Salary
+                </button>
+            </div>
+        </div>
+        &nbsp;
+        <table id="data-table-salary" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Rank/Position</th>
+                <th>Description</th>
+                <th>Monthly (USD)</th>
+                <th>Daily (USD)</th>
+                <th>Percentage</th>
+                <th>Days</th>
+                <th>Remarks</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+    </div>
+    <!-- ./box-body -->
+</div>
+
+@*@Html.Partial("_DocumentAndCertificates")
+
+@Html.Partial("_DocumentLibrary")*@
+<div>&nbsp;</div>
+
+
+<!--
+Modal
+-->
+<div class="modal fade" id="AddOrEdit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form id="formSalaryDetails" action="" method="post" onsubmit="event.preventDefault(); validateMyForm();">
+                    <div class=" form-group col-md-6">
+                        <label for="RankId">Rank</label>
+                        @Html.DropDownList("RankId", new SelectList(Model.Ranks, "Id", "RankName"), "Select Rank", new { @class = "form-control" })
+                    </div>
+                    <input type="hidden" id="IdSalaryDetails" />
+                    <div class="form-group col-md-6">
+                        <label for="Description">Description </label>
+                        <input type="text" id="Description" name="Description" class="form-control" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Monthly (USD)</label>
+                        <input type="text" id="Monthly" name="Monthly" class="form-control" required="" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Daily (USD)</label>
+                        <input type="text" id="Daily" name="Daily" class="form-control" required=""  readonly="readonly"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Percentage</label>
+                        <input type="text" id="Percentage" name="Percentage" class="form-control" value="0" />
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label>Days</label>
+                        <input type="text" id="Days" name="Days" class="form-control" value="0" />
+                    </div>
+                    <div class="form-group col-md-12">
+                        <label>Remarks</label>
+                        <input type="text" id="Remarks" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label>Add to Total</label>
+                        <input type="checkbox" id="AddToTotal" />
+                    </div>
+
+                    <div>&nbsp;</div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="btnSaveSalaryDetail">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section Scripts {
+    @RenderPage("~/Views/Vessels/VesselFormScripts.cshtml")
+}
+

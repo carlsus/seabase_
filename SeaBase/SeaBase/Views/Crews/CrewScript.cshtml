@@ -1,0 +1,78 @@
+﻿<script>
+    var button_status;
+    var button_text;
+    var table;
+    $(document).ready(function () {
+        $('#ApplicationDate').datepicker();
+        $('#BirthDate').datepicker();
+        button_status = $('#StatusId').val();
+        if (button_status == 1) {
+            button_text = 'Proceed to Pool';
+            $('#btnSave').val('Proceed to Pool');
+        } else if (button_status == 2) {
+            button_text = 'Proceed to Operation';
+            $('#btnSave').val('Proceed to Operation');
+        } else if (button_status == 3) {
+            $('#btnSave').val('Assign to Principal and Vessel');
+        } else {
+            $('#btnSave').val('Save');
+        }
+
+
+        //table
+        $("#data-table").DataTable({
+            "scrollY": "300px",
+            //"scrollCollapse": true,
+            "ajax": {
+                "url": "@Url.Action("GetPrincipalVessel", "Crews")",
+            "type": "GET",
+            //"datatype": "application/json",
+            },
+            "responsive": true,
+            "lengthChange": false,
+            "filter":true,
+            "searching": true,
+            "columns": [
+                { data: "PrincipalName" },
+                { data: "VesselName" },
+                
+                
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-warning btn-sm"  onclick="Assign(\'' + data + '\')">Assign Crew</button> ';
+                    }
+                }
+            ],
+            
+            "columnDefs": [
+                { "width": "60%", "targets": 0 },
+                { "width": "30%", "targets": 1 },
+                { "width": "10%", "targets": 2 }
+               
+            ]
+        });
+        table.draw();
+    });
+   
+
+    function Save() {
+        if (button_status <= 2) {
+            bootbox.confirm("Are you sure you want to " + button_text + "?", function(result) {
+                if (result) {
+                    $('#form0').submit();
+                }
+            });
+        } else if (button_status==3) {
+            $("#AddOrEdit").modal();
+        }
+    }
+
+    function Assign(vesselId) {
+        $('#VesselId').val(vesselId);
+        $('#form0').submit();
+    }
+
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datepicker/script")
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")

@@ -1,0 +1,48 @@
+﻿@model SeaBase.ViewModel.ApplicantViewModel
+
+<div class="panel panel-default">
+    <div class="panel-heading">Next of Kin</div>
+    <div class="panel-body">
+
+    <div class="col-md-6">
+        @Html.LabelFor(m => m.KinFullName)
+        @Html.TextBoxFor(m => m.KinFullName, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.KinFullName)
+
+    </div>
+    <div class="col-md-3">
+        @Html.LabelFor(m => m.KinBirthDate)
+        <div class="input-group date">
+            <div class="input-group-addon">
+                <i class="fa fa-calendar"></i>
+            </div>
+
+            @Html.TextBoxFor(m => m.KinBirthDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.KinBirthDate)
+        </div>
+    </div>
+    <div class="col-md-3">
+        @Html.LabelFor(m => m.KinRelationship)
+        @Html.TextBoxFor(m => m.KinRelationship, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.KinRelationship)
+
+    </div>
+    <div class="col-md-6">
+        @Html.LabelFor(m => m.KinAddress)
+        @Html.TextBoxFor(m => m.KinAddress, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.KinAddress)
+    </div>
+    <div class="col-md-3">
+        @Html.LabelFor(m => m.KinTelNo)
+        @Html.TextBoxFor(m => m.KinTelNo, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.KinTelNo)
+
+    </div>
+    <div class="col-md-3">
+        @Html.LabelFor(m => m.KinHPNo)
+        @Html.TextBoxFor(m => m.KinHPNo, new {@class = "form-control"})
+        @Html.ValidationMessageFor(m => m.KinHPNo)
+
+    </div>
+</div>
+</div>

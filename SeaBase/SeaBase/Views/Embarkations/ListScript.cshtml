@@ -1,0 +1,78 @@
+﻿<script type="text/javascript">
+    var table;
+    $(document).ready(function() {
+       table = $("#data-table").DataTable({
+            "scrollX": true,
+            //"scrollCollapse": true,
+            "ajax": {
+                "url": "@Url.Action("GetEmbarkation", "Embarkations")",
+
+                "type": "GET",
+                //"datatype": "application/json",
+            },
+            "lengthChange": false,
+            "searching": true,
+            "columns": [
+                { data: "EmbarkationCode" },
+                { data: "PrincipalName" },
+                { data: "VesselName" },
+                {
+                    'data': 'DepartureDate',
+                    'render': function (data) {
+                        return moment(data).format("MMM DD,YYYY");
+                    }
+                },
+                { data: "DepartureAirport" },
+                { data: "PortOfEmbarkation" },
+                {
+                    'data': 'EmbarkationDate',
+                    'render': function (data) {
+                        return moment(data).format("MMM DD,YYYY");
+                    }
+                },
+                { data: "ContractDuration" },
+                {
+                    data: "Id",
+                    render: function (data) {
+                        return '<button type="button" class="btn btn-primary" title="View"  onclick="View(\'' + data + '\')"><i class="fa fa-search"></i></button> ';
+                        //'<button class="btn btn-danger js-delete" title="Delete" data-id="' + data + '"><i class="fa fa-trash"></i></button>';
+                    }
+                }
+            ],
+            dom: "Bfrtip",
+            buttons: {
+                buttons: [
+                    {
+                        text: "New Embarkation",
+                        action: function (e, dt, node, config) {
+                            location.href = "/embarkations/create";
+                            
+                        }
+                    }
+                ],
+                dom: {
+                    button: {
+                        tag: "button",
+                        className: "btn btn-default"
+                    },
+                    buttonLiner: {
+                        tag: null
+                    }
+                }
+            },
+            //"columnDefs": [
+            //         { "width": "40%px", "targets": 0 },
+            //         { "width": "30%", "targets": 1 },
+            //         { "width": "15%", "targets": 2 },
+            //         { "className":"text-center", "width": "12%", "targets": 3 },
+            //         //{ "width": "10px", "targets": 3 }
+            //]
+        });
+    });
+
+    function View(id) {
+        location.href = './embarkations/view/' + id;
+    }
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")
+@Scripts.Render("~/AdminLTE/plugins/momentjs/script")

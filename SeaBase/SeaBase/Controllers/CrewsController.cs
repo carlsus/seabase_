@@ -1,0 +1,306 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using SeaBase.Models;
+using SeaBase.ViewModel;
+
+namespace SeaBase.Controllers
+{
+    [Authorize]
+    public class CrewsController : Controller
+    {
+        private SeaBaseContext _context;
+        public CrewsController()
+        {
+            _context = new SeaBaseContext();
+        }
+
+        public ActionResult Index()
+        {
+            return View("List");
+        }
+
+        [HttpGet]
+        public ActionResult GetCrews()
+        {
+            var crews = (from c in _context.Crews
+                let Name=c.Firstname + " " + c.MiddleName + " " + c.Lastname
+                join d in _context.Ranks on c.RankId equals d.Id
+                join e in _context.Statuses on c.StatusId equals e.Id
+                join f in _context.Vessels on c.VesselId equals f.Id into t
+                         from nt in t.DefaultIfEmpty()
+                join g in _context.Principals on nt.PrincipalId equals g.Id into u
+                         from ut in u.DefaultIfEmpty()
+                where c.StatusId>=5
+                select new {c.Id,c.ApplicationDate,c.EmailAddress,c.MobileNo, d.RankName,Name,e.StatusName,nt.VesselName,ut.PrincipalName,c.TelephoneNo}
+                ).ToList();
+            return Json(new { data =crews }, JsonRequestBehavior.AllowGet);
+
+        }
+
+        [HttpGet]
+        public ActionResult GetSeaService(int id)
+        {
+            var seaservice = (from c in _context.EmbarkationDetailses
+                         join d in _context.Embarkations on c.EmbarkationId equals d.Id
+                         join e in _context.Ranks on c.RankId equals e.Id
+                         join f in _context.Vessels on d.VesselId equals f.Id
+                         join g in _context.VesselTypes on f.VesselTypeId equals g.Id
+                         
+                         where c.CrewId ==id
+                         select new
+                         {
+                             c.Id,
+                             c.CrewId,
+                             c.EmbarkationId,
+                             c.RankId,
+                             c.SignOffDate,
+                             c.Remarks,
+                             d.EmbarkationDate,
+                             e.RankName,
+                             f.VesselName,
+                             g.VesselTypeName,
+                             d.ContractDuration
+                         }
+                ).ToList();
+            return Json(new { data = seaservice }, JsonRequestBehavior.AllowGet);
+
+        }
+        
+
+        [HttpGet]
+        public ActionResult GetPrincipalVessel()
+        {
+            var result = (from c in _context.Vessels
+                join d in _context.Principals on c.PrincipalId equals d.Id
+                select new {c.Id,c.VesselName,d.PrincipalName}
+                ).ToList();
+            return Json(new { data =result }, JsonRequestBehavior.AllowGet);
+
+        }
+        
+        public FileContentResult Attachment(int id, string file)
+        {
+            var fullPathToFile = Server.MapPath("/Files/") + id + "/" + file;
+            var mimeType = MimeMapping.GetMimeMapping(file);
+            var fileContents = System.IO.File.ReadAllBytes(fullPathToFile);
+
+            return new FileContentResult(fileContents, mimeType);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Save(Crew crew)
+        {
+            if (crew.Id == 0)
+            {
+
+                crew.StatusId = 1;
+                if (crew.ImageFile != null)
+                {
+                    var fileName = "";
+
+                    fileName = Path.GetFileNameWithoutExtension(crew.ImageFile.FileName);
+
+                    string fileExtension = Path.GetExtension(crew.ImageFile.FileName);
+
+                    fileName = DateTime.Now.ToString("yyyyMMdd") + "-" + fileName.Trim() + fileExtension;
+                    crew.ImagePath = fileName;
+
+                    crew.ImageFile.SaveAs(Server.MapPath("~/Images/") + crew.ImagePath);
+                }
+
+                //crew.CrewTravelDocuments = _context.Documents.Where(m => m.IsRequired == true).ToList();
+                //crew.CrewTrainingCertificates = _context.Seminars.Where(m => m.IsRequired == true).ToList();
+                //else
+                //{
+                //    crew.ImagePath = Path.GetFileNameWithoutExtension("~/Images/default.jpeg");
+                //}
+                _context.Crews.Add(crew);
+                _context.SaveChanges();
+                _context.Entry(crew).GetDatabaseValues();
+                return RedirectToAction("Index", "Applicants");
+
+            }
+            else
+            {
+                var update = _context.Crews
+                    .Include("CrewAddress")
+                    .Include("CrewFamilyBackground")
+                    .Single(m => m.Id == crew.Id);
+                update.ApplicationDate = Convert.ToDateTime(crew.ApplicationDate.ToString("yyyy-MM-dd"));
+                update.RankId = crew.RankId;
+                update.StatusId = crew.StatusId;
+                update.VesselId = crew.VesselId;
+                update.Firstname = crew.Firstname;
+                update.MiddleName = crew.MiddleName;
+                update.Lastname = crew.Lastname;
+                update.ImagePath = crew.ImagePath;
+                update.ContactAddress = crew.ContactAddress;
+                update.EmailAddress = crew.EmailAddress;
+                update.TelephoneNo = crew.TelephoneNo;
+                update.Password = crew.Password;
+                update.PassportNo = crew.PassportNo;
+                update.SeamanBookNo = crew.SeamanBookNo;
+                update.SRCNo = crew.SRCNo;
+                update.EregNo = crew.EregNo;
+                update.MobileNo = crew.MobileNo;
+                update.Gender = crew.Gender;
+                update.CivilStatus = crew.CivilStatus;
+                update.BirthDate = Convert.ToDateTime(crew.BirthDate.ToString("yyyy-MM-dd"));
+                update.BirthPlace = crew.BirthPlace;
+                update.Nationality = crew.Nationality;
+                update.Religion = crew.Religion;
+                update.ForeignLanguage = crew.ForeignLanguage;
+                update.Race = crew.Race;
+                update.Height = crew.Height;
+                update.Weight = crew.Weight;
+                update.BloodType = crew.BloodType;
+                update.EyeColor = crew.EyeColor;
+                update.KinFullName = crew.KinFullName;
+                update.KinBirthDate = Convert.ToDateTime(crew.KinBirthDate.ToString("yyyy-MM-dd"));
+                update.KinAddress = crew.KinAddress;
+                update.KinTelNo = crew.KinTelNo;
+                update.KinHPNo = crew.KinHPNo;
+                update.CoverAll = crew.CoverAll;
+                update.SafetyShoes = crew.SafetyShoes;
+                update.WhitePolo = crew.WhitePolo;
+                update.BlackPants = crew.BlackPants;
+                update.WinterJacket = crew.WinterJacket;
+                update.WinterPants = crew.WinterPants;
+                update.Raincoat = crew.Raincoat;
+                update.SSSNo = crew.SSSNo;
+                update.PhilhealthNo = crew.PhilhealthNo;
+                update.PagibigIdNo = crew.PagibigIdNo;
+                update.PSUIdNo = crew.PSUIdNo;
+                update.PSUIssuanceDate = crew.PSUIssuanceDate;
+                update.NBINo = crew.NBINo;
+                update.NBIValidity = crew.NBIValidity;
+                update.CrewAddress = crew.CrewAddress;
+                update.CrewFamilyBackground = crew.CrewFamilyBackground;
+                update.IndividualPayingMember = crew.IndividualPayingMember;
+                update.OthersSpecify = crew.OthersSpecify;
+                update.Remarks = crew.Remarks;
+                update.RecommendedBy = crew.RecommendedBy;
+                update.OtherInfo = crew.OtherInfo;
+
+
+
+                update.VesselId = crew.VesselId;
+                _context.SaveChanges();
+
+                return RedirectToAction("View", new { id = crew.Id });
+
+            }
+
+
+        }
+
+
+        public ActionResult View(int id)
+        {
+            var crew = _context.Crews
+                .Include("CrewAddress")
+                .Include("CrewFamilyBackground")
+                .SingleOrDefault(c => c.Id == id);
+            var crewaddress = _context.CrewAddresses.SingleOrDefault(c => c.CrewId == id);
+            var familybackground = _context.CrewFamilyBackgrounds.SingleOrDefault(c => c.CrewId == id);
+            var rank = _context.Ranks.ToList();
+            var country = _context.Countries.ToList();
+            var viewModel = new ApplicantViewModel
+            {
+                Users = _context.Users.ToList(),
+                Agents = _context.Agents.ToList(),
+                ManningAgencies = _context.ManningAgencies.ToList(),
+                VesselTypes = _context.VesselTypes.ToList(),
+                RankName = rank.Where(m => m.Id == crew.RankId).Select(n => n.RankName).SingleOrDefault(),
+                TrainingCenters = _context.TrainingCenters.ToList(),
+                Seminars = _context.Seminars.ToList(),
+                Vaccines = _context.Vaccines.ToList(),
+                MedicalCertificates = _context.MedicalCertificates.ToList(),
+                MedicalClinics = _context.MedicalClinics.ToList(),
+                Documents = _context.Documents.ToList(),
+                Flags = _context.Flags.ToList(),
+                Licenses = _context.Licenses.ToList(),
+                Ranks = rank,
+                Countries = country,
+                ApplicationDate = crew.ApplicationDate,
+                RankId = crew.RankId,
+                StatusId = crew.StatusId,
+                VesselId = crew.VesselId,
+                Firstname = crew.Firstname,
+                MiddleName = crew.MiddleName,
+                Lastname = crew.Lastname,
+                ImagePath = crew.ImagePath,
+                ContactAddress = crew.ContactAddress,
+                EmailAddress = crew.EmailAddress,
+                Password = crew.Password,
+                PassportNo = crew.PassportNo,
+                SeamanBookNo = crew.SeamanBookNo,
+                SRCNo = crew.SRCNo,
+                EregNo = crew.EregNo,
+                MobileNo = crew.MobileNo,
+                TelephoneNo = crew.TelephoneNo,
+                Gender = crew.Gender,
+                CivilStatus = crew.CivilStatus,
+                BirthDate = crew.BirthDate,
+                BirthPlace = crew.BirthPlace,
+                Nationality = crew.Nationality,
+                Religion = crew.Religion,
+                ForeignLanguage = crew.ForeignLanguage,
+                Race = crew.Race,
+                Height = crew.Height,
+                Weight = crew.Weight,
+                BloodType = crew.BloodType,
+                EyeColor = crew.EyeColor,
+                KinFullName = crew.KinFullName,
+                KinRelationship = crew.KinRelationship,
+                KinBirthDate = crew.KinBirthDate,
+                KinAddress = crew.KinAddress,
+                KinTelNo = crew.KinTelNo,
+                KinHPNo = crew.KinHPNo,
+                CoverAll = crew.CoverAll,
+                SafetyShoes = crew.SafetyShoes,
+                WhitePolo = crew.WhitePolo,
+                BlackPants = crew.BlackPants,
+                WinterJacket = crew.WinterJacket,
+                WinterPants = crew.WinterPants,
+                Raincoat = crew.Raincoat,
+                SSSNo = crew.SSSNo,
+                PhilhealthNo = crew.PhilhealthNo,
+                PagibigIdNo = crew.PagibigIdNo,
+                PSUIdNo = crew.PSUIdNo,
+                PSUIssuanceDate = crew.PSUIssuanceDate,
+                NBINo = crew.NBINo,
+                NBIValidity = crew.NBIValidity,
+                CrewAddress = crew.CrewAddress,
+                CrewFamilyBackground = crew.CrewFamilyBackground,
+                IndividualPayingMember = crew.IndividualPayingMember,
+                OthersSpecify = crew.OthersSpecify,
+                Remarks = crew.Remarks,
+                RecommendedBy = crew.RecommendedBy,
+                OtherInfo = crew.OtherInfo
+
+            };
+
+            ViewBag.Status =
+                _context.Statuses.Where(m => m.Id == crew.StatusId).Select(g => g.StatusName).SingleOrDefault();
+
+            var folder = Server.MapPath("~/Files/" + id);
+            if (!Directory.Exists(folder))
+            {
+                Directory.CreateDirectory(folder);
+            }
+
+
+            return View("ApplicantForm", viewModel);
+        }
+
+
+
+        
+    }
+}

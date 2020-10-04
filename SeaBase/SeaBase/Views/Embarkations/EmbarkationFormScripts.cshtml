@@ -1,0 +1,173 @@
+﻿<script type="text/javascript">
+    var table;
+    var sd = [];
+    $().ready(function () {
+        $('#DepartureDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            defaultDate: null
+        });
+        $('#EmbarkationDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            defaultDate: null
+        });
+        $('#TentativeDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            defaultDate: null
+        });
+        $('#DisembarkationDate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true,
+            defaultDate: null
+        });
+        $('#PrincipalId').change(function() {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetVesselByPrincipal")',
+                data: { id: this.value },
+                success: function (data) {
+                    
+                    $('#VesselId').empty();
+                    $('#VesselId').append('<option>Select Vessel</option>');
+
+                    data.forEach(function (item) {
+                        $('#VesselId').append('<option value="' + item.Id + '">' + item.VesselName + '</option>');
+                    });
+                }
+            });
+        });
+        $('#VesselId').change(function () {
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetCrew")',
+                data: { Id: this.value },
+                success: function (data) {
+                    data.forEach(function (item) {
+                        var record = {
+                            CrewId: item.CrewId,
+                            Crew: item.crew_name,
+                            RankId:item.RankId,
+                            Position: item.RankName,
+                            SignOffDate:"09/20/2020"
+                        };
+                        sd.push(record);
+                    });
+                    console.log(sd);
+                    CrewList();
+                }
+            });
+        });
+
+        $('#ContractDuration').change(function() {
+            $('#DisembarkationDate').val(addMonths(new Date($('#EmbarkationDate').val()), this.value).toString());
+
+        });
+        function addMonths(date, months) {
+            var d = date.getDate();
+            date.setMonth(date.getMonth() + +months);
+            if (date.getDate() != d) {
+                date.setDate(0);
+            }
+            return date.toString("mm/dd/yyyy");
+        }
+        //form submit
+        $('#form0').submit(function (event) {
+            event.preventDefault();
+            $('#btnSave').attr('disabled', 'disabled');
+            var url = $(this).attr("action");
+
+
+            var str=$('#EmbarkationCode'). val();
+            var formData = {
+                EmbarkationCode: str ,
+                DisembarkationCode: str.replace("E","D"),
+                PrincipalId: $('#PrincipalId').val(),
+                VesselId: $('#VesselId').val(),
+                DepartureAirportId: $('#DepartureAirportId').val(),
+                DepartureDate: $('#DepartureDate').val(),
+                PortOfEmbarkationId: $('#PortOfEmbarkationId').val(),
+                EmbarkationDate: $('#EmbarkationDate').val(),
+                ArrivalAirportId: $('#ArrivalAirportId').val(),
+                TentativeDate: $('#TentativeDate').val(),
+                PortOfDisembarkationId: $('#PortOfDisembarkationId').val(),
+                DisembarkationDate: $('#DisembarkationDate').val(),
+                ContractDuration: $('#ContractDuration').val()
+
+            };
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: JSON.stringify({ 'embarkation': formData,'ed':sd}),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function (response) {
+                    SaveCrew(response.Success);
+                    
+                },
+                error: function (response) {
+                    console.log(response);
+                },
+                complete: function () {
+                    $('#btnSave').removeAttr('disabled');
+                }
+            });
+        });
+
+
+
+    });
+    function SaveCrew(id) {
+        $.ajax({
+            url: "/Embarkations/SaveCrew",
+            type: "POST",
+            data: JSON.stringify({ 'model': sd, 'EmbarkId': id }),
+            contentType: 'application/json; charset=utf-8',
+            dataType: 'json',
+            success: function (response) {
+                
+                $.notify({
+                    title: '<strong>Embarkation Created </strong>',
+                    message: 'The embarkation has been created successfully.'
+                }, {
+                    type: 'success'
+                });
+                $('#form0')[0].reset();
+                setTimeout(function () {
+                    location.href = '/embarkations';
+                }, 2000);
+            },
+            error: function (response) {
+                console.log(response);
+            },
+            complete: function () {
+               
+            }
+        });
+    }
+    function CrewList() {
+       
+        var oTblReport = $("#data-table-crew");
+
+        oTblReport.DataTable({
+            "data": sd,
+            "columns": [
+                { "data": "Crew" },
+                { "data": "Position" },
+                
+            ]
+        });
+    }
+</script>
+@Scripts.Render("~/AdminLTE/plugins/datepicker/script")
+@Scripts.Render("~/AdminLTE/plugins/datatables/script")

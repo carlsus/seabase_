@@ -1,0 +1,281 @@
+﻿@model SeaBase.ViewModel.ApplicantViewModel
+@Styles.Render("~/AdminLTE/plugins/datepicker/styles")
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+
+@{
+    ViewBag.Title = "Crews";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h4>
+    Crew Information
+</h4>
+
+
+<!-- Main content -->
+<section class="row">
+
+  
+        <div class="col-md-3">
+
+            <!-- Profile Image -->
+            @*<div class="box box-primary">
+                <div class="box-body box-profile">
+                    <img class="profile-user-img img-responsive img-circle" src="../../dist/img/user4-128x128.jpg" alt="User profile picture">
+
+                    <h3 class="profile-username text-center">Nina Mcintire</h3>
+
+                    <p class="text-muted text-center">Software Engineer</p>
+
+                    <ul class="list-group list-group-unbordered">
+                        <li class="list-group-item">
+                            <b>Followers</b> <a class="pull-right">1,322</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Following</b> <a class="pull-right">543</a>
+                        </li>
+                        <li class="list-group-item">
+                            <b>Friends</b> <a class="pull-right">13,287</a>
+                        </li>
+                    </ul>
+
+                    <a href="#" class="btn btn-primary btn-block"><b>Follow</b></a>
+                </div>
+              
+            </div>*@
+            <!-- /.box -->
+            
+        </div>
+        <!-- /.col -->
+        <div class="col-md-12">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#profile" data-toggle="tab">Personal Profile</a></li>
+                   
+                </ul>
+                <div class="tab-content">
+                    <div class="active tab-pane" id="profile">
+                        @using (Ajax.BeginForm("Save", "Crews", new AjaxOptions
+                        {
+                            OnSuccess = "OnSuccess",
+                            OnFailure = "OnFailure"
+                        }))
+                        {
+                            <div class="form-row">
+                                <div class="col-md-4 mb-3">
+                                    @Html.LabelFor(m => m.ApplicationDate)
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+
+                                        @Html.TextBoxFor(m => m.ApplicationDate, new {@class = "form-control"})
+                                        @Html.ValidationMessageFor(m => m.ApplicationDate)
+                                    </div>
+                                </div>
+                                <div class="col-md-8 mb-3">
+                                    @Html.LabelFor(m => m.RankId)
+                                    @Html.DropDownListFor(m => m.RankId, new SelectList(Model.Rank, "Id", "RankName"), "", new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.RankId)
+                                </div>
+
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.Firstname)
+                                    @Html.TextBoxFor(m => m.Firstname, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.Firstname)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.MiddleName)
+                                    @Html.TextBoxFor(m => m.MiddleName, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.MiddleName)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.Lastname)
+                                    @Html.TextBoxFor(m => m.Lastname, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.Lastname)
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.ContactNo)
+                                    @Html.TextBoxFor(m => m.ContactNo, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.ContactNo)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.EmailAddress)
+                                    @Html.TextBoxFor(m => m.EmailAddress, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.EmailAddress)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.Password)
+                                    @Html.TextBoxFor(m => m.Password, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.Password)
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.MobileNo)
+                                    @Html.TextBoxFor(m => m.MobileNo, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.MobileNo)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.Gender)
+                                    <select class="form-control" id="Gender" name="Gender">
+                                        <option value=""></option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.Gender)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.CivilStatus)
+
+                                    <select class="form-control" id="CivilStatus" name="CivilStatus">
+                                        <option value=""></option>
+                                        <option value="Single">Single</option>
+                                        <option value="Married">Married</option>
+                                        <option value="Widowed">Widowed</option>
+                                        <option value="Separated">Separated</option>
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.CivilStatus)
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-8">
+                                    @Html.LabelFor(m => m.BirthPlace)
+                                    @Html.TextAreaFor(m => m.BirthPlace, new { @class = "form-control", @rows = "1" })
+                                    @Html.ValidationMessageFor(m => m.BirthPlace)
+                                </div>
+                                <div class="col-md-4">
+                                    @Html.LabelFor(m => m.BirthDate)
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        @Html.TextBoxFor(m => m.BirthDate, new {@class = "form-control"})
+                                        @Html.ValidationMessageFor(m => m.BirthDate)
+                                    </div>
+                                </div>
+                                <div class="col-md-2 mb-4">
+                                    &nbsp;
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.Nationality)
+                                    @Html.TextBoxFor(m => m.Nationality, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.Nationality)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.Religion)
+                                    @Html.TextBoxFor(m => m.Religion, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.Religion)
+                                </div>
+                                <div class="col-md-4 mb-4">
+                                    @Html.LabelFor(m => m.ForeignLanguage)
+                                    @Html.TextBoxFor(m => m.ForeignLanguage, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.ForeignLanguage)
+                                   
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-3">
+                                    @Html.LabelFor(m => m.Height)
+                                    @Html.TextBoxFor(m => m.Height, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.Height)
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.LabelFor(m => m.Weight)
+                                    @Html.TextBoxFor(m => m.Weight, new {@class = "form-control"})
+                                    @Html.ValidationMessageFor(m => m.Weight)
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.LabelFor(m => m.BloodType)
+                                    <select class="form-control" id="BloodType" name="BloodType">
+                                        <option value=""></option>
+                                        <option value="AB+">AB+</option>
+                                        <option value="AB-">AB-</option>
+                                        <option value="A+">A+</option>
+                                        <option value="A-">A-</option>
+                                        <option value="B+">B+</option>
+                                        <option value="B-">B-</option>
+                                        <option value="O+">O+</option>
+                                        <option value="O-">O-</option>
+                                    </select>
+                                    @Html.ValidationMessageFor(m => m.BloodType)
+
+                                </div>
+                                <div class="col-md-3">
+                                    @Html.LabelFor(m => m.EyeColor)
+                                    @Html.TextBoxFor(m => m.EyeColor, new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(m => m.EyeColor)
+                                    &nbsp;
+                                </div>
+                            </div>
+                            @Html.HiddenFor(m => m.VesselId)
+                            @Html.HiddenFor(m => m.StatusId)
+                            @Html.HiddenFor(m => m.Id)
+                            @Html.AntiForgeryToken()
+                            <div class="container-fluid" style="padding-top: 5px">
+                                <input type="button" class="btn btn-primary btn-block" id="btnSave" value="Save Application" onclick="return Save();"  />
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                <!-- /.tab-content -->
+            </div>
+            <!-- /.nav-tabs-custom -->
+        </div>
+        <!-- /.col -->
+   
+    <!-- /.row -->
+
+</section>
+<!-- /.content -->
+
+
+<!-- #region modal -->
+
+<div class="modal fade" id="AddOrEdit">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title">Hire Crew</h4>
+            </div>
+            <div class="modal-body">
+                <table id="data-table" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Principal</th>
+                            <th>Vessel</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+
+                </table>
+
+             
+
+            </div>
+
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- #endregion -->
+
+@section Scripts {
+    @RenderPage("~/Views/Crews/CrewScript.cshtml")
+}

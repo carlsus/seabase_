@@ -1,0 +1,91 @@
+﻿@using SeaBase.Models
+@model SeaBase.ViewModel.ApplicantViewModel
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">Personal Data</div>
+    <div class="panel-body">
+
+        <div class="col-md-3 center">
+            <a href="#">
+                <img class="media-object center" src="" alt="..." id="imgupload" name="imgupload">
+                <input id="ImageFile" title="Upload a product image"
+                       type="file" name="ImageFile" style="display: none" accept="image/*" />
+            </a>
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.ApplicationDate)
+            <div class="input-group date">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                @Html.TextBoxFor(m => m.ApplicationDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.ApplicationDate)
+            </div>
+        </div>
+        <div class="col-md-6">
+            @Html.LabelFor(m => m.RankId)
+            @Html.DropDownListFor(m => m.RankId, new SelectList(Model.Ranks, "Id", "RankName"), "", new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.RankId)
+        </div>
+
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.Firstname)
+            @Html.TextBoxFor(m => m.Firstname, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Firstname)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.MiddleName)
+            @Html.TextBoxFor(m => m.MiddleName, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.MiddleName)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.Lastname)
+            @Html.TextBoxFor(m => m.Lastname, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Lastname)
+        </div>
+
+        <div class="col-md-9">
+            @Html.LabelFor(m => m.ContactAddress)
+            @Html.TextBoxFor(m => m.ContactAddress, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.ContactAddress)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.EmailAddress)
+            @Html.TextBoxFor(m => m.EmailAddress, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.EmailAddress)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.TelephoneNo)
+            @Html.TextBoxFor(m => m.TelephoneNo, new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.TelephoneNo)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.Password)
+            @Html.TextBoxFor(m => m.Password, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.Password)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.PassportNo)
+            @Html.TextBoxFor(m => m.PassportNo, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.PassportNo)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.SeamanBookNo)
+            @Html.TextBoxFor(m => m.SeamanBookNo, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.SeamanBookNo)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.SRCNo)
+            @Html.TextBoxFor(m => m.SRCNo, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.SRCNo)
+        </div>
+        <div class="col-md-3">
+            @Html.LabelFor(m => m.EregNo)
+            @Html.TextBoxFor(m => m.EregNo, new {@class = "form-control"})
+            @Html.ValidationMessageFor(m => m.EregNo)
+        </div>
+
+    </div>
+</div>
+

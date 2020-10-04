@@ -1,0 +1,126 @@
+﻿@model SeaBase.ViewModel.RankViewModel
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+
+@{
+    ViewBag.Title = "Ranks";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="overlay"></div>
+<div class="box">
+
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+                <li class="active"><a href="#tab_1-1" data-toggle="tab">@ViewBag.Title</a></li>
+            </ul>
+            <div class="tab-content">
+                <table id="data-table" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Rank</th>
+
+                        <th>SCTW</th>
+                        <th>Regulation</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+
+                </table>
+
+            </div>
+            <!-- /.tab-content -->
+        </div>
+
+    </div>
+    <!-- /.box-body -->
+</div>
+
+
+<!-- #region modal -->
+
+<div class="modal fade" id="AddOrEdit">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+                @using (Ajax.BeginForm("Save", "Ranks", new AjaxOptions
+                    {
+                        OnSuccess = "OnSuccess",
+                        OnFailure = "OnFailure"
+                    }))
+                    {
+                    @Html.ValidationSummary(true, "Please fix the following errors.")
+                     <div class="form-group col-md-3">
+                        @Html.LabelFor(m => m.RankCode)
+                        @Html.TextBoxFor(m => m.RankCode, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.RankCode)
+                    </div>
+                    <div class="form-group col-md-6">
+                        @Html.LabelFor(m => m.RankName)
+                        @Html.TextBoxFor(m => m.RankName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.RankName)
+                    </div>
+                   
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.SCTW)
+                            @Html.TextBoxFor(m => m.SCTW, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(m => m.SCTW)
+                        </div>
+                        <div class="form-group col-md-3">
+                            @Html.LabelFor(m => m.Regulation)
+                            @Html.TextBoxFor(m => m.Regulation, new {@class = "form-control"})
+                            @Html.ValidationMessageFor(m => m.Regulation)
+                        </div>
+                    <div class="form-group col-md-9">
+                        @Html.LabelFor(m => m.Description)
+                        @Html.TextBoxFor(m => m.Description, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Description)
+                    </div>
+
+                    <div class="form-group col-md-12">
+                        @Html.LabelFor(m => m.DepartmentId)
+                        @Html.DropDownListFor(m => m.DepartmentId, new SelectList(Model.Department, "Id", "DepartmentName"), "", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.DepartmentId)
+                    </div>
+
+                    @Html.HiddenFor(m => m.Id)
+                    @Html.AntiForgeryToken()
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                    }
+
+            </div>
+
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+    
+</div>
+<footer class="main-footer navbar-fixed-bottom  ">
+    <div class="pull-right hidden-xs">
+        <button class="btn btn-primary">Save</button>
+    </div>
+</footer>
+<!-- #endregion -->
+
+@section Scripts {
+    @RenderPage("~/Views/Ranks/ListScript.cshtml")
+}
+
+
+

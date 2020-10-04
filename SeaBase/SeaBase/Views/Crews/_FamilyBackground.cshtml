@@ -1,0 +1,538 @@
+﻿
+@using SeaBase.Models
+@model SeaBase.ViewModel.ApplicantViewModel
+
+@{
+    var formId = Guid.NewGuid().ToString();
+}
+<div class="panel panel-default">
+    <div class="panel-heading">Family Background</div>
+    <div class="panel-body">
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Parents</div>
+            <div class="panel-body">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.FathersName)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.FathersName, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.FathersName)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.FathersOccupation)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.FathersOccupation, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.FathersOccupation)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.FathersAddress)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.FathersAddress, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.FathersAddress)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.MothersName)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.MothersName, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.MothersName)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.MothersOccupation)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.MothersOccupation, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.MothersOccupation)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.MothersAddress)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.MothersAddress, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.MothersAddress)
+                </div>
+                
+            </div>
+        </div>
+
+
+        <div class="panel panel-default">
+            <div class="panel-heading">Spouse</div>
+            <div class="panel-body">
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.SpouseFirstname)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.SpouseFirstname, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.SpouseFirstname)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.SpouseMiddlename)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.SpouseMiddlename, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.SpouseMiddlename)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.SpouseLastname)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.SpouseLastname, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.SpouseLastname)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.DateMarried)
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        @Html.TextBoxFor(m => m.CrewFamilyBackground.DateMarried, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                        @Html.ValidationMessageFor(m => m.CrewFamilyBackground.DateMarried)
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.BirthDate)
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        @Html.TextBoxFor(m => m.CrewFamilyBackground.BirthDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                        @Html.ValidationMessageFor(m => m.CrewFamilyBackground.BirthDate)
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.Birthplace)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.Birthplace, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.Birthplace)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.Occupation)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.Occupation, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.Occupation)
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(m => m.CrewFamilyBackground.PhilhealthNo)
+                    @Html.TextBoxFor(m => m.CrewFamilyBackground.PhilhealthNo, new {@class = "form-control"})
+                    @Html.ValidationMessageFor(m => m.CrewFamilyBackground.PhilhealthNo)
+                </div>
+
+            </div>
+        </div>
+
+        <div class="tab-content">
+            <table id="data-table-beneficiary" class="table table-bordered table-hover table-responsive">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Sex</th>
+                    <th>Birth Date</th>
+                    <th>Age</th>
+                    <th>Relationship</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+
+        <div class="tab-content">
+            <table id="data-table-children" class="table table-bordered table-hover table-responsive">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Address</th>
+                        <th>Birth Date</th>
+                        <th>Age</th>
+                        <th>Gender</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- #region modal -->
+
+<div class="modal fade" id="AddOrEditBeneficiary">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                
+                <form id="form1" method="post" name="form1">
+
+                    <input type="hidden" id="CrewId" name="CrewId" value="@Html.DisplayFor(m=>m.CrewFamilyBackground.CrewId)" />
+                    <input type="hidden" id="Type" name="Type" value="0"/>
+
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label>Firstname</label>
+                            <input type="text" class="form-control" id="bfname" name="bfname"/>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Middlename</label>
+                            <input type="text" class="form-control" id="bmname" name="bmname"/>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Lastname</label>
+                            <input type="text" class="form-control" id="blastname" name="blastname"/>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Relationship</label>
+                            <input type="text" class="form-control" id="brelationship" name="brelationship"/>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Contact No.</label>
+                            <input type="text" class="form-control" id="bcontactno" name="bcontactno"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Gender</label>
+                            @Html.DropDownList("bGender", new SelectList(Enum.GetValues(typeof (Crew.GenderType))),
+                                "Select Gender", new {@class = "form-control"})
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label>Address</label>
+                            <input type="text" class="form-control" id="baddress" name="baddress"/>
+                        </div>
+                        <div class="col-md-4">
+                            <label>Birthdate</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text"class="form-control" id="bbirthdate" name="bbirthdate"/>
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Birth Place</label>
+                            <input type="text" class="form-control" id="bbirthplace" name="bbirthplace"/>
+                        </div>
+
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="b">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- #endregion -->
+
+
+<!-- #region modal -->
+
+<div class="modal fade" id="AddOrEditChildren">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+
+                <form id="form2" method="post" name="form2">
+
+                    <input type="hidden" id="CrewIdc" name="CrewId" value="@Html.DisplayFor(m=>m.CrewFamilyBackground.CrewId)" />
+                    <input type="hidden" id="Typec" name="Typec" value="1" />
+
+                    <div class="row">
+                        <div class="form-group col-sm-4">
+                            <label>Firstname</label>
+                            <input type="text" class="form-control" id="cfname" name="bfname" />
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Middlename</label>
+                            <input type="text" class="form-control" id="cmname" name="bmname" />
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Lastname</label>
+                            <input type="text" class="form-control" id="clastname" name="blastname" />
+                        </div>
+
+                        <div class="col-md-4">
+                            <label>Gender</label>
+                            @Html.DropDownList("cGender", new SelectList(Enum.GetValues(typeof (Crew.GenderType))),
+                                "Select Gender", new {@class = "form-control"})
+                        </div>
+                        <div class="col-md-4">
+                            <label>Birth Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input type="text" class="form-control" id="cbirthdate" name="bbirthdate" />
+                            </div>
+                        </div>
+                        <div class="form-group col-sm-12">
+                            <label>Address</label>
+                            <input type="text" class="form-control" id="caddress" name="baddress" />
+                        </div>
+                        
+                       
+                    </div>
+                    @Html.AntiForgeryToken()
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="c">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </form>
+
+            </div>
+
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- #endregion -->
+
+<script>
+    var table_beneficiary;
+    var table_children;
+    $(document).ready(function () {
+        $('#bbirthdate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        $('#cbirthdate').datepicker({
+            startDate: '',
+            format: 'mm/dd/yyyy',
+            autoclose: true,
+            todayHighlight: true
+        });
+        table_beneficiary = $("#data-table-beneficiary").DataTable({
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetBenificiaryChildren", "Applicants")",
+            "type": "GET",
+            "datatype": "application/json",
+            "data": { 'id': $('#Id').val(), 'types': 0 }
+            },
+            "lengthChange": false,
+            "searching": false,
+        dom: "Bfrtip",
+        buttons: {
+            buttons: [
+                {
+                    text: "New Beneficiary",
+                    action: function (e, dt, node, config) {
+                        $('#modal-title').text("Add New");
+                        $("#AddOrEditBeneficiary").modal();
+                    }
+                }
+            ],
+            dom: {
+                button: {
+                        tag: "button",
+                        className: "btn btn-default btn-sm"
+                },
+                buttonLiner: {
+                    tag: null
+                }
+            }
+        },
+        "columns": [
+            { data: "Name" },
+            { data: "Gender" },
+            {
+                'data': 'Birthdate',
+                'render': function (data) {
+                    return moment(data).format("MMM DD,YYYY");
+                }
+            },
+            { data: "Age" },
+            { data: "Relationship" },
+
+            {
+                data: "Id",
+                render: function (data) {
+                    return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_bc(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                }
+            }
+        ],
+        "columnDefs": [
+                { "width": "42%", "targets": 0 },
+                { "width": "5%", "targets": 1 },
+                { "width": "10%", "targets": 2 },
+                { "width": "5%", "targets": 3 },
+                { "width": "5%", "targets": 4 },
+                { "className": "text-center", "width": "5%", "targets": 5 }
+        ]
+        });
+
+        $('#b').on('click',function (e) {
+            e.preventDefault();
+            var form1 = {
+                Firstname: $('#bfname').val(),
+                Middlename: $('#bmname').val(),
+                Lastname: $('#blastname').val(),
+                Address: $('#baddress').val(),
+                Birthplace: $('#bbirthplace').val(),
+                Birthdate: $('#bbirthdate').val(),
+                Gender: $('#bGender').val(),
+                Relationship: $('#brelationship').val(),
+                ContactNo: $('#bcontactno').val(),
+                CrewId: $('#Id').val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Applicants/AddBeneficiaryChildren",
+                data: JSON.stringify(form1),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#AddOrEditBeneficiary').modal('hide');
+                    $('#bfname').val('');
+                    $('#bmname').val('');
+                    $('#blastname').val('');
+                    $('#baddress').val('');
+                    $('#bbirthplace').val('');
+                    $('#bbirthdate').val('');
+                    $('#bGender').val('');
+                    $('#brelationship').val('');
+                    $('#bcontactno').val('');
+                    table_beneficiary.ajax.reload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+        table_children = $("#data-table-children").DataTable({
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetBenificiaryChildren", "Applicants")",
+            "type": "GET",
+            "datatype": "application/json",
+            "data": { 'id': $('#Id').val(), 'types': 1 }
+        },
+            "lengthChange": false,
+            "searching": false,
+        dom: "Bfrtip",
+        buttons: {
+            buttons: [
+                {
+                    text: "New Children",
+                    action: function (e, dt, node, config) {
+                        $('#modal-title').text("Add New");
+                        $("#AddOrEditChildren").modal();
+                    }
+                }
+            ],
+            dom: {
+                button: {
+                        tag: "button",
+                        className: "btn btn-default btn-sm"
+                },
+                buttonLiner: {
+                    tag: null
+                }
+            }
+        },
+        "columns": [
+            { data: "Name" },
+            { data: "Address" },
+            {
+                'data': 'Birthdate',
+                'render': function (data) {
+                    return moment(data).format("MMM DD,YYYY");
+                }
+            },
+            { data: "Age" },
+            { data: "Gender" },
+
+            {
+                data: "Id",
+                render: function (data) {
+                    return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_bc(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                }
+            }
+        ],
+        "columnDefs": [
+                { "width": "16%", "targets": 0 },
+                { "width": "31%", "targets": 1 },
+                { "width": "10%", "targets": 2 },
+                { "width": "5%", "targets": 3 },
+                { "width": "5%", "targets": 4 },
+                { "className": "text-center", "width": "5%", "targets": 5 }
+        ]
+        });
+
+        $('#c').on('click', function (e) {
+            e.preventDefault();
+            var form1 = {
+                Firstname: $('#cfname').val(),
+                Middlename: $('#cmname').val(),
+                Lastname: $('#clastname').val(),
+                Address: $('#caddress').val(),
+                Birthdate: $('#cbirthdate').val(),
+                Gender: $('#cGender').val(),
+                Type:$('#Typec').val(),
+                CrewId: $('#Id').val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/Applicants/AddBeneficiaryChildren",
+                data: JSON.stringify(form1),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#AddOrEditChildren').modal('hide');
+                    $('#cfname').val('');
+                    $('#cmname').val('');
+                    $('#clastname').val('');
+                    $('#caddress').val('');
+                    $('#cbirthplace').val('');
+                    $('#cbirthdate').val('');
+                    $('#cGender').val('');
+                    $('#crelationship').val('');
+                    $('#ccontactno').val('');
+                    table_children.ajax.reload();
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        });
+
+    });
+
+
+    function remove_bc(id) {
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("DeleteBeneficiaryChildren","Applicants")/" + id,
+                   
+                    success: function () {
+                        table_beneficiary.ajax.reload();
+                        table_children.ajax.reload();
+                    }
+            });
+        }
+        });
+    }
+</script>

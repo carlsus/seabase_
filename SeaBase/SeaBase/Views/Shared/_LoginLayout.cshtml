@@ -1,0 +1,59 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>NEPTUNE | @ViewBag.Title</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <style>
+        body { 
+         background: url('../Images/bg.jpg') no-repeat center center fixed; 
+         -webkit-background-size: cover;
+         -moz-background-size: cover;
+         -o-background-size: cover;
+         background-size: cover;
+        }
+
+        .panel-default {
+         opacity: 0.9;
+         margin-top:30px;
+        }
+        .form-group.last {
+         margin-bottom:0px;
+        }
+    </style>
+  
+    @Styles.Render("~/AdminLTE/bootstrap/styles")
+
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-7">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <strong class="">Login</strong>
+
+                    </div>
+                    <div class="panel-body">
+                        @RenderBody()
+                    </div>
+                    <div class="panel-footer">
+                        <a href="#" class="">Forgot password</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+    @Scripts.Render("~/AdminLTE/plugins/jquery/script")
+    @Scripts.Render("~/AdminLTE/bootstrap/script")
+    @Scripts.Render("~/AdminLTE/plugins/slimscroll/script")
+    @Scripts.Render("~/AdminLTE/plugins/fastclick/script")
+    @Scripts.Render("~/AdminLTE/dist/script")
+    @Scripts.Render("~/bundles/jqueryval")
+    @RenderSection("scripts", required: false)
+
+</html>

@@ -1,0 +1,66 @@
+﻿
+<div class="panel panel-default">
+    <div class="panel-heading"> Sea Service</div>
+    <div class="panel-body">
+
+
+        <div class="tab-content">
+            <table id="data-table-sea-service" class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Vessel</th>
+                        <th>Vessel Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Agency</th>
+                        <th>Months</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    var table_sea_service;
+    $(document).ready(function () {
+
+        table_sea_service = $("#data-table-sea-service").DataTable({
+            "scrollX": true,
+            "ajax": {
+                "url": "@Url.Action("GetSeaService", "Crews")",
+                "type": "GET",
+                "datatype": "application/json",
+                "data": { 'id': $('#Id').val() }
+            },
+            "lengthChange": false,
+            "searching": false,
+            
+            "columns": [
+                { data: "RankName" },
+                { data: "VesselName" },
+                { data: "VesselTypeName" },
+                {
+                    'data': 'EmbarkationDate',
+                    'render': function (data) {
+                        return moment(data).format("MMM DD,YYYY");
+                    }
+                },
+                {
+                    'data': 'SignOffDate',
+                    'render': function (data) {
+                        return moment(data).format("MMM DD,YYYY");
+                    }
+                },
+                { data: "Id" },
+                { data: "ContractDuration" }
+                
+            ]
+
+        });
+    });
+
+
+</script>

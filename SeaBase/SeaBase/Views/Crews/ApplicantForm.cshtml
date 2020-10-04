@@ -1,0 +1,192 @@
+﻿@using System.Diagnostics.Contracts
+@using SeaBase.Models
+@model SeaBase.ViewModel.ApplicantViewModel
+@Styles.Render("~/AdminLTE/plugins/datepicker/styles")
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+
+@{
+    ViewBag.Title = "Crew Information";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    <style scoped>
+        img {
+          border: 1px solid #ddd;
+          border-radius: 4px;
+          padding: 5px;
+          width: 180px;
+          height: 235px;
+          object-fit: contain;
+}
+    </style>
+}
+
+
+<section class="row">
+    <div class="box-body">
+        <div class="bs-example">
+            @using (Html.BeginForm("Save", "Crews", FormMethod.Post, new
+            {
+                enctype = "multipart/form-data",
+                id = "form0"
+            }))
+            {
+
+                
+                            @Html.Partial("_PersonalData")
+                            @Html.Partial("_PermanentAddress")
+                            @Html.Partial("_NextOfKin")
+                            @Html.Partial("_Uniforms")
+                            @Html.Partial("_GovernmentInfo")
+                            @Html.Partial("_PhilhealthInfo")
+                            
+                            @Html.HiddenFor(m => m.Id)
+                            @Html.HiddenFor(m => m.StatusId)
+                            @Html.HiddenFor(m => m.VesselId)
+                            @Html.HiddenFor(m => m.ImagePath)
+                            @Html.HiddenFor(m=>m.CrewFamilyBackground.CrewId)
+                            @Html.Partial("_FamilyBackground")
+                            @Html.Partial("_Education")
+                            @Html.Partial("_Licenses")
+                            @Html.Partial("_Flags")
+                            @Html.Partial("_TravelDocuments")
+                            @Html.Partial("_TrainingCertificates")
+                            @Html.Partial("_DocumentLibrary")
+                            @Html.Partial("_Medical")
+                            @Html.Partial("_Vaccine")
+                            @Html.Partial("_WorkExperience")
+                            @Html.Partial("_OfficeHistory")
+                            @Html.Partial("_SeaService")
+                            @Html.Partial("_Salary")
+                            @Html.Partial("_ReportsPopup")   
+                            
+                            @Html.AntiForgeryToken()
+                            <br/>
+                            <br/>
+
+                            <footer class="main-footer navbar-fixed-bottom" style="padding-top: 4px; padding-bottom: 4px">
+                                <div class="pull-right hidden-xs">
+
+                                    <button type="button" class="btn btn-primary" id="btnSave" name="btnSave">Save Information</button>
+                                </div>
+
+                                <div class="pull-right" style="margin-right:  5px">
+                                    <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                            Menu
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+
+                                            @switch (Model.StatusId)
+                                            {
+                                                case 1:
+                                                    <li><a href="#" onclick="Save()">Proceed to Pool</a></li>
+                                                    break; // Always break each case
+                                                case 2:
+                                                <li><a href="#" onclick="Save()">Proceed to Operation</a></li>
+
+                                                    break;
+                                                    case 3:
+                                                <li><a href="#" onclick="viewVessels()">Accept and Move to Crew</a></li>
+
+                                                    break;
+                                                default:
+                                                    
+                                                    break;
+                                            }
+
+
+                                            <li><a href="#">Send Email</a></li>
+                                            <li><a href="#">Send Message</a></li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+                                <div class="pull-right" style="margin-right:  5px">
+                                    <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+                                            Travel Documents
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return CVStandard();">CV Standard</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return EmploymentContract();">Seafarer Emplyement Contract</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return DutchContract();">Dutch Contract</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return LOG();">Letter Of Guarantee</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return LOG();">Info to the Master - Tanker</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return LOG();">Info to the Master - Cargo/Offshore</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return JSU();">JSU Contract</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return COE();">Contract of Employement</button></li>
+                                            <li><button class="btn btn-default btn-sm btn-block" onclick="return POEAInfoSheet();">POEA Info Sheet</button></li>
+                                        </ul>
+
+                                    </div>
+
+                                </div>
+
+
+                                @if (ViewBag.Status != "New")
+                                {
+                                    <span><h4 style="padding-bottom: 2px">
+                                    <strong>
+                                        @Html.DisplayFor(m => m.Firstname)
+                                    @Html.DisplayFor(m => m.MiddleName)
+                                    @Html.DisplayFor(m => m.Lastname)
+                                </strong><sup><small class="badge"> @ViewBag.Status</small></sup>
+                                </h4></span>
+                                }
+                                    
+                            </footer>
+                        @*</div>
+
+                    </div>
+
+                </div>*@
+            }
+        </div>
+
+                    </div>
+</section>
+
+<div class="modal fade" id="AddOrEdit">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title">Hire Crew</h4>
+            </div>
+            <div class="modal-body">
+                <table id="data-table" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Principal</th>
+                            <th>Vessel</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+
+                </table>
+
+
+
+            </div>
+
+        </div>
+
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!--endregion -->
+
+@section Scripts {
+    @RenderPage("~/Views/Crews/ApplicantScript.cshtml")
+}

@@ -1,0 +1,92 @@
+﻿@model SeaBase.Models.Announcement
+@Styles.Render("~/AdminLTE/plugins/datatables/styles")
+@Styles.Render("~/AdminLTE/plugins/bootstrap-wysihtml5/styles")
+
+@{
+    ViewBag.Title = "Announcements";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="box">
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs pull-right">
+                <li class="active"><a href="#tab_1-1" data-toggle="tab">@ViewBag.Title</a></li>
+                @*<li><a href="#tab_2-2" data-toggle="tab">Individual Payor</a></li>*@
+            </ul>
+            <div class="tab-content">
+                <table id="data-table" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Announcement</th>
+                            <th>Status</th>
+                            <th>File</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <!-- /.tab-content -->
+        </div>
+    </div>
+    <!-- /.box-body -->
+</div>
+
+<div class="modal fade" id="AddOrEdit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("Save", "JobOpenings", FormMethod.Post,
+                    new { id = "form0", name = "form0", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "Please fix the following errors.")
+                    <div class="form-group col-md-12">
+                        @Html.LabelFor(m => m.AnnouncementName)
+                        @Html.TextBoxFor(m => m.AnnouncementName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.AnnouncementName)
+                    </div>
+
+
+
+                    <div class="form-group col-md-12">
+                        @Html.LabelFor(m => m.Description)
+                        <textarea class="textarea" id="Description" name="Description" placeholder="Place some text here"
+                                  style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;"></textarea>
+                        @Html.ValidationMessageFor(m => m.Description)
+                    </div>
+                    
+                    <div class="form-group col-md-6">
+                            <label>File Attachment</label>
+                        <input id="FileAttachment" title="Upload a attachment"
+                               type="file" name="FileAttachment" />
+                        </div>
+                    <div>&nbsp;</div>
+                    @Html.HiddenFor(m => m.Id)
+
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary" id="btnSave">Save</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+@section Scripts {
+    @RenderPage("~/Views/Announcements/ListScript.cshtml")
+}
+
+
+
