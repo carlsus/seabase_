@@ -67,6 +67,7 @@ namespace SeaBase.Controllers
                                         c.DocumentNo
                                     }).ToList();
             rd.Subreports["CV_StandardTravelDocuments.rpt"].SetDataSource(travel_documents);
+         
             var work_experience = (from c in _context.CrewWorkExperiences
                                    join d in _context.Ranks on c.RankId equals d.Id
                                    join e in _context.VesselTypes on c.VesselTypeId equals e.Id
@@ -84,6 +85,7 @@ namespace SeaBase.Controllers
                                        ManningAgencyName = f.AgencyName
                                    }).ToList();
             rd.Subreports["CV_StandardWorkExperience.rpt"].SetDataSource(work_experience);
+            
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();
@@ -507,7 +509,7 @@ namespace SeaBase.Controllers
                               c.PassportNo,
                               c.SeamanBookNo,
                               g.PrincipalName,
-                              g.Address,
+                              PrincipalAddress=g.Address,
                               h.VesselName,
                               h.IMONumber,
                               f.PointOfHire,
@@ -528,7 +530,11 @@ namespace SeaBase.Controllers
                               c.PhilhealthNo,
                               c.EmailAddress,
                               Spouse=n.SpouseFirstname + " " + n.SpouseMiddlename + " " + n.SpouseLastname,
-                              MothersMaidenName=n.MothersName
+                              MothersMaidenName=n.MothersName,
+                              c.SRCNo,
+                              c.TelephoneNo,
+                              c.MobileNo,
+                              PrincipalEmailAddress=g.EmailAddress
                           }).ToList();
             rd.SetDataSource(result);
 
@@ -545,5 +551,288 @@ namespace SeaBase.Controllers
 
             return new FileStreamResult(stream, "application/pdf");
         }
+
+        public ActionResult ShowSeafarerInfoSheet(int Id)
+        {
+            TempData["id"] = Id;
+            return Json(new { Success = "Success" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult POEASeafarerInfoSheet()
+        {
+            int id = (int)TempData["id"];
+
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/Reports"), "SeafarerInfoSheet.rpt"));
+            var result = (from c in _context.Crews
+
+                          where c.Id == id
+                          select new
+                          {
+                              c.Id,
+                              c.Firstname,
+                              c.Lastname,
+                              c.MiddleName,
+                              c.CivilStatus,
+                              c.BirthDate,
+                              c.BirthPlace,
+                              c.PassportNo,
+                              c.SeamanBookNo,
+                              c.TelephoneNo
+                              
+                          }).ToList();
+            rd.SetDataSource(result);
+            var beneficiary = (from c in _context.CrewBeneficiaryChildrens
+                                    where c.CrewId == id  && c.Type==0
+                                    select new
+                                    {
+                                        c.Id,
+                                        c.CrewId,
+                                        c.Firstname,
+                                        c.Middlename,
+                                        c.Lastname,
+                                        c.Gender,
+                                        c.Birthdate,
+                                        c.Address,
+                                        c.Relationship
+                                    }).ToList();
+            rd.Subreports["SeafarerBeneficiary.rpt"].SetDataSource(beneficiary);
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+
+
+            rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Portrait;
+            rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA4;
+
+            Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return new FileStreamResult(stream, "application/pdf");
+        }
+
+        //
+        public ActionResult ShowInfoToTheMaster(InfoToTheMasterModel infoToTheMasterModel)
+        {
+            TempData["ittm"] = infoToTheMasterModel;
+            return Json(new { Success = "Success" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult InfoToTheMaster()
+        {
+            InfoToTheMasterModel ittm=(InfoToTheMasterModel) TempData["ittm"];
+
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/Reports"), "InfoToTheMaster.rpt"));
+            var beneficiary = (from c in _context.CrewBeneficiaryChildrens
+                where c.Id == ittm.BeneficiaryId
+                select c).SingleOrDefault();
+            var allotee = (from c in _context.CrewAllotees
+                join d in _context.Banks on c.BankId equals d.Id
+                join e in _context.Branches on c.BranchId equals e.Id
+                where c.Id == ittm.AlloteeId
+                select c).SingleOrDefault();
+            var allotee_result = _context.CrewAllotees.Where(m => m.CrewId == ittm.Id).ToList();
+            double total_allotee = 0;
+            
+            foreach (var a in allotee_result)
+            {
+                total_allotee += a.Allotment;
+            }
+            var result = (from c in _context.Crews
+                          from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
+                                          .DefaultIfEmpty()
+                          //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
+                          join e in _context.Ranks on d.RankId equals e.Id
+                          join f in _context.Embarkations on d.EmbarkationId equals f.Id
+                          join g in _context.Principals on f.PrincipalId equals g.Id
+                          join h in _context.Vessels on f.VesselId equals h.Id
+                          join i in _context.AirPorts on f.DepartureAirportId equals i.Id
+                          join j in _context.Flags on h.FlagId equals j.Id
+                          from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
+                                          .DefaultIfEmpty()
+                          from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
+                                          .DefaultIfEmpty()
+                          where c.Id == ittm.Id
+                          select new
+                          {
+                              c.Id,
+                              c.Firstname,
+                              c.Lastname,
+                              c.MiddleName,
+                              c.Nationality,
+                              c.Religion,
+                              c.CivilStatus,
+                              RankName = e.RankName,
+                              c.BirthDate,
+                              c.BirthPlace,
+                              c.PassportNo,
+                              c.SeamanBookNo,
+                              g.PrincipalName,
+                              g.Address,
+                              h.VesselName,
+                              h.IMONumber,
+                              f.PointOfHire,
+                              g.CBA,
+                              i.AirPortName,
+                              f.DepartureDate,
+                              f.EmbarkationDate,
+                              j.FlagName,
+                              MonthlySalary = k.Monthly,
+                              OvertimeSalary = l.Monthly,
+                              f.ContractDuration,
+                              OverTimeRemarks = l.Remarks,
+                              BeneficiaryName = beneficiary.Firstname + " " + beneficiary.Middlename + " " + beneficiary.Lastname,
+                              BeneficiaryRelationship=beneficiary.Relationship,
+                              AccountName=allotee.AccountName,
+                              AlloteeRelationship=allotee.Relationship,
+                              BankName="sddsf.",
+                              BranchName="sdfs",
+                              AccountNo=allotee.AccountNo,
+                              WageTotal = k.Monthly+l.Monthly,
+                              WageAllotment = total_allotee,
+                              WagePayOnBoard = (k.Monthly + l.Monthly)-total_allotee
+
+                          }).ToList();
+            rd.SetDataSource(result);
+
+            var travel_documents = (from c in _context.CrewTravelDocuments
+                                    join d in _context.Documents on c.DocumentId equals d.Id
+                                    where c.CrewId == ittm.Id
+                                    select new
+                                    {
+                                        c.Id,
+                                        c.CrewId,
+                                        c.PlaceIssued,
+                                        c.IssuedBy,
+                                        c.ExpiryDate,
+                                        c.IssueDate,
+                                        d.DocumentName,
+                                        c.DocumentNo
+                                    }).ToList();
+            rd.Subreports["TravelDocuments.rpt"].SetDataSource(travel_documents);
+            var trainings = (from c in _context.CrewTrainingCertificates
+                                    join d in _context.Seminars on c.SeminarId equals d.Id
+                                    join e in _context.TrainingCenters on c.TrainingCenterId equals e.Id
+                                    where c.CrewId == ittm.Id
+                                    select new
+                                    {
+                                        c.Id,
+                                        c.CrewId,
+                                        c.PlaceIssued,
+                                        c.IssuedBy,
+                                        c.ExpiryDate,
+                                        c.IssueDate,
+                                        d.SeminarName,
+                                        e.TrainingCenterName
+                                    }).ToList();
+            rd.Subreports["Trainings.rpt"].SetDataSource(trainings);
+            var flagstatedocument = (from c in _context.CrewFlagStateDocuments
+                             join d in _context.Flags on c.FlagId equals d.Id
+                             where c.CrewId == ittm.Id
+                             select new
+                             {
+                                 c.Id,
+                                 c.CrewId,
+                                 c.IssuedBy,
+                                 c.ExpiryDate,
+                                 c.IssueDate,
+                                d.FlagName
+                             }).ToList();
+            rd.Subreports["FlagStateDocuments.rpt"].SetDataSource(flagstatedocument);
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+
+
+            rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Portrait;
+            rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA4;
+
+            Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return new FileStreamResult(stream, "application/pdf");
+        }
+        //SPA
+
+        public ActionResult ShowSPA(int id)
+        {
+            TempData["id"] = id;
+            return Json(new { Success = "Success" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult SPA()
+        {
+            int id=(int) TempData["id"];
+           
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/Reports"), "SPA.rpt"));
+            var result = (from c in _context.Crews
+                          from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
+                                          .DefaultIfEmpty()
+                          //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
+                          join e in _context.Ranks on d.RankId equals e.Id
+                          join f in _context.Embarkations on d.EmbarkationId equals f.Id
+                          join g in _context.Principals on f.PrincipalId equals g.Id
+                          join h in _context.Vessels on f.VesselId equals h.Id
+                          join i in _context.AirPorts on f.DepartureAirportId equals i.Id
+                          join j in _context.Flags on h.FlagId equals j.Id
+                          from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
+                                          .DefaultIfEmpty()
+                          from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
+                                          .DefaultIfEmpty()
+                          join m in _context.VesselTypes on h.VesselTypeId equals m.Id
+                          where c.Id == id
+                          select new
+                          {
+                              c.Id,
+                              c.Firstname,
+                              c.Lastname,
+                              c.MiddleName,
+                              c.Nationality,
+                              c.Religion,
+                              c.CivilStatus,
+                              RankName = e.RankName,
+                              c.BirthDate,
+                              c.BirthPlace,
+                              c.PassportNo,
+                              c.SeamanBookNo,
+                              g.PrincipalName,
+                              PrincipalAddress=g.Address,
+                              g.Address,
+                              h.VesselName,
+                              h.IMONumber,
+                              f.PointOfHire,
+                              g.CBA,
+                              i.AirPortName,
+                              f.DepartureDate,
+                              f.EmbarkationDate,
+                              j.FlagName,
+                              MonthlySalary = k.Monthly,
+                              OvertimeSalary = l.Monthly,
+                              f.ContractDuration,
+                              OverTimeRemarks = l.Remarks,
+                              h.GTR,
+                              h.YearBuilt,
+                              h.ClassificationSociety,
+                              m.VesselTypeName,
+                              
+                          }).ToList();
+            rd.SetDataSource(result);
+
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+
+
+            rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Portrait;
+            rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA4;
+
+            Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return new FileStreamResult(stream, "application/pdf");
+        }
+
     }
 }

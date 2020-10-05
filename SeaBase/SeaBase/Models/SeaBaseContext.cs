@@ -77,15 +77,15 @@ namespace SeaBase.Models
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CrewAddress>()
-                .HasOptional(a => a.Crew)
-                .WithOptionalDependent()
-                .WillCascadeOnDelete(true);
+            //modelBuilder.Entity<CrewAddress>()
+            //    .HasOptional(a => a.Crew)
+            //    .WithOptionalDependent()
+            //    .WillCascadeOnDelete(true);
 
-            modelBuilder.Entity<CrewFamilyBackground>()
-                .HasOptional(a => a.Crew)
-                .WithOptionalDependent()
-                .WillCascadeOnDelete(true);
+            //modelBuilder.Entity<CrewFamilyBackground>()
+            //    .HasOptional(a => a.Crew)
+            //    .WithOptionalDependent()
+            //    .WillCascadeOnDelete(true);
         }
     }
 }

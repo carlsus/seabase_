@@ -96,6 +96,14 @@ namespace SeaBase.Controllers
             return Json(form1, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public JsonResult AddAllotee(CrewAllotee form1)
+        {
+            _context.CrewAllotees.Add(form1);
+            _context.SaveChanges();
+
+            return Json(form1, JsonRequestBehavior.AllowGet);
+        }
 
         //education
         [HttpGet]
@@ -848,6 +856,16 @@ namespace SeaBase.Controllers
             if (itemToRemove != null)
             {
                 _context.Crews.Remove(itemToRemove);
+                _context.SaveChanges();
+            }
+        }
+        public void DeleteAllotee(int id)
+        {
+            var itemToRemove = _context.CrewAllotees.SingleOrDefault(x => x.Id == id); //returns a single item.
+
+            if (itemToRemove != null)
+            {
+                _context.CrewAllotees.Remove(itemToRemove);
                 _context.SaveChanges();
             }
         }

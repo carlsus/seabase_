@@ -9,7 +9,7 @@ namespace SeaBase.Models
 {
     public class CrewFamilyBackground
     {
-        [ForeignKey("Crew")]
+        [Key, ForeignKey("Crew")]
         public int CrewId { get; set; }
         [StringLength(50)]
         [Display(Name = "Father's Name")]

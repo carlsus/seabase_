@@ -109,7 +109,7 @@
                 <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Sex</th>
+                    <th>Gender</th>
                     <th>Birth Date</th>
                     <th>Age</th>
                     <th>Relationship</th>
@@ -128,10 +128,10 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                        <th>Address</th>
+                        <th>Gender</th>
                         <th>Birth Date</th>
                         <th>Age</th>
-                        <th>Gender</th>
+                        <th>RElationship</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -272,8 +272,12 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control" id="cbirthdate" name="bbirthdate" />
+                                <input type="text" class="form-control" id="cbirthdate" name="bbirthdate"/>
                             </div>
+                        </div>
+                        <div class="form-group col-sm-4">
+                            <label>Relationship</label>
+                            <input type="text" class="form-control" id="crelationship" name="crelationship" />
                         </div>
                         <div class="form-group col-sm-12">
                             <label>Address</label>
@@ -451,7 +455,7 @@
         },
         "columns": [
             { data: "Name" },
-            { data: "Address" },
+            { data: "Gender" },
             {
                 'data': 'Birthdate',
                 'render': function (data) {
@@ -459,7 +463,7 @@
                 }
             },
             { data: "Age" },
-            { data: "Gender" },
+            { data: "Relationship" },
 
             {
                 data: "Id",
@@ -486,6 +490,7 @@
                 Lastname: $('#clastname').val(),
                 Address: $('#caddress').val(),
                 Birthdate: $('#cbirthdate').val(),
+                Relationship: $('#crelationship').val(),
                 Gender: $('#cGender').val(),
                 Type:$('#Typec').val(),
                 CrewId: $('#Id').val()

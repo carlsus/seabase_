@@ -1,8 +1,8 @@
 ﻿
-
+@model SeaBase.ViewModel.ApplicantViewModel
 
 <div class="panel panel-default">
-    <div class="panel-heading"> Salary</div>
+    <div class="panel-heading"> Allotee</div>
     <div class="panel-body">
         <div class="tab-content">
             <table id="data-table-allotee" class="table table-bordered table-hover">
@@ -12,7 +12,6 @@
                         <th>Relationship</th>
                         <th>Bank Name</th>
                         <th>Account No.</th>
-                        <th>Address</th>
                         <th>Bank Branch</th>
                         <th>Allotment</th>
                         <th></th>
@@ -24,10 +23,42 @@
     </div>
 </div>
 
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title">
+            Salary Scale <label id="SalaryName"></label>
+        </h3>
+
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+
+        <div class="form-inline">
+            
+        </div>
+        &nbsp;
+        <table id="data-table-crew-salary" class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Rank/Position</th>
+                    <th>Description</th>
+                    <th>Monthly (USD)</th>
+                    <th>Daily (USD)</th>
+                    <th>Percentage</th>
+                    <th>Days</th>
+                    <th>Remarks</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+    </div>
+    <!-- ./box-body -->
+</div>
 
 <!-- #region modal -->
 
-@*<div class="modal fade" id="AddOrEditDocumentLibrary">
+<div class="modal fade" id="AddOrEditAllotee">
     <div class="modal-dialog">
 
         <div class="modal-content">
@@ -35,7 +66,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="modal-title"></h4>
+                <h4 class="modal-title" id="modal-title">New Allotee</h4>
             </div>
             <div class="modal-body">
 
@@ -44,21 +75,41 @@
 
 
                         <div class="form-group">
-                            <label>Document Name/Type</label>
-                            <input type="text" class="form-control" id="dlDocumentNameType" name="dlDocumentNameType" />
+                            <label>Account Name</label>
+                            <input type="text" class="form-control" id="alloteeaccountname" name="alloteeaccountname" />
                         </div>
                         <div class="form-group">
-                            <label>File Attachment</label>
-                            <input id="DocumentFileAttachment" title="Upload a attachment"
-                                   type="file" name="DocumentFileAttachment" />
+                            <label>Relationship</label>
+                            <input type="text" class="form-control" id="alloteerelationship" name="alloteerelationship" />
                         </div>
+                        <div class="form-group">
+                            <label>Bank Name</label>
+                            @Html.DropDownList("alloteeBankId", new SelectList(Model.Banks, "Id", "BankName"), "Select Branch", new { @class = "form-control" })
 
 
+                        </div>
+                        <div class="form-group">
+                            <label>Bank Branch</label>
+                            @Html.DropDownList("alloteeBranchId", new SelectList(Model.Branches, "Id", "BranchName"), "Select Branch", new { @class = "form-control" })
+
+
+                        </div>
+                        <div class="form-group">
+                            <label>Account No.</label>
+                            <input type="text" class="form-control" id="alloteeaccountno" name="alloteeaccountno"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input type="text" class="form-control" id="alloteeaddress" name="alloteeaddress"/>
+                        </div>
+                        <div class="form-group">
+                            <label>Allotment</label>
+                            <input type="text" class="form-control" id="alloteeallotment" name="alloteeallotment" />
+                        </div>
                     </div>
-                    @Html.AntiForgeryToken()
                     &nbsp;
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" id="btnDocumentLibrary">Save</button>
+                        <button type="button" class="btn btn-primary" id="btnSaveAllotee">Save</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </form>
@@ -68,17 +119,18 @@
         <!-- /.modal-content -->
     </div>
     <!-- /.modal-dialog -->
-</div>*@
+</div>
 
 <!-- #endregion -->
 
-<script>
+<script type="text/javascript">
     var table_allotee;
-    $(document).ready(function () {
+    var sd = [];
+    $().ready(function () {
         table_allotee = $("#data-table-allotee").DataTable({
             "scrollX": true,
             "ajax": {
-                "url": "@Url.Action("GetDocumentLibrary", "Applicants")",
+                "url": "@Url.Action("GetAllotee", "Crews")",
                 "type": "GET",
                 "datatype": "application/json",
                 "data": { 'id': $('#Id').val() }
@@ -92,7 +144,7 @@
                         text: "New Allotee",
                         action: function (e, dt, node, config) {
                             $('#modal-title').text("Add New");
-                            $("#AddOrEditDocumentLibrary").modal();
+                            $("#AddOrEditAllotee").modal();
                         }
                     }
                 ],
@@ -107,13 +159,13 @@
                 }
             },
             "columns": [
-                { data: "DocumentNameType" },
-                {
-                    data: "FilePath",
-                    render: function (data, type, row, meta) {
-                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
-                    }
-                },
+                { data: "AccountName" },
+                { data: "Relationship" },
+                { data: "BankName" },
+                { data: "AccountNo" },
+                { data: "BranchName" },
+                { data: "Allotment" },
+                
                 {
                     data: "Id",
                     render: function (data) {
@@ -124,25 +176,59 @@
 
         });
 
-        $('#btnDocumentLibrary').on('click',function (e) {
+        $.ajax({
+            type: 'GET',
+            url: "@Url.Action("GetSalaryScaleDetails", "Crews")",
+            contentType: 'application/json; charset=utf-8',
+        data:{'id':$('#Id').val()},
+        dataType: 'json',
+        success: function(data) {
+            sd = [];
+            $.each(data, function(i, item) {
+                var db_data = {
+                    Id: item.Id,
+                    RankId: item.RankId,
+                    RankName: item.RankName,
+                    Description: item.Description,
+                    Monthly: item.Monthly,
+                    Daily: item.Daily,
+                    Percentage: item.Percentage,
+                    Days: item.Days,
+                    Remarks: item.Remarks,
+                    AddToTotal: item.AddToTotal
+                };
+                sd.push(db_data);
+            });
+            SalaryScale();
+        }
+    });
+        $('#btnSaveAllotee').on('click', function(e) {
             e.preventDefault();
 
             var formData = new FormData();
-            var files = $('#DocumentFileAttachment')[0].files[0];
-            formData.append('FileAttachment', files);
-            formData.append('DocumentNameType', $('#dlDocumentNameType').val());
+           
+            formData.append('Address', $('#alloteeaddress').val());
+            formData.append('BankId', $('#alloteeBankId').val());
+            formData.append('BranchId', $('#alloteeBranchId').val());
+            formData.append('AccountName', $('#alloteeaccountname').val());
+            formData.append('AccountNo', $('#alloteeaccountno').val());
+            formData.append('Relationship', $('#alloteerelationship').val());
+            formData.append('Allotment', $('#alloteeallotment').val());
+            
+
             formData.append('CrewId', $('#Id').val());
             $.ajax({
                 type: "POST",
-                url: "/Applicants/AddDocumentLibrary",
+                url: "/Applicants/AddAllotee",
                 data: formData,
                 contentType: false,
                 processData: false,
                 dataType: "json",
                 success: function (response) {
-                    $('#AddOrEditDocumentLibrary').modal('hide');
-                    $('#dlDocumentNameType').val('');
-                    table_document_library.ajax.reload();
+                    $('#AddOrEditAllotee').modal('hide');
+                    $('#vVaccineId').val('');
+                    $('#vImmunizationDate').val('');
+                    table_allotee.ajax.reload();
                 },
                 failure: function (response) {
                     alert(response.responseText);
@@ -153,24 +239,81 @@
             });
         });
 
+    });
+  
+    function SalaryScale() {
+        $("#data-table-crew-salary").find("tr:gt(0)").remove();
+        var table_salary = document.getElementById("data-table-crew-salary");
 
+        var markup;
+        var total_row;
 
-        });
-
-
-        function remove_document_library(id) {
-            bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-                if (result) {
-                    $.ajax({
-                        url: "@Url.Action("DeleteDocumentLibrary","Applicants")/" + id,
-
-                        success: function () {
-                            table_document_library.ajax.reload();
-                        }
-                    });
-                }
+        var result = sd.reduce(function (r, a) {
+            r[a.RankName] = r[a.RankName] || [];
+            r[a.RankName].push(a);
+            return r;
+        }, Object.create(null));
+        $.each(result, function (i, item) {
+            var totalmonthly = 0;
+            var totaldaily = 0;
+            //var a = table_salary.insertRow().innerHTML = "<tr><td>" + item[0]["RankName"] + "</td>";
+            var newArray = sd.filter(function (el) {
+                return el.RankName == item[0]["RankName"];
             });
-        }
+            console.log(newArray);
+            $.each(newArray, function (j, detail) {
+                if (j == 0) {
+                    markup = "<tr><td>" + item[0]["RankName"] + "</td>";
+                } else {
+                    markup = "<tr><td></td>";
+                }
+                
+                if (detail.AddToTotal == 1) {
+                    totalmonthly += parseFloat(detail.Monthly);
+                    totaldaily += parseFloat(detail.Daily);
+                    markup += "<td>" + detail.Description + "</td>" +
+                        "<td>" + detail.Monthly + "</td>" +
+                        "<td>" + detail.Daily + "</td>" +
+                        "<td>" + detail.Percentage + "</td>" +
+                        "<td>" + detail.Days + "</td>" +
+                        "<td>" + detail.Remarks + "</td></tr>";
+                    $('#data-table-crew-salary tbody').append(markup);
+                } else {
+                    markup += "<td>" + detail.Description + "</td>" +
+                        "<td>" + detail.Monthly + "</td>" +
+                        "<td>" + detail.Daily + "</td>" +
+                        "<td>" + detail.Percentage + "</td>" +
+                        "<td>" + detail.Days + "</td>" +
+                        "<td>" + detail.Remarks + "</td>,/tr>";
+                    $('#data-table-crew-salary tbody').append(markup);
+                }
+
+            });
+            total_row = "<tr><td></td><td><label>Total</label></td>" +
+                "<td><label>" + totalmonthly.toFixed(2) + "</label></td>" +
+                "<td><label>" + totaldaily.toFixed(2) + "</label></td>" +
+                "<td></td>" +
+                "<td></td>" +
+                "<td></td>";
+            $("#data-table-crew-salary tbody").append(total_row);
+            console.log(sd);
+        });
+    }
+
+
+    function remove_document_library(id) {
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("DeleteAllotee", "Applicants")/" + id,
+
+                    success: function () {
+                        table_allotee.ajax.reload();
+                    }
+                });
+            }
+        });
+    }
 </script>
 
 

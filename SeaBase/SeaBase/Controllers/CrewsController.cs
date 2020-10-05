@@ -69,8 +69,30 @@ namespace SeaBase.Controllers
             return Json(new { data = seaservice }, JsonRequestBehavior.AllowGet);
 
         }
-        
 
+        [HttpGet]
+        public ActionResult GetAllotee(int id)
+        {
+            var allotee = (from c in _context.CrewAllotees
+                              join d in _context.Branches on c.BranchId equals d.Id
+                              join e in _context.Banks on c.BankId equals e.Id
+                              where c.CrewId == id
+                              select new
+                              {
+                                  c.Id,
+                                  c.CrewId,
+                                  c.AccountName,
+                                  c.Allotment,
+                                  c.Relationship,
+                                  d.BranchName,
+                                  e.BankName,
+                                  c.AccountNo
+                              }
+                ).ToList();
+            return Json(new { data = allotee }, JsonRequestBehavior.AllowGet);
+
+        }
+        
         [HttpGet]
         public ActionResult GetPrincipalVessel()
         {
@@ -199,7 +221,7 @@ namespace SeaBase.Controllers
 
         }
 
-
+        //views
         public ActionResult View(int id)
         {
             var crew = _context.Crews
@@ -210,9 +232,32 @@ namespace SeaBase.Controllers
             var familybackground = _context.CrewFamilyBackgrounds.SingleOrDefault(c => c.CrewId == id);
             var rank = _context.Ranks.ToList();
             var country = _context.Countries.ToList();
+            var beneficiary = (from c in _context.CrewBeneficiaryChildrens
+                where c.Type == 0
+                select new
+                {
+                    c.Id,
+                    Name=c.Firstname + " " + c.Middlename + " " + c.Lastname + "(" + c.Relationship +")",
+                    c.Relationship
+                }).ToList();
+            List<Beneficiary> ben=new List<Beneficiary>();
+            foreach (var i in beneficiary)
+            {
+                ben.Add(new Beneficiary
+                {
+                    Id = i.Id,
+                    Name = i.Name,
+                    Relationship = i.Relationship
+                    
+                });
+            }
             var viewModel = new ApplicantViewModel
             {
-                Users = _context.Users.ToList(),
+                Banks = _context.Banks.ToList(),
+                Branches = _context.Branches.ToList(),
+                Beneficiaries = ben,
+                CrewAllotees = _context.CrewAllotees.Where(m=>m.CrewId==crew.Id).ToList(),
+                Users = _context.Users.Where(m=>m.BuiltIn==0).ToList(),
                 Agents = _context.Agents.ToList(),
                 ManningAgencies = _context.ManningAgencies.ToList(),
                 VesselTypes = _context.VesselTypes.ToList(),
@@ -300,7 +345,35 @@ namespace SeaBase.Controllers
         }
 
 
+        [HttpGet]
+        public ActionResult GetSalaryScaleDetails(int id)
+        {
+            var result = (from c in _context.EmbarkationDetailses
+                          join d in _context.Embarkations on c.EmbarkationId equals d.Id
+                          join e in _context.Vessels on d.VesselId equals e.Id
+                          join g in _context.Ranks on c.RankId equals g.Id
+                          from f in _context.VesselSalaryDetails.Where(x => e.Id == x.VesselId &&  x.RankId == c.RankId )
+                                          .DefaultIfEmpty()
 
+                          where c.CrewId == id
+                          select new
+                          {
+                              c.Id,
+                              f.VesselId,
+                              c.RankId,
+                              g.RankName,
+                              f.Description,
+                              f.Monthly,
+                              f.Daily,
+                              f.Percentage,
+                              f.Days,
+                              c.Remarks,
+                              f.AddToTotal
+                          });
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
+        }
         
     }
 }

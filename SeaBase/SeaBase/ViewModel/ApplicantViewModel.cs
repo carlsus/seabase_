@@ -24,6 +24,10 @@ namespace SeaBase.ViewModel
         public CrewBeneficiaryChildren CrewBeneficiaryChildren { get; set; }
         public IEnumerable<User>  Users{ get; set; }
         public IEnumerable<Agent>  Agents{ get; set; }
+        public IEnumerable<CrewAllotee>  CrewAllotees{ get; set; }
+        public IEnumerable<Beneficiary>  Beneficiaries{ get; set; }
+        public IEnumerable<Branch>  Branches{ get; set; }
+        public IEnumerable<Bank>  Banks{ get; set; }
 
         public string RankName { get; set; }
         [Key]

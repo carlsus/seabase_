@@ -10,11 +10,11 @@ namespace SeaBase.Models
     {
         public int Id { get; set; }
         [Required]
-        [StringLength(50, MinimumLength = 5)]
+        [StringLength(50)]
         [Display(Name = "Port Name")]
         public string AirPortName { get; set; }
         [Required]
-        [StringLength(10, MinimumLength = 5)]
+        [StringLength(10)]
         [Display(Name = "Port Code")]
         public string AirPortCode { get; set; }
         [Required]

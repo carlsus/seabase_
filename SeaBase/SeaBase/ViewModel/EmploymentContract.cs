@@ -25,6 +25,7 @@ namespace SeaBase.ViewModel
 
         public string PrincipalName { get; set; }
         public string PrincipalAddress { get; set; }
+        public string PrincipalEmailAddress { get; set; }
         public int  ContractDuration { get; set; }
         public string VesselName { get; set; }
         public string VesselAddress { get; set; }
@@ -54,5 +55,19 @@ namespace SeaBase.ViewModel
         public string PhilhealthNo { get; set; }
         public string Spouse { get; set; }
         public string MothersMaidenName { get; set; }
+
+        public string AccountName { get; set; }
+        public string AlloteeRelationship { get; set; }
+        public string BankName { get; set; }
+        public string BranchName { get; set; }
+        public string AccountNo { get; set; }
+
+
+        public string BeneficiaryName { get; set; }
+        public string BeneficiaryRelationship { get; set; }
+
+        public double WageTotal { get; set; }
+        public double WagePayOnBoard { get; set; }
+        public double WageAllotment { get; set; }
     }
 }
