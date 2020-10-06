@@ -17,7 +17,7 @@ namespace SeaBase.Models
         [Display(Name = "Application Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime ApplicationDate { get; set; }
+        public DateTime? ApplicationDate { get; set; }
         public int VesselId { get; set; }
         [Required]
         [Display(Name = "Rank")]
@@ -28,7 +28,7 @@ namespace SeaBase.Models
         [StringLength(50, MinimumLength = 2)]
         [Display(Name = "First Name")]
         public string Firstname { get; set; }
-        [StringLength(50, MinimumLength = 2)]
+        [StringLength(50, MinimumLength = 1)]
         [Display(Name = "Middlename")]
         public string MiddleName { get; set; }
         [Required]
@@ -69,7 +69,7 @@ namespace SeaBase.Models
             Male,
             Female
         }
-
+        [Required]
         public string Gender { get; set; }
         public enum CivilStatusType
         {
@@ -78,6 +78,7 @@ namespace SeaBase.Models
             Widowed,
             Separated
         }
+        [Required]
         [StringLength(10)]
         [Display(Name = "Civil Status")]
         public string CivilStatus { get; set; }
@@ -86,7 +87,7 @@ namespace SeaBase.Models
         public string BirthPlace { get; set; }
         [Required]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         [StringLength(20)]
         public string Nationality { get; set; }
         [StringLength(20)]
@@ -126,7 +127,7 @@ namespace SeaBase.Models
         public string KinFullName { get; set; }
         [Display(Name = "Birthdate")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime KinBirthDate { get; set; }
+        public DateTime? KinBirthDate { get; set; }
         [StringLength(10)]
         [Display(Name = "Relationship")]
         public string KinRelationship { get; set; }
@@ -141,27 +142,27 @@ namespace SeaBase.Models
         public string KinHPNo { get; set; }
 
         //UNIFORMS
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
         [Display(Name = "Cover-All")]
-        public int CoverAll { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string CoverAll { get; set; }
         [Display(Name = "Safety Shoes")]
-        public int SafetyShoes { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string SafetyShoes { get; set; }
         [Display(Name = "White Polo")]
-        public int WhitePolo { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string WhitePolo { get; set; }
         [Display(Name = "Black Pants")]
-        public int BlackPants { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string BlackPants { get; set; }
         [Display(Name = "Winter Jacket")]
-        public int WinterJacket { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string WinterJacket { get; set; }
         [Display(Name = "Winter Pants")]
-        public int WinterPants { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string WinterPants { get; set; }
         [Display(Name = "Raincoat")]
-        public int Raincoat { get; set; }
+        [StringLength(20)]
+        public string Raincoat { get; set; }
 
         //government info
         [StringLength(20)]
@@ -178,13 +179,13 @@ namespace SeaBase.Models
         public string PSUIdNo { get; set; }
         [Display(Name = "PSU Issuance Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime PSUIssuanceDate { get; set; }
+        public DateTime? PSUIssuanceDate { get; set; }
         [StringLength(20)]
         [Display(Name = "NBI No.")]
         public string NBINo { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "NBI Validity")]
-        public DateTime NBIValidity { get; set; }
+        public DateTime? NBIValidity { get; set; }
 
 
 

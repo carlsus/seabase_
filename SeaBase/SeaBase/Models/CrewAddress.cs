@@ -29,6 +29,7 @@ namespace SeaBase.Models
         public string AddressTelephoneNo { get; set; }
 
         [ForeignKey("Country")]
+        [Display(Name = "Country")]
         public int CountryId { get; set; }
         public Country Country { get; set; }
         public  Crew Crew { get; set; }

@@ -470,10 +470,11 @@
             $("#imgupload").attr('src', "/Images/default.jpeg");
         } else {
             $("#imgupload").attr('src', "/Images/" + $('#ImagePath').val());
-        }
-        
-        
+        }  
     };
+    window.addEventListener('load', function () {
+        $('#loading').hide();
+    });
 </script>
 @Scripts.Render("~/AdminLTE/plugins/datepicker/script")
 @Scripts.Render("~/AdminLTE/plugins/datatables/script")

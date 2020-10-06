@@ -25,7 +25,7 @@ namespace SeaBase.Models
         [Display(Name = "Departure Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DepartureDate { get; set; }
+        public DateTime? DepartureDate { get; set; }
 
         public int DepartureAirportId { get; set; }
         public int PortOfEmbarkationId { get; set; }
@@ -35,14 +35,14 @@ namespace SeaBase.Models
         [Display(Name = "Embarkation Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EmbarkationDate { get; set; }
+        public DateTime? EmbarkationDate { get; set; }
 
 
         [Required]
         [Display(Name = "Tentative Arrival")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime TentativeDate { get; set; }
+        public DateTime? TentativeDate { get; set; }
 
         public int ArrivalAirportId { get; set; }
         public int PortOfDisembarkationId { get; set; }
@@ -50,8 +50,8 @@ namespace SeaBase.Models
         [Display(Name = "Disembarkation Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime DisembarkationDate { get; set; }
-
+        public DateTime? DisembarkationDate { get; set; }
+        [Required]
         [Display(Name = "Contract Duration")]
         public int ContractDuration { get; set; }
         [Display(Name = "Point of Hire")]

@@ -73,7 +73,7 @@ namespace SeaBase.Controllers
         {
             return View("List");
         }
-
+        //views
         public ActionResult View(int id)
         {
             var embarkation = _context.Embarkations
@@ -87,14 +87,16 @@ namespace SeaBase.Controllers
                 PrincipalId = embarkation.PrincipalId,
                 VesselId = embarkation.VesselId,
                 DepartureAirportId = embarkation.DepartureAirportId,
-                DepartureDate = embarkation.DepartureDate,
+                DepartureDate = embarkation.DepartureDate ?? null,
                 PortOfEmbarkationId = embarkation.PortOfEmbarkationId,
-                EmbarkationDate = embarkation.EmbarkationDate,
+                EmbarkationDate = embarkation.EmbarkationDate??null,
                 ArrivalAirportId = embarkation.ArrivalAirportId,
-                TentativeDate = embarkation.TentativeDate,
+                TentativeDate = embarkation.TentativeDate ?? null,
                 PortOfDisembarkationId = embarkation.PortOfDisembarkationId,
-                DisembarkationDate = embarkation.DisembarkationDate,
-                ContractDuration = embarkation.ContractDuration
+                DisembarkationDate = embarkation.DisembarkationDate ?? null,
+                ContractDuration = embarkation.ContractDuration,
+                PointOfHire = embarkation.PointOfHire,
+                Remarks = embarkation.Remarks
             };
 
             return View("EmbarkationForm", viewModel);

@@ -1489,6 +1489,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\loader.css" />
+    <Content Include="Content\sample.css" />
     <Content Include="Db\09182020.sql" />
     <Content Include="Db\09232020.sql" />
     <Content Include="favicon.ico" />

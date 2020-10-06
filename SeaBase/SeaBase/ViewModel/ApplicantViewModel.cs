@@ -37,7 +37,7 @@ namespace SeaBase.ViewModel
         [Display(Name = "Application Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime ApplicationDate { get; set; }
+        public DateTime? ApplicationDate { get; set; }
         public int VesselId { get; set; }
         [Required]
         [Display(Name = "Rank")]
@@ -89,7 +89,7 @@ namespace SeaBase.ViewModel
             Male,
             Female
         }
-
+        [Required]
         public string Gender { get; set; }
         public enum CivilStatusType
         {
@@ -98,6 +98,7 @@ namespace SeaBase.ViewModel
             Widowed,
             Separated
         }
+        [Required]
         [StringLength(10)]
         [Display(Name = "Civil Status")]
         public string CivilStatus { get; set; }
@@ -106,7 +107,7 @@ namespace SeaBase.ViewModel
         public string BirthPlace { get; set; }
         [Required]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         [StringLength(20)]
         public string Nationality { get; set; }
         [StringLength(20)]
@@ -146,7 +147,7 @@ namespace SeaBase.ViewModel
         public string KinFullName { get; set; }
         [Display(Name = "Birthdate")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime KinBirthDate { get; set; }
+        public DateTime? KinBirthDate { get; set; }
         [StringLength(10)]
         [Display(Name = "Relationship")]
         public string KinRelationship { get; set; }
@@ -161,27 +162,27 @@ namespace SeaBase.ViewModel
         public string KinHPNo { get; set; }
 
         //UNIFORMS
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
         [Display(Name = "Cover-All")]
-        public int CoverAll { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string CoverAll { get; set; }
         [Display(Name = "Safety Shoes")]
-        public int SafetyShoes { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string SafetyShoes { get; set; }
         [Display(Name = "White Polo")]
-        public int WhitePolo { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string WhitePolo { get; set; }
         [Display(Name = "Black Pants")]
-        public int BlackPants { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string BlackPants { get; set; }
         [Display(Name = "Winter Jacket")]
-        public int WinterJacket { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string WinterJacket { get; set; }
         [Display(Name = "Winter Pants")]
-        public int WinterPants { get; set; }
-        [Range(0, int.MaxValue, ErrorMessage = "Please enter valid integer Number")]
+        [StringLength(20)]
+        public string WinterPants { get; set; }
         [Display(Name = "Raincoat")]
-        public int Raincoat { get; set; }
+        [StringLength(20)]
+        public string Raincoat { get; set; }
 
         //government info
         [StringLength(20)]
@@ -198,13 +199,13 @@ namespace SeaBase.ViewModel
         public string PSUIdNo { get; set; }
         [Display(Name = "PSU Issuance Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime PSUIssuanceDate { get; set; }
+        public DateTime? PSUIssuanceDate { get; set; }
         [StringLength(20)]
         [Display(Name = "NBI No.")]
         public string NBINo { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "NBI Validity")]
-        public DateTime NBIValidity { get; set; }
+        public DateTime? NBIValidity { get; set; }
 
         public int IndividualPayingMember { get; set; }
         public string OthersSpecify { get; set; }
@@ -222,23 +223,8 @@ namespace SeaBase.ViewModel
 
         public virtual CrewAddress CrewAddress { get; set; }
         public virtual CrewFamilyBackground CrewFamilyBackground { get; set; }
-        public ApplicantViewModel()
-        {
-            Id = 0;
-        }
+        
 
-        public ApplicantViewModel(Crew crew)
-        {
-            Id = crew.Id;
-            Firstname = crew.Firstname;
-            MiddleName = crew.MiddleName;
-            Lastname = crew.Lastname;
-            RankId = crew.RankId;
-            ContactAddress = crew.ContactAddress;
-            ApplicationDate = crew.ApplicationDate;
-            EmailAddress = crew.EmailAddress;
-            StatusId = crew.StatusId;
-
-        }
+        
     }
 }

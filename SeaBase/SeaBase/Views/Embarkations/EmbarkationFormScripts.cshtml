@@ -67,9 +67,17 @@
                 }
             });
         });
-
-        $('#ContractDuration').change(function() {
-            $('#DisembarkationDate').val(addMonths(new Date($('#EmbarkationDate').val()), this.value).toString());
+        
+        $('#EmbarkationDate').change(function() {
+            if (this.value == "") {
+                $("#ContractDuration").prop('disabled', true);
+            } else {
+                $("#ContractDuration").prop('disabled', false);
+            }
+        });
+        $('#ContractDuration').change(function () {
+            var d = new Date(addMonths(new Date($('#EmbarkationDate').val()), this.value));
+            $('#DisembarkationDate').val(moment(d).format('MM/DD/YYYY'));
 
         });
         function addMonths(date, months) {
@@ -168,6 +176,12 @@
             ]
         });
     }
+    window.addEventListener('load', function () {
+        $('#loading').hide();
+        $('#EmbarkationDate').trigger('change');
+
+    });
 </script>
 @Scripts.Render("~/AdminLTE/plugins/datepicker/script")
 @Scripts.Render("~/AdminLTE/plugins/datatables/script")
+@Scripts.Render("~/AdminLTE/plugins/momentjs/script")

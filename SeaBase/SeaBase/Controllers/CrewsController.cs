@@ -153,7 +153,7 @@ namespace SeaBase.Controllers
                     .Include("CrewAddress")
                     .Include("CrewFamilyBackground")
                     .Single(m => m.Id == crew.Id);
-                update.ApplicationDate = Convert.ToDateTime(crew.ApplicationDate.ToString("yyyy-MM-dd"));
+                update.ApplicationDate = crew.ApplicationDate;//Convert.ToDateTime(crew.ApplicationDate.ToString("yyyy-MM-dd"));
                 update.RankId = crew.RankId;
                 update.StatusId = crew.StatusId;
                 update.VesselId = crew.VesselId;
@@ -172,7 +172,7 @@ namespace SeaBase.Controllers
                 update.MobileNo = crew.MobileNo;
                 update.Gender = crew.Gender;
                 update.CivilStatus = crew.CivilStatus;
-                update.BirthDate = Convert.ToDateTime(crew.BirthDate.ToString("yyyy-MM-dd"));
+                update.BirthDate = crew.BirthDate;//Convert.ToDateTime(crew.BirthDate.ToString("yyyy-MM-dd"));
                 update.BirthPlace = crew.BirthPlace;
                 update.Nationality = crew.Nationality;
                 update.Religion = crew.Religion;
@@ -183,7 +183,7 @@ namespace SeaBase.Controllers
                 update.BloodType = crew.BloodType;
                 update.EyeColor = crew.EyeColor;
                 update.KinFullName = crew.KinFullName;
-                update.KinBirthDate = Convert.ToDateTime(crew.KinBirthDate.ToString("yyyy-MM-dd"));
+                update.KinBirthDate = crew.KinBirthDate;// Convert.ToDateTime(crew.KinBirthDate.ToString("yyyy-MM-dd"));
                 update.KinAddress = crew.KinAddress;
                 update.KinTelNo = crew.KinTelNo;
                 update.KinHPNo = crew.KinHPNo;
@@ -272,7 +272,7 @@ namespace SeaBase.Controllers
                 Licenses = _context.Licenses.ToList(),
                 Ranks = rank,
                 Countries = country,
-                ApplicationDate = crew.ApplicationDate,
+                ApplicationDate = crew.ApplicationDate ?? null,
                 RankId = crew.RankId,
                 StatusId = crew.StatusId,
                 VesselId = crew.VesselId,
@@ -291,7 +291,7 @@ namespace SeaBase.Controllers
                 TelephoneNo = crew.TelephoneNo,
                 Gender = crew.Gender,
                 CivilStatus = crew.CivilStatus,
-                BirthDate = crew.BirthDate,
+                BirthDate = crew.BirthDate ?? null,
                 BirthPlace = crew.BirthPlace,
                 Nationality = crew.Nationality,
                 Religion = crew.Religion,
@@ -303,7 +303,7 @@ namespace SeaBase.Controllers
                 EyeColor = crew.EyeColor,
                 KinFullName = crew.KinFullName,
                 KinRelationship = crew.KinRelationship,
-                KinBirthDate = crew.KinBirthDate,
+                KinBirthDate = crew.KinBirthDate ?? null,
                 KinAddress = crew.KinAddress,
                 KinTelNo = crew.KinTelNo,
                 KinHPNo = crew.KinHPNo,
@@ -318,9 +318,9 @@ namespace SeaBase.Controllers
                 PhilhealthNo = crew.PhilhealthNo,
                 PagibigIdNo = crew.PagibigIdNo,
                 PSUIdNo = crew.PSUIdNo,
-                PSUIssuanceDate = crew.PSUIssuanceDate,
+                PSUIssuanceDate = crew.PSUIssuanceDate ?? null,
                 NBINo = crew.NBINo,
-                NBIValidity = crew.NBIValidity,
+                NBIValidity = crew.NBIValidity ?? null,
                 CrewAddress = crew.CrewAddress,
                 CrewFamilyBackground = crew.CrewFamilyBackground,
                 IndividualPayingMember = crew.IndividualPayingMember,

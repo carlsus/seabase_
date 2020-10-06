@@ -97,15 +97,25 @@
                     <div class="input-group-addon">
                         <i class="fa fa-calendar"></i>
                     </div>
-                    @Html.TextBoxFor(m => m.DisembarkationDate, "{0:MM/dd/yyyy}", new {@class = "form-control"})
+                    @Html.TextBoxFor(m => m.DisembarkationDate, "{0:MM/dd/yyyy}", new { @class = "form-control", @readonly = "readonly" })
                     @Html.ValidationMessageFor(m => m.DisembarkationDate)
                 </div>
             </div>
-            
+
             <div class="form-group col-md-3">
                 @Html.LabelFor(m => m.ContractDuration)
-                @Html.TextBoxFor(m => m.ContractDuration,  new { @class = "form-control" })
+                @Html.TextBoxFor(m => m.ContractDuration, new {@class = "form-control"})
                 @Html.ValidationMessageFor(m => m.ContractDuration)
+            </div>
+            <div class="form-group col-md-3">
+                @Html.LabelFor(m => m.PointOfHire)
+                @Html.TextBoxFor(m => m.PointOfHire, new {@class = "form-control"})
+                @Html.ValidationMessageFor(m => m.PointOfHire)
+            </div>
+            <div class="form-group col-md-6">
+                @Html.LabelFor(m => m.Remarks)
+                @Html.TextBoxFor(m => m.Remarks,  new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Remarks)
             </div>
             <div>&nbsp;</div>
             @Html.HiddenFor(m => m.Id)
