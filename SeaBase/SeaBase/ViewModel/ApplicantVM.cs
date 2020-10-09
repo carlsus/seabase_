@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Web;
 using SeaBase.Models;
 
 namespace SeaBase.ViewModel
 {
-    public class ApplicantViewModel
+    public class ApplicantVM
     {
         public IEnumerable<Rank> Ranks { get; set; }
         public IEnumerable<Country> Countries { get; set; }
@@ -22,12 +23,12 @@ namespace SeaBase.ViewModel
         public IEnumerable<VesselType> VesselTypes { get; set; }
         public IEnumerable<ManningAgency> ManningAgencies { get; set; }
         public CrewBeneficiaryChildren CrewBeneficiaryChildren { get; set; }
-        public IEnumerable<User>  Users{ get; set; }
-        public IEnumerable<Agent>  Agents{ get; set; }
-        public IEnumerable<CrewAllotee>  CrewAllotees{ get; set; }
-        public IEnumerable<Beneficiary>  Beneficiaries{ get; set; }
-        public IEnumerable<Branch>  Branches{ get; set; }
-        public IEnumerable<Bank>  Banks{ get; set; }
+        public IEnumerable<User> Users { get; set; }
+        public IEnumerable<Agent> Agents { get; set; }
+        public IEnumerable<CrewAllotee> CrewAllotees { get; set; }
+        public IEnumerable<Beneficiary> Beneficiaries { get; set; }
+        public IEnumerable<Branch> Branches { get; set; }
+        public IEnumerable<Bank> Banks { get; set; }
 
         public string RankName { get; set; }
         [Key]
@@ -37,7 +38,7 @@ namespace SeaBase.ViewModel
         [Display(Name = "Application Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime ApplicationDate { get; set; }
+        public DateTime? ApplicationDate { get; set; }
         public int VesselId { get; set; }
         [Required]
         [Display(Name = "Rank")]
@@ -107,7 +108,7 @@ namespace SeaBase.ViewModel
         public string BirthPlace { get; set; }
         [Required]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         [StringLength(20)]
         public string Nationality { get; set; }
         [StringLength(20)]
@@ -147,7 +148,7 @@ namespace SeaBase.ViewModel
         public string KinFullName { get; set; }
         [Display(Name = "Birthdate")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime KinBirthDate { get; set; }
+        public DateTime? KinBirthDate { get; set; }
         [StringLength(10)]
         [Display(Name = "Relationship")]
         public string KinRelationship { get; set; }
@@ -199,13 +200,13 @@ namespace SeaBase.ViewModel
         public string PSUIdNo { get; set; }
         [Display(Name = "PSU Issuance Date")]
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
-        public DateTime PSUIssuanceDate { get; set; }
+        public DateTime? PSUIssuanceDate { get; set; }
         [StringLength(20)]
         [Display(Name = "NBI No.")]
         public string NBINo { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy-MM-dd}", ApplyFormatInEditMode = true)]
         [Display(Name = "NBI Validity")]
-        public DateTime NBIValidity { get; set; }
+        public DateTime? NBIValidity { get; set; }
 
         public int IndividualPayingMember { get; set; }
         public string OthersSpecify { get; set; }
@@ -225,6 +226,5 @@ namespace SeaBase.ViewModel
         public virtual CrewFamilyBackground CrewFamilyBackground { get; set; }
         
 
-        
     }
 }

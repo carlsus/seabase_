@@ -427,6 +427,7 @@
     <Compile Include="Scheduler\AutoEmbarkation.cs" />
     <Compile Include="Scheduler\JobScheduler.cs" />
     <Compile Include="ViewModel\ApplicantViewModel.cs" />
+    <Compile Include="ViewModel\ApplicantVM.cs" />
     <Compile Include="ViewModel\Beneficiary.cs" />
     <Compile Include="ViewModel\COE.cs" />
     <Compile Include="ViewModel\CVStandardTravelDocuments.cs" />

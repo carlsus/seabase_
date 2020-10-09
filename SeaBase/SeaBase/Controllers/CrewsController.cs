@@ -251,7 +251,7 @@ namespace SeaBase.Controllers
                     
                 });
             }
-            var viewModel = new ApplicantViewModel
+            var viewModel = new ApplicantVM
             {
                 Banks = _context.Banks.ToList(),
                 Branches = _context.Branches.ToList(),

@@ -39,7 +39,7 @@ namespace SeaBase.Controllers
 
 
             ViewBag.Status = "New";
-            var viewModel = new ApplicantViewModel
+            var viewModel = new ApplicantVM
             {
                 Ranks = _context.Ranks.ToList(),
                 Countries = _context.Countries.ToList() 
@@ -762,7 +762,7 @@ namespace SeaBase.Controllers
             var familybackground = _context.CrewFamilyBackgrounds.SingleOrDefault(c => c.CrewId == id);
             var rank = _context.Ranks.ToList();
             var country = _context.Countries.ToList();
-            var viewModel = new ApplicantViewModel
+            var viewModel = new ApplicantVM
             {
                 ManningAgencies = _context.ManningAgencies.ToList(),
                 VesselTypes = _context.VesselTypes.ToList(),
