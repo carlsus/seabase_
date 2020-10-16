@@ -70,18 +70,18 @@ namespace SeaBase.ViewModel
         [StringLength(30)]
         [Display(Name = "Telephone No.")]
         public string TelephoneNo { get; set; }
-        [StringLength(30)]
-        [Display(Name = "Passport No.")]
-        public string PassportNo { get; set; }
-        [StringLength(30)]
-        [Display(Name = "Seaman's Book No.")]
-        public string SeamanBookNo { get; set; }
-        [StringLength(30)]
-        [Display(Name = "SRC No.")]
-        public string SRCNo { get; set; }
-        [StringLength(30)]
-        [Display(Name = "E-Registration No.")]
-        public string EregNo { get; set; }
+        //[StringLength(30)]
+        //[Display(Name = "Passport No.")]
+        //public string PassportNo { get; set; }
+        //[StringLength(30)]
+        //[Display(Name = "Seaman's Book No.")]
+        //public string SeamanBookNo { get; set; }
+        //[StringLength(30)]
+        //[Display(Name = "SRC No.")]
+        //public string SRCNo { get; set; }
+        //[StringLength(30)]
+        //[Display(Name = "E-Registration No.")]
+        //public string EregNo { get; set; }
         [StringLength(50)]
         [Display(Name = "Mobile No.")]
         public string MobileNo { get; set; }
@@ -152,7 +152,7 @@ namespace SeaBase.ViewModel
         [StringLength(10)]
         [Display(Name = "Relationship")]
         public string KinRelationship { get; set; }
-        [StringLength(50)]
+        [StringLength(100)]
         [Display(Name = "Address")]
         public string KinAddress { get; set; }
         [StringLength(20)]

@@ -34,6 +34,8 @@ namespace SeaBase.Controllers
 
             return new FileContentResult(fileContents,mimeType);
         }
+
+        //new
         public ActionResult Create()
         {
 
@@ -42,7 +44,8 @@ namespace SeaBase.Controllers
             var viewModel = new ApplicantVM
             {
                 Ranks = _context.Ranks.ToList(),
-                Countries = _context.Countries.ToList() 
+                Countries = _context.Countries.ToList(),
+                Password = GenerateCode.CreateRandomPassword(8)
             };
             
             return View("ApplicantForm",viewModel);
@@ -639,35 +642,30 @@ namespace SeaBase.Controllers
          * 
          */
 
-
+        //saves
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Save(Crew crew)
         {
+
+            if (crew.ImageFile != null)
+            {
+                var fileName = "";
+
+                fileName = Path.GetFileNameWithoutExtension(crew.ImageFile.FileName);
+
+                string fileExtension = Path.GetExtension(crew.ImageFile.FileName);
+
+                fileName = DateTime.Now.ToString("yyyyMMdd") + "-" + fileName.Trim() + fileExtension;
+                crew.ImagePath = fileName;
+
+                crew.ImageFile.SaveAs(Server.MapPath("~/Images/") + crew.ImagePath);
+            }
+                
             if (crew.Id == 0)
             {
                 
                 crew.StatusId = 1;
-                if (crew.ImageFile != null)
-                {
-                    var fileName = "";
-
-                    fileName = Path.GetFileNameWithoutExtension(crew.ImageFile.FileName);
-
-                    string fileExtension = Path.GetExtension(crew.ImageFile.FileName);
-
-                    fileName = DateTime.Now.ToString("yyyyMMdd") + "-" + fileName.Trim() + fileExtension;
-                    crew.ImagePath = fileName;
-
-                    crew.ImageFile.SaveAs(Server.MapPath("~/Images/") + crew.ImagePath);
-                }
-                
-                //crew.CrewTravelDocuments = _context.Documents.Where(m => m.IsRequired == true).ToList();
-                //crew.CrewTrainingCertificates = _context.Seminars.Where(m => m.IsRequired == true).ToList();
-                //else
-                //{
-                //    crew.ImagePath = Path.GetFileNameWithoutExtension("~/Images/default.jpeg");
-                //}
                 _context.Crews.Add(crew);
                 _context.SaveChanges();
                 _context.Entry(crew).GetDatabaseValues();
@@ -788,10 +786,10 @@ namespace SeaBase.Controllers
                 ContactAddress = crew.ContactAddress,
                 EmailAddress = crew.EmailAddress,
                 Password = crew.Password,
-                PassportNo = crew.PassportNo,
-                SeamanBookNo = crew.SeamanBookNo,
-                SRCNo = crew.SRCNo,
-                EregNo = crew.EregNo,
+                //PassportNo = crew.PassportNo,
+                //SeamanBookNo = crew.SeamanBookNo,
+                //SRCNo = crew.SRCNo,
+                //EregNo = crew.EregNo,
                 MobileNo = crew.MobileNo,
                 TelephoneNo = crew.TelephoneNo,
                 Gender = crew.Gender,

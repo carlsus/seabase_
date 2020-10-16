@@ -22,6 +22,9 @@ namespace SeaBase.Models
         [DisplayName("Check if it is required to all ranks.")]
         public bool IsRequired { get; set; }
 
+        [DefaultValue(0)]
+        public int BuiltIn { get; set; }
+
         public ICollection<VesselDocumentLibrary> VesselDocumentLibraries { get; set; }
         public ICollection<PrincipalDocument> PrincipalDocuments { get; set; }
     }

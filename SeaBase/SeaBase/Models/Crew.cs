@@ -131,7 +131,7 @@ namespace SeaBase.Models
         [StringLength(10)]
         [Display(Name = "Relationship")]
         public string KinRelationship { get; set; }
-        [StringLength(50)]
+        [StringLength(100)]
         [Display(Name = "Address")]
         public string KinAddress { get; set; }
         [StringLength(20)]
