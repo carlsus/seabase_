@@ -117,30 +117,24 @@ namespace SeaBase.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Save(Crew crew)
         {
+            if (crew.ImageFile != null)
+            {
+                var fileName = "";
+
+                fileName = Path.GetFileNameWithoutExtension(crew.ImageFile.FileName);
+
+                string fileExtension = Path.GetExtension(crew.ImageFile.FileName);
+
+                fileName = DateTime.Now.ToString("yyyyMMdd") + "-" + fileName.Trim() + fileExtension;
+                crew.ImagePath = fileName;
+
+                crew.ImageFile.SaveAs(Server.MapPath("~/Images/") + crew.ImagePath);
+            }
             if (crew.Id == 0)
             {
 
                 crew.StatusId = 1;
-                if (crew.ImageFile != null)
-                {
-                    var fileName = "";
-
-                    fileName = Path.GetFileNameWithoutExtension(crew.ImageFile.FileName);
-
-                    string fileExtension = Path.GetExtension(crew.ImageFile.FileName);
-
-                    fileName = DateTime.Now.ToString("yyyyMMdd") + "-" + fileName.Trim() + fileExtension;
-                    crew.ImagePath = fileName;
-
-                    crew.ImageFile.SaveAs(Server.MapPath("~/Images/") + crew.ImagePath);
-                }
-
-                //crew.CrewTravelDocuments = _context.Documents.Where(m => m.IsRequired == true).ToList();
-                //crew.CrewTrainingCertificates = _context.Seminars.Where(m => m.IsRequired == true).ToList();
-                //else
-                //{
-                //    crew.ImagePath = Path.GetFileNameWithoutExtension("~/Images/default.jpeg");
-                //}
+                
                 _context.Crews.Add(crew);
                 _context.SaveChanges();
                 _context.Entry(crew).GetDatabaseValues();

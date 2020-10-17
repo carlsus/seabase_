@@ -44,7 +44,7 @@
             <div class="modal-body">
 
                 <form id="flags" method="post" name="flags">
-
+                    <input type="hidden" id="Idf" name="Idf"/>
                     <div class="row-fluid">
                         <div class="form-group col-md-6">
                             <label>Flag Type</label>
@@ -144,6 +144,7 @@
                     {
                         text: "New Flag",
                         action: function (e, dt, node, config) {
+                            $('#flags')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditFlags").modal();
                         }
@@ -180,13 +181,14 @@
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_flag(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_flag(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_flag(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
@@ -208,6 +210,7 @@
                 formData.append('IssuedBy', $('#fIssuedBy').val());
                 formData.append('Remarks', $('#fRemarks').val());
                 formData.append('CrewId', $('#CrewId').val());
+                formData.append('Id', $('#Idf').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddFlags",
@@ -232,25 +235,52 @@
                 }
             });
         });
+});
 
 
+function remove_flag(id) {
+    bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+        if (result) {
+            $.ajax({
+                url: "@Url.Action("DeleteFlag","Applicants")/" + id,
 
-        });
-
-
-        function remove_flag(id) {
-            bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-                if (result) {
-                    $.ajax({
-                        url: "@Url.Action("DeleteFlag","Applicants")/" + id,
-
-                        success: function () {
-                            table_flags.ajax.reload();
-                        }
-                    });
+                success: function () {
+                    table_flags.ajax.reload();
                 }
             });
         }
+    });
+}
+
+    function edit_flag(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Applicants/EditFlags",
+            data: { 'id': id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Idf').val(response.Id);
+                $('#fFlagId').val(response.FlagId);
+                $('#fLicenseId').val(response.LicenseId);
+                $('#fDocumentNo').val(response.DocumentNo);
+                $('#fRankId').val(response.RankId);
+                $('#fRankId').val(response.RankId);
+                $('#fIssueDate').val(moment(response.IssueDate).format("MM/DD/YYYY"));
+                $('#fExpiryDate').val(moment(response.ExpiryDate).format("MM/DD/YYYY"));
+                $('#fIssuedBy').val(response.IssuedBy);
+                $('#fRemarks').val(response.Remarks);
+                $('#AddOrEditFlags').modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
 </script>
 @Scripts.Render("~/AdminLTE/plugins/datepicker/script")
 @Scripts.Render("~/AdminLTE/plugins/datatables/script")

@@ -221,6 +221,7 @@ namespace SeaBase.ViewModel
         [Display(Name = "More Information")]
         public string OtherInfo { get; set; }
 
+        public int Age { get; set; }
         public virtual CrewAddress CrewAddress { get; set; }
         public virtual CrewFamilyBackground CrewFamilyBackground { get; set; }
         

@@ -8,7 +8,7 @@
 
 
         <div class="tab-content">
-            <table id="data-table-licenses" class="table table-bordered table-hover">
+            <table id="data-table-licenses" class="table table-bordered table-hover table-responsive">
                 <thead>
                     <tr>
                         <th>Type</th>
@@ -44,7 +44,7 @@
             <div class="modal-body">
 
                 <form id="licenses" method="post" name="licenses" enctype="multipart/form-data">
-
+                    <input type="hidden" name="Idl" id="Idl" />
                     <div class="row-fluid">
                         <div class="form-group col-md-12">
                             <label>License Type</label>
@@ -110,8 +110,10 @@
 <!-- #endregion -->
 
 <script>
-    var table_licenses;
-    $(document).ready(function () {
+
+var table_licenses;
+
+$(document).ready(function () {
         $('#IssueDatel').datepicker({
             startDate: '',
             format: 'mm/dd/yyyy',
@@ -140,6 +142,7 @@
                     {
                         text: "New Licenses",
                         action: function (e, dt, node, config) {
+                            $('#licenses')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditLicenses").modal();
                         }
@@ -174,18 +177,27 @@
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
 
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_license(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_license(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_license(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
-
+            "columnDefs": [
+                { "width": "20%", "targets": 0 },
+                { "width": "15%", "targets": 1 },
+                { "width": "5%", "targets": 2 },
+                { "width": "5%", "targets": 3 },
+                { "width": "5%", "targets": 4 },
+                { "width": "5%", "targets": 5 },
+                { "width": "10%", "targets": 6 }
+            ]
         });
 
         $('#btnLicenses').on('click',function (e) {
@@ -202,6 +214,8 @@
                 formData.append('LicenseNo', $('#LicenseNol').val());
                 formData.append('Remarks', $('#Remarksl').val());
                 formData.append('CrewId', $('#CrewId').val());
+                formData.append('Id', $('#Idl').val());
+                
                 $.ajax({
                     type: "POST",
                     url: "/Applicants/AddLicenses",
@@ -227,24 +241,48 @@
                     }
                 });
         });
-
-
-
-        });
+});
 
         
-        function remove_license(id) {
-            bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-                if (result) {
-                    $.ajax({
-                        url: "@Url.Action("DeleteLicenses","Applicants")/" + id,
+function remove_license(id) {
+    bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+        if (result) {
+            $.ajax({
+                url: "@Url.Action("DeleteLicenses","Applicants")/" + id,
 
-                        success: function () {
-                            table_licenses.ajax.reload();
-                        }
-                    });
+                success: function () {
+                    table_licenses.ajax.reload();
                 }
             });
         }
+    });
+}
+
+function edit_license(id) {
+    $.ajax({
+        type: "GET",
+        url: "/Applicants/EditLicenses",
+        data:{'id': id},
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (response) {
+            $('#Idl').val(response.Id);
+            $('#RankIdl').val(response.RankId);
+            $('#LicenseIdl').val(response.LicenseId);
+            $('#LicenseNol').val(response.LicenseNo);
+            $('#IssueDatel').val(moment(response.IssueDate).format("MM/DD/YYYY"));
+            $('#ExpiryDatel').val(moment(response.ExpiryDate).format("MM/DD/YYYY"));
+            $('#IssuedByl').val(response.IssuedBy);
+            $('#Remarksl').val(response.Remarks);
+            $('#AddOrEditLicenses').modal('show');
+        },
+        failure: function (response) {
+            alert(response.responseText);
+        },
+        error: function (response) {
+            alert(response.responseText);
+        }
+    });
+}
 </script>
 

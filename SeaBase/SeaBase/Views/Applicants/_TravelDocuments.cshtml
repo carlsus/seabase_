@@ -42,25 +42,26 @@
             </div>
             <div class="modal-body">
 
-                <form id="flags" method="post" name="flags">
+                <form id="traveldocuments" method="post" name="traveldocuments">
+                    <input type="hidden" id="Idtd" name="Idtd"/>
                     <div class="row-fluid">
                         <div class="form-group col-md-6">
                             <label>Document Type</label>
-                            @Html.DropDownList("tdDocumentId", new SelectList(Model.Documents, "Id", "DocumentName"), "Select Document", new { @class = "form-control" })
+                            @Html.DropDownList("tdDocumentId", new SelectList(Model.Documents, "Id", "DocumentName"), "Select Document", new {@class = "form-control"})
                         </div>
-                       
+
                         <div class="form-group col-md-6">
                             <label>Document Number</label>
-                            <input type="text" class="form-control" id="tdDocumentNo" name="tdDocumentNo" />
+                            <input type="text" class="form-control" id="tdDocumentNo" name="tdDocumentNo"/>
                         </div>
-                        
+
                         <div class="form-group col-md-6">
                             <label>Issue Date</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control" id="tdIssueDate" name="tdIssueDate" />
+                                <input type="text" class="form-control" id="tdIssueDate" name="tdIssueDate"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -69,21 +70,21 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control" id="tdExpiryDate" name="tdExpiryDate" />
+                                <input type="text" class="form-control" id="tdExpiryDate" name="tdExpiryDate"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Issued by</label>
-                            <input type="text" class="form-control" id="tdIssuedBy" name="tdIssuedBy" />
+                            <input type="text" class="form-control" id="tdIssuedBy" name="tdIssuedBy"/>
                         </div>
                         <div class="form-group col-md-6">
                             <label>Place Issued</label>
-                            <input type="text" class="form-control" id="tdPlaceIssued" name="tdPlaceIssued" />
+                            <input type="text" class="form-control" id="tdPlaceIssued" name="tdPlaceIssued"/>
                         </div>
                         <div class="form-group col-md-12">
                             <label>File Attachment</label>
                             <input id="TravelFileAttachment" title="Upload a attachment"
-                                   type="file" name="TravelFileAttachment" />
+                                   type="file" name="TravelFileAttachment"/>
                         </div>
                     </div>
                     @Html.AntiForgeryToken()
@@ -134,6 +135,7 @@
                     {
                         text: "New Document",
                         action: function (e, dt, node, config) {
+                            $('#traveldocuments')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditTravelDocuments").modal();
                         }
@@ -169,13 +171,14 @@
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_travel_document(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_travel_document(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_travel_document(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
@@ -195,6 +198,7 @@
                 formData.append('PlaceIssued', $('#tdPlaceIssued').val());
                 formData.append('IssuedBy', $('#tdIssuedBy').val());
                 formData.append('CrewId', $('#CrewId').val());
+                formData.append('Id', $('#Idtd').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddTravelDocument",
@@ -221,10 +225,7 @@
                 }
             });
         });
-
-
-
-        });
+});
 
 
         function remove_travel_document(id) {
@@ -240,4 +241,31 @@
                 }
             });
         }
+
+        function edit_travel_document(id) {
+            $.ajax({
+                type: "GET",
+                url: "/Applicants/EditTravelDocuments",
+                data: { 'id': id },
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#Idtd').val(response.Id);
+                    $('#tdDocumentId').val(response.DocumentId);
+                    $('#tdDocumentNo').val(response.DocumentNo);
+                    $('#tdIssueDate').val(moment(response.IssueDate).format("MM/DD/YYYY"));
+                    $('#tdExpiryDate').val(moment(response.ExpiryDate).format("MM/DD/YYYY"));
+                    $('#tdIssuedBy').val(response.IssuedBy);
+                    $('#tdPlaceIssued').val(response.PlaceIssued);
+                    $('#AddOrEditTravelDocuments').modal('show');
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
 </script>

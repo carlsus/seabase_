@@ -139,14 +139,15 @@ namespace SeaBase.Controllers
             }
         }
 
-        //Licenses
+
+        #region Licenses
         [HttpGet]
         public ActionResult GetLicenses(int id)
         {
             var result = (from c in _context.CrewLicenses
-                        join d in _context.Licenses on c.LicenseId equals d.Id
+                          join d in _context.Licenses on c.LicenseId equals d.Id
                           where c.CrewId == id
-                          select new{c.Id,c.LicenseId,c.CrewId,c.LicenseNo,c.IssueDate,c.ExpiryDate,c.IssuedBy,c.Remarks,c.FilePath,d.LicenseName}).ToList();
+                          select new { c.Id, c.LicenseId, c.CrewId, c.LicenseNo, c.IssueDate, c.ExpiryDate, c.IssuedBy, c.Remarks, c.FilePath, d.LicenseName }).ToList();
 
             return Json(new { data = result }, JsonRequestBehavior.AllowGet);
 
@@ -158,22 +159,51 @@ namespace SeaBase.Controllers
 
             if (license.ImageFile != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(license.ImageFile.FileName);
+                fileName = Path.GetFileNameWithoutExtension(license.ImageFile.FileName);
 
-                string FileExtension = Path.GetExtension(license.ImageFile.FileName);
+                string fileExtension = Path.GetExtension(license.ImageFile.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                license.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    license.FilePath = fileName;
+                }
 
                 license.ImageFile.SaveAs(Server.MapPath("~/Files/" + license.CrewId + "/") + license.FilePath);
             }
-            
-            _context.CrewLicenses.Add(license);
-            _context.SaveChanges();
-            license=new CrewLicense();
+            if (license.Id == 0)
+            {
+                _context.CrewLicenses.Add(license);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var update = _context.CrewLicenses.Single(m => m.Id == license.Id);
+                update.LicenseId = license.LicenseId;
+                update.RankId = license.RankId;
+                update.LicenseNo = license.LicenseNo;
+                update.ExpiryDate = license.ExpiryDate;
+                update.IssueDate = license.IssueDate;
+                update.IssuedBy = license.IssuedBy;
+                update.Remarks = license.Remarks;
+                _context.SaveChanges();
+            }
+            license = new CrewLicense();
             return Json(license, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EditLicenses(int id)
+        {
+            var result = (from c in _context.CrewLicenses
+                join d in _context.Licenses on c.LicenseId equals d.Id
+                where c.Id == id
+                select c).SingleOrDefault();
+
+            return Json(result , JsonRequestBehavior.AllowGet);
+
         }
 
         public void DeleteLicenses(int id)
@@ -183,15 +213,20 @@ namespace SeaBase.Controllers
             if (itemToRemove != null)
             {
 
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
+                }
                 _context.CrewLicenses.Remove(itemToRemove);
                 _context.SaveChanges();
             }
-        }
+        } 
+        #endregion
 
 
-        //Flags
+
+        #region Flag State Documents
         [HttpGet]
         public ActionResult GetFlags(int id)
         {
@@ -200,9 +235,21 @@ namespace SeaBase.Controllers
                           join e in _context.Ranks on c.RankId equals e.Id
                           join f in _context.Flags on c.FlagId equals f.Id
                           where c.CrewId == id
-                          select new { c.Id, c.LicenseId, c.CrewId, 
-                              c.DocumentNo, c.IssueDate, c.ExpiryDate,
-                              c.IssuedBy, c.Remarks, c.FilePath, d.LicenseName,e.RankName,f.FlagName }).ToList();
+                          select new
+                          {
+                              c.Id,
+                              c.LicenseId,
+                              c.CrewId,
+                              c.DocumentNo,
+                              c.IssueDate,
+                              c.ExpiryDate,
+                              c.IssuedBy,
+                              c.Remarks,
+                              c.FilePath,
+                              d.LicenseName,
+                              e.RankName,
+                              f.FlagName
+                          }).ToList();
 
             return Json(new { data = result }, JsonRequestBehavior.AllowGet);
 
@@ -213,22 +260,50 @@ namespace SeaBase.Controllers
         {
             if (flag.FileAttachment != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(flag.FileAttachment.FileName);
+                fileName = Path.GetFileNameWithoutExtension(flag.FileAttachment.FileName);
 
-                string FileExtension = Path.GetExtension(flag.FileAttachment.FileName);
+                string fileExtension = Path.GetExtension(flag.FileAttachment.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                flag.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    flag.FilePath = fileName;
+                }
 
                 flag.FileAttachment.SaveAs(Server.MapPath("~/Files/" + flag.CrewId + "/") + flag.FilePath);
             }
+            if (flag.Id == 0)
+            {
+                _context.CrewFlagStateDocuments.Add(flag);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var update = _context.CrewFlagStateDocuments.Single(m => m.Id == flag.Id);
+                update.FlagId = flag.FlagId;
+                update.LicenseId = flag.LicenseId;
+                update.RankId = flag.RankId;
+                update.DocumentNo = flag.DocumentNo;
+                update.IssueDate = flag.IssueDate;
+                update.ExpiryDate = flag.ExpiryDate;
+                update.IssuedBy = flag.IssuedBy;
+                update.Remarks = flag.Remarks;
+                _context.SaveChanges();
+            }
             
-            _context.CrewFlagStateDocuments.Add(flag);
-            _context.SaveChanges();
-            flag=new CrewFlagStateDocument();
+            flag = new CrewFlagStateDocument();
             return Json(flag, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EditFlags(int id)
+        {
+            var result = (from c in _context.CrewFlagStateDocuments
+                          where c.Id == id
+                          select c).SingleOrDefault();
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         public void DeleteFlag(int id)
@@ -237,8 +312,12 @@ namespace SeaBase.Controllers
 
             if (itemToRemove != null)
             {
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
+
+                }
 
                 _context.CrewFlagStateDocuments.Remove(itemToRemove);
                 _context.SaveChanges();
@@ -246,7 +325,10 @@ namespace SeaBase.Controllers
         }
 
 
-        //travel documents
+        
+        #endregion        //travel documents
+
+        #region Travel Documents
         [HttpGet]
         public ActionResult GetTravelDocuments(int id)
         {
@@ -276,22 +358,50 @@ namespace SeaBase.Controllers
         {
             if (document.FileAttachment != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
+                fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
-                string FileExtension = Path.GetExtension(document.FileAttachment.FileName);
+                string fileExtension = Path.GetExtension(document.FileAttachment.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                document.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    document.FilePath = fileName;
+                }
 
                 document.FileAttachment.SaveAs(Server.MapPath("~/Files/" + document.CrewId + "/") + document.FilePath);
             }
-            
-            _context.CrewTravelDocuments.Add(document);
-            _context.SaveChanges();
-            document=new CrewTravelDocument();
+            if (document.Id == 0)
+            {
+                _context.CrewTravelDocuments.Add(document);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var update = _context.CrewTravelDocuments.Single(m => m.Id == document.Id);
+                update.DocumentId = document.DocumentId;
+                update.DocumentNo = document.DocumentNo;
+                update.IssueDate = document.IssueDate;
+                update.ExpiryDate = document.ExpiryDate;
+                update.IssuedBy = document.IssuedBy;
+                update.PlaceIssued = document.PlaceIssued;
+                _context.SaveChanges();
+            }
+           
+            document = new CrewTravelDocument();
             return Json(document, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EditTravelDocuments(int id)
+        {
+            var result = (from c in _context.CrewTravelDocuments
+                          where c.Id == id
+                          select c).SingleOrDefault();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
         }
 
         public void DeleteTravelDocument(int id)
@@ -300,16 +410,20 @@ namespace SeaBase.Controllers
 
             if (itemToRemove != null)
             {
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
+                }
 
                 _context.CrewTravelDocuments.Remove(itemToRemove);
                 _context.SaveChanges();
             }
         }
+        #endregion
 
 
-        //trainingCertificates
+        #region Training Certificates
         [HttpGet]
         public ActionResult GetTrainingCertificate(int id)
         {
@@ -345,22 +459,51 @@ namespace SeaBase.Controllers
         {
             if (document.FileAttachment != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
+                fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
-                string FileExtension = Path.GetExtension(document.FileAttachment.FileName);
+                string fileExtension = Path.GetExtension(document.FileAttachment.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                document.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    document.FilePath = fileName;
+                }
 
                 document.FileAttachment.SaveAs(Server.MapPath("~/Files/" + document.CrewId + "/") + document.FilePath);
             }
-
-            _context.CrewTrainingCertificates.Add(document);
-            _context.SaveChanges();
+            if (document.Id == 0)
+            {
+                _context.CrewTrainingCertificates.Add(document);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var update = _context.CrewTrainingCertificates.Single(m => m.Id == document.Id);
+                update.SeminarId = document.SeminarId;
+                update.TrainingCenterId = document.TrainingCenterId;
+                update.CertificateNo = document.CertificateNo;
+                update.STCWCode = document.STCWCode;
+                update.IssueDate = document.IssueDate;
+                update.ExpiryDate = document.ExpiryDate;
+                update.PlaceIssued = document.PlaceIssued;
+                update.IssuedBy = document.IssuedBy;
+                update.MLC = document.MLC;
+                _context.SaveChanges();
+            }
+            
             document = new CrewTrainingCertificate();
             return Json(document, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EdiTrainingCertificate(int id)
+        {
+            var result = (from c in _context.CrewTrainingCertificates
+                          where c.Id == id
+                          select c).SingleOrDefault();
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         public void DeleteTrainingCertificate(int id)
@@ -369,19 +512,26 @@ namespace SeaBase.Controllers
 
             if (itemToRemove != null)
             {
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
 
+                }
                 _context.CrewTrainingCertificates.Remove(itemToRemove);
                 _context.SaveChanges();
             }
-        }
-        // document library
+        } 
+        #endregion
+
+
+
+        #region Document Library
         [HttpGet]
         public ActionResult GetDocumentLibrary(int id)
         {
 
-            return Json(new { data = _context.CrewDocumentLibraries.Where(m=>m.CrewId==id).ToList() }, JsonRequestBehavior.AllowGet);
+            return Json(new { data = _context.CrewDocumentLibraries.Where(m => m.CrewId == id).ToList() }, JsonRequestBehavior.AllowGet);
 
         }
 
@@ -390,22 +540,42 @@ namespace SeaBase.Controllers
         {
             if (document.FileAttachment != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
+                fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
-                string FileExtension = Path.GetExtension(document.FileAttachment.FileName);
+                string fileExtension = Path.GetExtension(document.FileAttachment.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                document.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    document.FilePath = fileName;
+                }
 
                 document.FileAttachment.SaveAs(Server.MapPath("~/Files/" + document.CrewId + "/") + document.FilePath);
             }
+            if (document.Id == 0)
+            {
+                _context.CrewDocumentLibraries.Add(document);
+                _context.SaveChanges();
+            }
+            else
+            {
+
+                var update = _context.CrewDocumentLibraries.Single(m => m.Id == document.Id);
+                update.DocumentNameType = document.DocumentNameType;
+                _context.SaveChanges();
+            }
             
-            _context.CrewDocumentLibraries.Add(document);
-            _context.SaveChanges();
-            document=new CrewDocumentLibrary();
+            document = new CrewDocumentLibrary();
             return Json(document, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EditDocumentLibrary(int id)
+        {
+            return Json( _context.CrewDocumentLibraries.SingleOrDefault(m => m.Id == id) , JsonRequestBehavior.AllowGet);
+
         }
 
         public void DeleteDocumentLibrary(int id)
@@ -421,10 +591,12 @@ namespace SeaBase.Controllers
                 _context.SaveChanges();
             }
         }
+        
+        #endregion
 
 
 
-        // medical Certificate
+        #region Medical Certificates
         [HttpGet]
         public ActionResult GetMedicalCertificate(int id)
         {
@@ -456,22 +628,49 @@ namespace SeaBase.Controllers
         {
             if (document.FileAttachment != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
+                fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
-                string FileExtension = Path.GetExtension(document.FileAttachment.FileName);
+                string fileExtension = Path.GetExtension(document.FileAttachment.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                document.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    document.FilePath = fileName;
+                }
 
                 document.FileAttachment.SaveAs(Server.MapPath("~/Files/" + document.CrewId + "/") + document.FilePath);
             }
+            if (document.Id == 0)
+            {
+                _context.CrewMedicals.Add(document);
+                _context.SaveChanges();
+            }
+            else
+            {
+
+                var update = _context.CrewMedicals.Single(m => m.Id == document.Id);
+                update.MedicalCertificateId = document.MedicalCertificateId;
+                update.MedicalClinicId = document.MedicalClinicId;
+                update.CertificateNo = document.CertificateNo;
+                update.IssueDate = document.IssueDate;
+                update.ExpiryDate = document.ExpiryDate;
+                update.Remarks = document.Remarks;
+                _context.SaveChanges();
+            }
             
-            _context.CrewMedicals.Add(document);
-            _context.SaveChanges();
-            document=new CrewMedical();
+            document = new CrewMedical();
             return Json(document, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EditMedicalCertificate(int id)
+        {
+            var result = (from c in _context.CrewMedicals
+                          where c.Id == id
+                          select c).SingleOrDefault();
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         public void DeleteMedicalCertificate(int id)
@@ -487,8 +686,11 @@ namespace SeaBase.Controllers
                 _context.SaveChanges();
             }
         }
+        
+        #endregion
 
-        // Vaccine
+
+        #region Vaccine
         [HttpGet]
         public ActionResult GetVaccine(int id)
         {
@@ -515,22 +717,37 @@ namespace SeaBase.Controllers
         {
             if (document.FileAttachment != null)
             {
-                var FileName = "";
+                var fileName = "";
 
-                FileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
+                fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
-                string FileExtension = Path.GetExtension(document.FileAttachment.FileName);
+                string fileExtension = Path.GetExtension(document.FileAttachment.FileName);
 
-                FileName = FileName.Trim() + FileExtension;
-                document.FilePath = FileName;
+                if (fileName != null)
+                {
+                    fileName = fileName.Trim() + fileExtension;
+                    document.FilePath = fileName;
+                }
 
                 document.FileAttachment.SaveAs(Server.MapPath("~/Files/" + document.CrewId + "/") + document.FilePath);
             }
-            
+
             _context.CrewVaccines.Add(document);
             _context.SaveChanges();
-            document=new CrewVaccine();
+            document = new CrewVaccine();
             return Json(document, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public ActionResult EditVaccine(int id)
+        {
+
+            var result = (from c in _context.CrewVaccines
+                          where c.Id == id
+                          select c).ToList();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
         }
 
         public void DeleteVaccine(int id)
@@ -546,7 +763,8 @@ namespace SeaBase.Controllers
                 _context.SaveChanges();
             }
         }
-
+        
+        #endregion
 
         // work Experience
         [HttpGet]

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
 using System.Web;
 using System.Web.Mvc;
 using CrystalDecisions.CrystalReports.Engine;
+using Dapper;
+using MySql.Data.MySqlClient;
 using SeaBase.Models;
 using SeaBase.ViewModel;
 
@@ -31,27 +34,37 @@ namespace SeaBase.Controllers
             int id = (int) TempData["id"];
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "CV_Standard.rpt"));
-            var result = (from c in _context.Crews
-                          join d in _context.Ranks on c.RankId equals d.Id
-                          where c.Id == id
-                          select new
-                          {
-                              c.Id,
-                              c.Firstname,
-                              c.Lastname,
-                              c.MiddleName,
-                              c.Nationality,
-                              c.Religion,
-                              c.CivilStatus,
-                              RankName = d.RankName,
-                              //BirthDate = c.BirthDate == null ? null : c.BirthDate,
-                              c.BirthPlace,
-                              c.Height,
-                              c.Weight,
-                              c.EmailAddress,
-                              c.ForeignLanguage
-                          }).ToList();
-            rd.SetDataSource(result);
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<ApplicantViewModel>("select a.Id,a.Firstname,a.Lastname,a.Middlename, " +
+                                      "a.Nationality, a.Religion, a.CivilStatus,b.RankName," +
+                                      "a.BirthDate, a.BirthPlace,a.Weight,a.Height,a.EmailAddress, " +
+                                      "a.ForeignLanguage,(YEAR(CURRENT_TIMESTAMP) -YEAR(a.Birthdate))as Age from Crews a " +
+                                      "inner join Ranks b on b.Id=a.RankId " +
+                                       "where a.Id=@id",new{id=id}).ToList();
+                rd.SetDataSource(result);
+            }
+            //var result = (from c in _context.Crews
+            //              join d in _context.Ranks on c.RankId equals d.Id
+            //              where c.Id == id
+            //              select new
+            //              {
+            //                  c.Id,
+            //                  c.Firstname,
+            //                  c.Lastname,
+            //                  c.MiddleName,
+            //                  c.Nationality,
+            //                  c.Religion,
+            //                  c.CivilStatus,
+            //                  RankName = d.RankName,
+            //                  BirthDate = c.BirthDate == null ? DBNull.Value : c.BirthDate,
+            //                  c.BirthPlace,
+            //                  c.Height,
+            //                  c.Weight,
+            //                  c.EmailAddress,
+            //                  c.ForeignLanguage
+            //              }).ToList();
+            
             var travel_documents = (from c in _context.CrewTravelDocuments
                                     join d in _context.Documents on c.DocumentId equals d.Id
                                     where c.CrewId==id
