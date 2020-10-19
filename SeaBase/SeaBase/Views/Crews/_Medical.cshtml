@@ -1,5 +1,4 @@
-﻿
-@using SeaBase.Models
+﻿@using SeaBase.Models
 @model SeaBase.ViewModel.ApplicantVM
 
 <div class="panel panel-default">
@@ -40,10 +39,9 @@
             </div>
             <div class="modal-body">
 
-                <form id="flags" method="post" name="flags">
+                <form id="medicalcertificates" method="post" name="medicalcertificates">
 
-                    <input type="hidden" id="CrewId" name="CrewId" value="@Html.DisplayFor(m=>m.CrewFamilyBackground.CrewId)" />
-
+                    <input type="hidden" id="Idmc" name="Idmc" />
                     <div class="row-fluid">
                         <div class="form-group col-md-12">
                             <label>Medical Certificate</label>
@@ -57,7 +55,7 @@
                             <label>Certificate No.</label>
                             <input type="text" class="form-control" id="mCertificateNo" name="mCertificateNo" />
                         </div>
-                       
+
                         <div class="form-group col-md-6">
                             <label>Issue Date</label>
                             <div class="input-group date">
@@ -76,7 +74,7 @@
                                 <input type="text" class="form-control" id="mExpiryDate" name="mExpiryDate" />
                             </div>
                         </div>
-                       
+
                         <div class="form-group col-md-6">
                             <label>Remarks</label>
                             <input type="text" class="form-control" id="mRemarks" name="mRemarks" />
@@ -137,6 +135,7 @@
                     {
                         text: "New Medical Certificate",
                         action: function (e, dt, node, config) {
+                            $('#medicalcertificates')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditMedical").modal();
                         }
@@ -172,13 +171,14 @@
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_medical(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_medical(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_medical(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
@@ -187,17 +187,26 @@
 
         $('#btnMedical').on('click', function (e) {
             e.preventDefault();
-            
+            var form1 = {
+                MedicalCertificateId: $('#mMedicalCertificateId').val(),
+                MedicalClinicId: $('#mMedicalClinicId').val(),
+                CertificateNo: $('#mCertificateNo').val(),
+                IssueDate: $('#mIssueDate').val(),
+                ExpiryDate: $('#mExpiryDate').val(),
+                Remarks: $('#mRemarks').val(),
+                CrewId: $('#CrewId').val()
+            };
             var formData = new FormData();
             var files = $('#MedicalFileAttachment')[0].files[0];
-                formData.append('FileAttachment', files);
-                formData.append('MedicalCertificateId', $('#mMedicalCertificateId').val());
-                formData.append('MedicalClinicId', $('#mMedicalClinicId').val());
-                formData.append('CertificateNo', $('#mCertificateNo').val());
-                formData.append('IssueDate', $('#mIssueDate').val());
-                formData.append('ExpiryDate', $('#mExpiryDate').val());
-                formData.append('Remarks', $('#mRemarks').val());
-                formData.append('CrewId', $('#Id').val());
+            formData.append('FileAttachment', files);
+            formData.append('MedicalCertificateId', $('#mMedicalCertificateId').val());
+            formData.append('MedicalClinicId', $('#mMedicalClinicId').val());
+            formData.append('CertificateNo', $('#mCertificateNo').val());
+            formData.append('IssueDate', $('#mIssueDate').val());
+            formData.append('ExpiryDate', $('#mExpiryDate').val());
+            formData.append('Remarks', $('#mRemarks').val());
+            formData.append('CrewId', $('#CrewId').val());
+            formData.append('Id', $('#Idmc').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddMedicalCertificate",
@@ -222,9 +231,6 @@
                 }
             });
         });
-
-
-
     });
 
 
@@ -241,6 +247,32 @@
             }
         });
     }
+
+
+    function edit_medical(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Applicants/EditMedicalCertificate",
+            data: { 'id': id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Idmc').val(response.Id);
+                $('#mMedicalCertificateId').val(response.MedicalCertificateId);
+                $('#mMedicalClinicId').val(response.MedicalClinicId);
+                $('#mCertificateNo').val(response.CertificateNo);
+                $('#mIssueDate').val(moment(response.IssueDate).format("MM/DD/YYYY"));
+                $('#mExpiryDate').val(moment(response.ExpiryDate).format("MM/DD/YYYY"));
+                $('#mRemarks').val(response.Remarks);
+                $('#AddOrEditMedical').modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
+
 </script>
-
-

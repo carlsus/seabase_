@@ -35,16 +35,14 @@
             </div>
             <div class="modal-body">
 
-                <form id="flags" method="post" name="flags">
-
-                    <input type="hidden" id="CrewId" name="CrewId" value="@Html.DisplayFor(m=>m.CrewFamilyBackground.CrewId)" />
-
+                <form id="vaccines" method="post" name="vaccines">
+                    <input type="hidden" id="Idv" name="Idv" />
                     <div class="row-fluid">
                         <div class="form-group col-md-12">
                             <label>Medical Certificate</label>
                             @Html.DropDownList("vVaccineId", new SelectList(Model.Vaccines, "Id", "VaccineName"), "Select Vaccine", new { @class = "form-control" })
                         </div>
-                        
+
 
                         <div class="form-group col-md-6">
                             <label>Immunization Date</label>
@@ -90,7 +88,7 @@
             autoclose: true,
             todayHighlight: true
         });
-       
+
         table_vaccine = $("#data-table-vaccine").DataTable({
             "scrollX": true,
             "ajax": {
@@ -107,6 +105,7 @@
                     {
                         text: "New Vaccine",
                         action: function (e, dt, node, config) {
+                            $('#vaccines')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditVaccine").modal();
                         }
@@ -124,40 +123,46 @@
             },
             "columns": [
                 { data: "VaccineName" },
-              
+
                 {
                     'data': 'ImmunizationDate',
                     'render': function (data) {
                         return moment(data).format("MMM DD,YYYY");
                     }
                 },
-                
+
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data===null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_vaccine(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_vaccine(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_vaccine(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
-
+            "columnDefs": [
+                { "width": "50%", "targets": 0 },
+                { "width": "15%", "targets": 1 },
+                { "width": "10%", "targets": 2 },
+                { "width": "15%", "targets": 3 }
+            ]
         });
 
         $('#btnVaccine').on('click', function (e) {
             e.preventDefault();
-           
+
             var formData = new FormData();
             var files = $('#VaccineFileAttachment')[0].files[0];
-                formData.append('FileAttachment', files);
-                formData.append('VaccineId', $('#vVaccineId').val());
-                formData.append('ImmunizationDate', $('#vImmunizationDate').val());
-               
-                formData.append('CrewId', $('#Id').val());
+            formData.append('FileAttachment', files);
+            formData.append('VaccineId', $('#vVaccineId').val());
+            formData.append('ImmunizationDate', $('#vImmunizationDate').val());
+            formData.append('CrewId', $('#CrewId').val());
+            formData.append('Id', $('#Idv').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddVaccine",
@@ -179,9 +184,6 @@
                 }
             });
         });
-
-
-
     });
 
 
@@ -195,6 +197,28 @@
                         table_vaccine.ajax.reload();
                     }
                 });
+            }
+        });
+    }
+
+    function edit_vaccine(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Applicants/EditVaccine",
+            data: { 'id': id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Idv').val(response.Id);
+                $('#vVaccineId').val(response.VaccineId);
+                $('#vImmunizationDate').val(moment(response.ImmunizationDate).format("MM/DD/YYYY"));
+                $('#AddOrEditVaccine').modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
             }
         });
     }

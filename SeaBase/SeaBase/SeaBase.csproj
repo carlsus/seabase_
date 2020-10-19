@@ -289,6 +289,7 @@
     <Compile Include="Models\CrewMedical.cs" />
     <Compile Include="Models\CrewMedicalCertifiate.cs" />
     <Compile Include="Models\CrewOfficeHistory.cs" />
+    <Compile Include="Models\CrewStatus.cs" />
     <Compile Include="Models\CrewTrainingCertificate.cs" />
     <Compile Include="Models\CrewTravelDocument.cs" />
     <Compile Include="Models\CrewEducation.cs" />
@@ -434,6 +435,7 @@
     <Compile Include="ViewModel\ApplicantVM.cs" />
     <Compile Include="ViewModel\Beneficiary.cs" />
     <Compile Include="ViewModel\COE.cs" />
+    <Compile Include="ViewModel\CrewList.cs" />
     <Compile Include="ViewModel\CVStandardTravelDocuments.cs" />
     <Compile Include="ViewModel\CVStandardWorkExperience.cs" />
     <Compile Include="ViewModel\DutchContract.cs" />

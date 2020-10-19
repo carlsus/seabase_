@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Dapper;
+using MySql.Data.MySqlClient;
 using SeaBase.Models;
 using SeaBase.ViewModel;
 
@@ -26,18 +29,31 @@ namespace SeaBase.Controllers
         [HttpGet]
         public ActionResult GetCrews()
         {
-            var crews = (from c in _context.Crews
-                let Name=c.Firstname + " " + c.MiddleName + " " + c.Lastname
-                join d in _context.Ranks on c.RankId equals d.Id
-                join e in _context.Statuses on c.StatusId equals e.Id
-                join f in _context.Vessels on c.VesselId equals f.Id into t
-                         from nt in t.DefaultIfEmpty()
-                join g in _context.Principals on nt.PrincipalId equals g.Id into u
-                         from ut in u.DefaultIfEmpty()
-                where c.StatusId>=5
-                select new {c.Id,c.ApplicationDate,c.EmailAddress,c.MobileNo, d.RankName,Name,e.StatusName,nt.VesselName,ut.PrincipalName,c.TelephoneNo}
-                ).ToList();
-            return Json(new { data =crews }, JsonRequestBehavior.AllowGet);
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<CrewList>("select " +
+                                      "CONCAT(c.Firstname,' ',c.MiddleName,' ',c.Lastname)  as Name,c.Id,c.ApplicationDate,c.EmailAddress,c.MobileNo," +
+                                      "e.RankName,max(d.Id),f.StatusName,g.VesselName,h.PrincipalName from crews c " +
+                                      "inner join crewstatus d on d.CrewId=c.Id " +
+                                      "inner join ranks e on e.Id =d.RankId " +
+                                      "inner join status f on f.Id =d.StatusId  " +
+                                      "left join vessels g on g.Id = c.VesselId " +
+                                      "left join principals h on h.Id = g.PrincipalId " +
+                                                " where f.Id>=5 group by  c.Id").ToList();
+                return Json(new { data = result }, JsonRequestBehavior.AllowGet);
+
+            }
+            //var crews = (from c in _context.Crews
+            //    let Name=c.Firstname + " " + c.MiddleName + " " + c.Lastname
+            //    join d in _context.Ranks on c.RankId equals d.Id
+            //    join e in _context.Statuses on c.StatusId equals e.Id
+            //    join f in _context.Vessels on c.VesselId equals f.Id into t
+            //             from nt in t.DefaultIfEmpty()
+            //    join g in _context.Principals on nt.PrincipalId equals g.Id into u
+            //             from ut in u.DefaultIfEmpty()
+            //    where c.StatusId>=5
+            //    select new {c.Id,c.ApplicationDate,c.EmailAddress,c.MobileNo, d.RankName,Name,e.StatusName,nt.VesselName,ut.PrincipalName,c.TelephoneNo}
+            //    ).ToList();
 
         }
 
@@ -226,6 +242,8 @@ namespace SeaBase.Controllers
             var familybackground = _context.CrewFamilyBackgrounds.SingleOrDefault(c => c.CrewId == id);
             var rank = _context.Ranks.ToList();
             var country = _context.Countries.ToList();
+            var status = _context.CrewStatuses.Where(c => c.CrewId == id).ToList().LastOrDefault();
+
             var beneficiary = (from c in _context.CrewBeneficiaryChildrens
                 where c.Type == 0
                 select new
@@ -267,8 +285,8 @@ namespace SeaBase.Controllers
                 Ranks = rank,
                 Countries = country,
                 ApplicationDate = crew.ApplicationDate ?? null,
-                RankId = crew.RankId,
-                StatusId = crew.StatusId,
+                RankId = status.RankId,
+                StatusId = status.StatusId,
                 VesselId = crew.VesselId,
                 Firstname = crew.Firstname,
                 MiddleName = crew.MiddleName,
@@ -326,7 +344,7 @@ namespace SeaBase.Controllers
             };
 
             ViewBag.Status =
-                _context.Statuses.Where(m => m.Id == crew.StatusId).Select(g => g.StatusName).SingleOrDefault();
+                _context.Statuses.Where(m => m.Id == status.StatusId).Select(g => g.StatusName).SingleOrDefault();
 
             var folder = Server.MapPath("~/Files/" + id);
             if (!Directory.Exists(folder))

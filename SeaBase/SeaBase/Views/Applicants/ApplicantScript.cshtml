@@ -1,6 +1,5 @@
 ﻿<script>
     var button_text;
-    var button_status;
     $(document).ready(function () {
         if ($('#Id').val() == 0) {
             $("#form0 input").prop("disabled", false);
@@ -47,13 +46,7 @@
            $('#btnSaveApplication').text(button_text);
        }
 
-       switch ($('#StatusId').val()) {
-        case 1:
-            button_status = "Proceed to Pool";
-        case 2:
-            button_status = "Proceed to Operation";
-        default:
-        }
+       
        
         $('#ApplicationDate').datepicker({
             startDate: '',
@@ -124,8 +117,18 @@
     
    
     function SaveStatus(id) {
+        var buttonStatus="";
+        switch (id) {
+            case 2:
+                buttonStatus = "Proceed to Pool";
+                break;
+            case 3:
+                buttonStatus = "Proceed to Operation";
+                break;
+            default:
+        }
         if ($('#StatusId').val() <= 2) {
-            bootbox.confirm("Are you sure you want to " + button_status + "?", function (result) {
+            bootbox.confirm("Are you sure you want to " + buttonStatus + "?", function (result) {
                 if (result) {
                     enable();
                     $('#StatusId').val(id);

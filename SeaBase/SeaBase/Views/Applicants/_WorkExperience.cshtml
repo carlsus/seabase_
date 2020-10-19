@@ -44,18 +44,19 @@
 
                 <form id="workexperience" method="post" name="workexperience">
                     <div class="row-fluid">
+                        <input type="hidden" id="Idw" name="Idw"/>
                         <div class="form-group col-md-12">
                             <label>Rank</label>
-                            @Html.DropDownList("weRankId", new SelectList(Model.Ranks, "Id", "RankName"), "Select Rank", new { @class = "form-control" })
+                            @Html.DropDownList("weRankId", new SelectList(Model.Ranks, "Id", "RankName"), "Select Rank", new {@class = "form-control"})
                         </div>
 
                         <div class="form-group col-md-12">
                             <label>Vessel Name</label>
-                            <input type="text" class="form-control" id="weVesselName" name="weVesselName" />
+                            <input type="text" class="form-control" id="weVesselName" name="weVesselName"/>
                         </div>
                         <div class="form-group col-md-12">
                             <label>Vessel Type</label>
-                            @Html.DropDownList("weVesselTypeId", new SelectList(Model.VesselTypes, "Id", "VesselTypeName"), "Select Vessel Type", new { @class = "form-control" })
+                            @Html.DropDownList("weVesselTypeId", new SelectList(Model.VesselTypes, "Id", "VesselTypeName"), "Select Vessel Type", new {@class = "form-control"})
                         </div>
                         <div class="form-group col-md-6">
                             <label>Start Date</label>
@@ -63,7 +64,7 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control" id="weStartDate" name="weStartDate" />
+                                <input type="text" class="form-control" id="weStartDate" name="weStartDate"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -72,18 +73,18 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control" id="weEndDate" name="weEndDate" />
+                                <input type="text" class="form-control" id="weEndDate" name="weEndDate"/>
                             </div>
                         </div>
                         <div class="form-group col-md-12">
                             <label>Manning Agency</label>
-                            @Html.DropDownList("weManningAgencyId", new SelectList(Model.ManningAgencies, "Id", "AgencyName"), "Select Manning Agency", new { @class = "form-control" })
+                            @Html.DropDownList("weManningAgencyId", new SelectList(Model.ManningAgencies, "Id", "AgencyName"), "Select Manning Agency", new {@class = "form-control"})
                         </div>
                         <div class="form-group col-md-12">
                             <label>Reason of Leave</label>
-                            <input type="text" class="form-control" id="weResonOfLeave" name="weResonOfLeave" />
+                            <input type="text" class="form-control" id="weResonOfLeave" name="weResonOfLeave"/>
                         </div>
-                        
+
                     </div>
                     @Html.AntiForgeryToken()
                     &nbsp;
@@ -133,6 +134,7 @@
                     {
                         text: "New Work Experience",
                         action: function (e, dt, node, config) {
+                            $('#workexperience')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditWorkExperience").modal();
                         }
@@ -169,7 +171,8 @@
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_work_experience(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_work_experience(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_work_experience(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
@@ -188,6 +191,7 @@
                 formData.append('ManningAgencyId', $('#weManningAgencyId').val());
                 formData.append('ReasonOfLeave', $('#weResonOfLeave').val());
                 formData.append('CrewId', $('#CrewId').val());
+                formData.append('Id', $('#Idw').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddWorkExperience",
@@ -214,23 +218,47 @@
                 }
             });
         });
+});
 
 
+    function remove_work_experience(id) {
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("DeleteWorkExperience","Applicants")/" + id,
 
+                    success: function () {
+                        table_work_experience.ajax.reload();
+                    }
+                });
+            }
         });
+    }
 
-
-        function remove_work_experience(id) {
-            bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-                if (result) {
-                    $.ajax({
-                        url: "@Url.Action("DeleteWorkExperience","Applicants")/" + id,
-
-                        success: function () {
-                            table_work_experience.ajax.reload();
-                        }
-                    });
-                }
-            });
-        }
+    function edit_work_experience(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Applicants/EditWorkExperience",
+            data: { 'id': id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Idw').val(response.Id);
+                $('#weRankId').val(response.RankId);
+                $('#weVesselName').val(response.VesselName);
+                $('#weVesselTypeId').val(response.VesselTypeId);
+                $('#weStartDate').val(moment(response.StartDate).format("MM/DD/YYYY"));
+                $('#weEndDate').val(moment(response.EndDate).format("MM/DD/YYYY"));
+                $('#weManningAgencyId').val(response.ManningAgencyId);
+                $('#weResonOfLeave').val(response.ReasonOfLeave);
+                $('#AddOrEditWorkExperience').modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
 </script>

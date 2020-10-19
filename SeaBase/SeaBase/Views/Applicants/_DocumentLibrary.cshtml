@@ -183,7 +183,8 @@ function edit_document_library(id) {
         contentType: "application/json; charset=utf-8",
         dataType: "json",
         success: function (response) {
-            $('#dlDocumentNameType').val(response.DocumentNameType)
+            $('#Iddc').val(response.Id);
+            $('#dlDocumentNameType').val(response.DocumentNameType);
             $('#AddOrEditDocumentLibrary').modal('show');
         },
         failure: function (response) {

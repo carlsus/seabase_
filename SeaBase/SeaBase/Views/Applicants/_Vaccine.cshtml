@@ -35,13 +35,14 @@
             </div>
             <div class="modal-body">
 
-                <form id="flags" method="post" name="flags">
+                <form id="vaccines" method="post" name="vaccines">
+                    <input type="hidden" id="Idv" name="Idv"/>
                     <div class="row-fluid">
                         <div class="form-group col-md-12">
                             <label>Medical Certificate</label>
-                            @Html.DropDownList("vVaccineId", new SelectList(Model.Vaccines, "Id", "VaccineName"), "Select Vaccine", new { @class = "form-control" })
+                            @Html.DropDownList("vVaccineId", new SelectList(Model.Vaccines, "Id", "VaccineName"), "Select Vaccine", new {@class = "form-control"})
                         </div>
-                        
+
 
                         <div class="form-group col-md-6">
                             <label>Immunization Date</label>
@@ -49,13 +50,13 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input type="text" class="form-control" id="vImmunizationDate" name="vImmunizationDate" />
+                                <input type="text" class="form-control" id="vImmunizationDate" name="vImmunizationDate"/>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <label>File Attachment</label>
                             <input id="VaccineFileAttachment" title="Upload a attachment"
-                                   type="file" name="VaccineFileAttachment" />
+                                   type="file" name="VaccineFileAttachment"/>
                         </div>
 
                     </div>
@@ -104,6 +105,7 @@
                     {
                         text: "New Vaccine",
                         action: function (e, dt, node, config) {
+                            $('#vaccines')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditVaccine").modal();
                         }
@@ -132,17 +134,23 @@
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data===null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_vaccine(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_vaccine(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_vaccine(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
-
+            "columnDefs": [
+                { "width": "50%", "targets": 0 },
+                { "width": "15%", "targets": 1 },
+                { "width": "10%", "targets": 2 },
+                { "width": "15%", "targets": 3 }
+            ]
         });
 
         $('#btnVaccine').on('click', function (e) {
@@ -153,8 +161,8 @@
                 formData.append('FileAttachment', files);
                 formData.append('VaccineId', $('#vVaccineId').val());
                 formData.append('ImmunizationDate', $('#vImmunizationDate').val());
-               
                 formData.append('CrewId', $('#CrewId').val());
+                formData.append('Id', $('#Idv').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddVaccine",
@@ -176,10 +184,7 @@
                 }
             });
         });
-
-
-
-    });
+});
 
 
     function remove_vaccine(id) {
@@ -192,6 +197,28 @@
                         table_vaccine.ajax.reload();
                     }
                 });
+            }
+        });
+    }
+
+    function edit_vaccine(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Applicants/EditVaccine",
+            data: { 'id': id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Idv').val(response.Id);
+                $('#vVaccineId').val(response.VaccineId);
+                $('#vImmunizationDate').val(moment(response.ImmunizationDate).format("MM/DD/YYYY"));
+                $('#AddOrEditVaccine').modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
             }
         });
     }

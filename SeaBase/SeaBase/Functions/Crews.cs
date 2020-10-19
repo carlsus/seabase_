@@ -65,5 +65,20 @@ namespace SeaBase.Functions
                 db.SaveChanges();
             }
         }
+
+        public static void CrewCreateStatus(Crew crew)
+        {
+            using (var db = new SeaBaseContext())
+            {
+                CrewStatus cs = new CrewStatus
+                {
+                    CrewId = crew.Id,
+                    RankId = crew.RankId,
+                    StatusId = crew.StatusId
+                };
+                db.CrewStatuses.Add(cs);
+                db.SaveChanges();
+            }
+        }
     }
 }

@@ -1,5 +1,4 @@
-﻿
-@using SeaBase.Models
+﻿@using SeaBase.Models
 @model SeaBase.ViewModel.ApplicantVM
 
 <div class="panel panel-default">
@@ -42,21 +41,19 @@
             </div>
             <div class="modal-body">
 
-                <form id="flags" method="post" name="flags">
-
-                    <input type="hidden" id="CrewId" name="CrewId" value="@Html.DisplayFor(m=>m.CrewFamilyBackground.CrewId)" />
-
+                <form id="traveldocuments" method="post" name="traveldocuments">
+                    <input type="hidden" id="Idtd" name="Idtd" />
                     <div class="row-fluid">
                         <div class="form-group col-md-6">
                             <label>Document Type</label>
                             @Html.DropDownList("tdDocumentId", new SelectList(Model.Documents, "Id", "DocumentName"), "Select Document", new { @class = "form-control" })
                         </div>
-                       
+
                         <div class="form-group col-md-6">
                             <label>Document Number</label>
                             <input type="text" class="form-control" id="tdDocumentNo" name="tdDocumentNo" />
                         </div>
-                        
+
                         <div class="form-group col-md-6">
                             <label>Issue Date</label>
                             <div class="input-group date">
@@ -137,6 +134,7 @@
                     {
                         text: "New Document",
                         action: function (e, dt, node, config) {
+                            $('#traveldocuments')[0].reset();
                             $('#modal-title').text("Add New");
                             $("#AddOrEditTravelDocuments").modal();
                         }
@@ -172,32 +170,34 @@
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
-                        return (data === null) ? "" : '<a href="#" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></a>';
+                        return (data === null) ? "" : '<button class="btn btn-default" title="' + data + '" onclick="viewFile(\'' + data + '\')"><i class="fa fa-paperclip fa-lg"></i></b>';
                     }
                 },
                 {
                     data: "Id",
                     render: function (data) {
-                        return '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_travel_document(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
+                        return '<button type="button" class="btn btn-default "  title="Edit" onclick="edit_travel_document(\'' + data + '\')"><i class="fa fa-edit"></i></button> ' +
+                            '<button type="button" class="btn btn-danger" title="Delete" onclick="remove_travel_document(\'' + data + '\')"><i class="fa fa-trash"></i></button>';
                     }
                 }
             ],
 
         });
 
-        $('#btnTravelDocuments').on('click',function (e) {
+        $('#btnTravelDocuments').on('click', function (e) {
             e.preventDefault();
-            
+
             var formData = new FormData();
             var files = $('#TravelFileAttachment')[0].files[0];
-                formData.append('FileAttachment', files);
-                formData.append('DocumentId', $('#tdDocumentId').val());
-                formData.append('DocumentNo', $('#tdDocumentNo').val());
-                formData.append('IssueDate', $('#tdIssueDate').val());
-                formData.append('ExpiryDate', $('#tdExpiryDate').val());
-                formData.append('PlaceIssued', $('#tdPlaceIssued').val());
-                formData.append('IssuedBy', $('#tdIssuedBy').val());
-                formData.append('CrewId', $('#Id').val());
+            formData.append('FileAttachment', files);
+            formData.append('DocumentId', $('#tdDocumentId').val());
+            formData.append('DocumentNo', $('#tdDocumentNo').val());
+            formData.append('IssueDate', $('#tdIssueDate').val());
+            formData.append('ExpiryDate', $('#tdExpiryDate').val());
+            formData.append('PlaceIssued', $('#tdPlaceIssued').val());
+            formData.append('IssuedBy', $('#tdIssuedBy').val());
+            formData.append('CrewId', $('#CrewId').val());
+            formData.append('Id', $('#Idtd').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddTravelDocument",
@@ -224,23 +224,47 @@
                 }
             });
         });
+    });
 
 
+    function remove_travel_document(id) {
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("DeleteTravelDocument","Applicants")/" + id,
 
+                    success: function () {
+                        table_travel_documents.ajax.reload();
+                    }
+                });
+            }
         });
+    }
 
+    function edit_travel_document(id) {
+        $.ajax({
+            type: "GET",
+            url: "/Applicants/EditTravelDocuments",
+            data: { 'id': id },
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#Idtd').val(response.Id);
+                $('#tdDocumentId').val(response.DocumentId);
+                $('#tdDocumentNo').val(response.DocumentNo);
+                $('#tdIssueDate').val(moment(response.IssueDate).format("MM/DD/YYYY"));
+                $('#tdExpiryDate').val(moment(response.ExpiryDate).format("MM/DD/YYYY"));
+                $('#tdIssuedBy').val(response.IssuedBy);
+                $('#tdPlaceIssued').val(response.PlaceIssued);
+                $('#AddOrEditTravelDocuments').modal('show');
+            },
+            failure: function (response) {
+                alert(response.responseText);
+            },
+            error: function (response) {
+                alert(response.responseText);
+            }
+        });
+    }
 
-        function remove_travel_document(id) {
-            bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-                if (result) {
-                    $.ajax({
-                        url: "@Url.Action("DeleteTravelDocument","Applicants")/" + id,
-
-                        success: function () {
-                            table_travel_documents.ajax.reload();
-                        }
-                    });
-                }
-            });
-        }
 </script>

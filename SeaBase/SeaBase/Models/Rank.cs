@@ -35,6 +35,7 @@ namespace SeaBase.Models
         public ICollection<CrewIncident> CrewIncidents { get; set; }
         public ICollection<EmbarkationDetails> EmbarkationDetailses { get; set; }
         public ICollection<JobOpening> JobOpenings { get; set; }
+        public ICollection<CrewStatus> CrewStatuses { get; set; }
 
     }
 }

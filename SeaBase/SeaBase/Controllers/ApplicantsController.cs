@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Dapper;
+using MySql.Data.MySqlClient;
 using SeaBase.Functions;
 using SeaBase.Models;
 using SeaBase.ViewModel;
@@ -156,11 +159,9 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddLicenses(CrewLicense license)
         {
-
+            var fileName = "";
             if (license.ImageFile != null)
             {
-                var fileName = "";
-
                 fileName = Path.GetFileNameWithoutExtension(license.ImageFile.FileName);
 
                 string fileExtension = Path.GetExtension(license.ImageFile.FileName);
@@ -188,6 +189,7 @@ namespace SeaBase.Controllers
                 update.IssueDate = license.IssueDate;
                 update.IssuedBy = license.IssuedBy;
                 update.Remarks = license.Remarks;
+                update.FilePath = fileName;
                 _context.SaveChanges();
             }
             license = new CrewLicense();
@@ -258,10 +260,10 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddFlags(CrewFlagStateDocument flag)
         {
+            var fileName = "";
+
             if (flag.FileAttachment != null)
             {
-                var fileName = "";
-
                 fileName = Path.GetFileNameWithoutExtension(flag.FileAttachment.FileName);
 
                 string fileExtension = Path.GetExtension(flag.FileAttachment.FileName);
@@ -290,6 +292,7 @@ namespace SeaBase.Controllers
                 update.ExpiryDate = flag.ExpiryDate;
                 update.IssuedBy = flag.IssuedBy;
                 update.Remarks = flag.Remarks;
+                update.FilePath = fileName;
                 _context.SaveChanges();
             }
             
@@ -328,6 +331,7 @@ namespace SeaBase.Controllers
         
         #endregion        //travel documents
 
+
         #region Travel Documents
         [HttpGet]
         public ActionResult GetTravelDocuments(int id)
@@ -356,9 +360,10 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddTravelDocument(CrewTravelDocument document)
         {
+            var fileName = "";
+
             if (document.FileAttachment != null)
             {
-                var fileName = "";
 
                 fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
@@ -386,6 +391,7 @@ namespace SeaBase.Controllers
                 update.ExpiryDate = document.ExpiryDate;
                 update.IssuedBy = document.IssuedBy;
                 update.PlaceIssued = document.PlaceIssued;
+                update.FilePath = fileName;
                 _context.SaveChanges();
             }
            
@@ -457,9 +463,10 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddTrainingCertificates(CrewTrainingCertificate document)
         {
+            var fileName = "";
+
             if (document.FileAttachment != null)
             {
-                var fileName = "";
 
                 fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
@@ -490,6 +497,7 @@ namespace SeaBase.Controllers
                 update.PlaceIssued = document.PlaceIssued;
                 update.IssuedBy = document.IssuedBy;
                 update.MLC = document.MLC;
+                update.FilePath = fileName;
                 _context.SaveChanges();
             }
             
@@ -525,7 +533,6 @@ namespace SeaBase.Controllers
         #endregion
 
 
-
         #region Document Library
         [HttpGet]
         public ActionResult GetDocumentLibrary(int id)
@@ -538,9 +545,10 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddDocumentLibrary(CrewDocumentLibrary document)
         {
+            var fileName = "";
+
             if (document.FileAttachment != null)
             {
-                var fileName = "";
 
                 fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
@@ -564,6 +572,7 @@ namespace SeaBase.Controllers
 
                 var update = _context.CrewDocumentLibraries.Single(m => m.Id == document.Id);
                 update.DocumentNameType = document.DocumentNameType;
+                update.FilePath = fileName;
                 _context.SaveChanges();
             }
             
@@ -584,8 +593,11 @@ namespace SeaBase.Controllers
 
             if (itemToRemove != null)
             {
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
+                }
 
                 _context.CrewDocumentLibraries.Remove(itemToRemove);
                 _context.SaveChanges();
@@ -593,7 +605,6 @@ namespace SeaBase.Controllers
         }
         
         #endregion
-
 
 
         #region Medical Certificates
@@ -626,9 +637,9 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddMedicalCertificate(CrewMedical document)
         {
+            var fileName = "";
             if (document.FileAttachment != null)
             {
-                var fileName = "";
 
                 fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
@@ -649,7 +660,6 @@ namespace SeaBase.Controllers
             }
             else
             {
-
                 var update = _context.CrewMedicals.Single(m => m.Id == document.Id);
                 update.MedicalCertificateId = document.MedicalCertificateId;
                 update.MedicalClinicId = document.MedicalClinicId;
@@ -657,6 +667,7 @@ namespace SeaBase.Controllers
                 update.IssueDate = document.IssueDate;
                 update.ExpiryDate = document.ExpiryDate;
                 update.Remarks = document.Remarks;
+                update.FilePath = fileName;
                 _context.SaveChanges();
             }
             
@@ -679,8 +690,11 @@ namespace SeaBase.Controllers
 
             if (itemToRemove != null)
             {
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
+                }
 
                 _context.CrewMedicals.Remove(itemToRemove);
                 _context.SaveChanges();
@@ -715,9 +729,10 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddVaccine(CrewVaccine document)
         {
+            var fileName = "";
+
             if (document.FileAttachment != null)
             {
-                var fileName = "";
 
                 fileName = Path.GetFileNameWithoutExtension(document.FileAttachment.FileName);
 
@@ -731,9 +746,20 @@ namespace SeaBase.Controllers
 
                 document.FileAttachment.SaveAs(Server.MapPath("~/Files/" + document.CrewId + "/") + document.FilePath);
             }
-
-            _context.CrewVaccines.Add(document);
-            _context.SaveChanges();
+            if (document.Id == 0)
+            {
+                _context.CrewVaccines.Add(document);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var update = _context.CrewVaccines.Single(m => m.Id == document.Id);
+                update.VaccineId = document.VaccineId;
+                update.ImmunizationDate = document.ImmunizationDate;
+                update.FilePath = fileName;
+                _context.SaveChanges();
+            }
+            
             document = new CrewVaccine();
             return Json(document, JsonRequestBehavior.AllowGet);
         }
@@ -744,7 +770,7 @@ namespace SeaBase.Controllers
 
             var result = (from c in _context.CrewVaccines
                           where c.Id == id
-                          select c).ToList();
+                          select c).SingleOrDefault();
 
             return Json(result, JsonRequestBehavior.AllowGet);
 
@@ -756,8 +782,11 @@ namespace SeaBase.Controllers
 
             if (itemToRemove != null)
             {
-                FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                fi.Delete();
+                if (itemToRemove.FilePath != null)
+                {
+                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                    fi.Delete();
+                }
 
                 _context.CrewVaccines.Remove(itemToRemove);
                 _context.SaveChanges();
@@ -766,7 +795,8 @@ namespace SeaBase.Controllers
         
         #endregion
 
-        // work Experience
+        #region Work Experience
+
         [HttpGet]
         public ActionResult GetWorkExperience(int id)
         {
@@ -796,11 +826,36 @@ namespace SeaBase.Controllers
         [HttpPost]
         public JsonResult AddWorkExperience(CrewWorkExperience document)
         {
-           
+            if (document.Id == 0)
+            {
+                _context.CrewWorkExperiences.Add(document);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var update = _context.CrewWorkExperiences.Single(m => m.Id == document.Id);
+                update.RankId = document.RankId;
+                update.VesselName = document.VesselName;
+                update.VesselTypeId = document.VesselTypeId;
+                update.StartDate = document.StartDate;
+                update.EndDate = document.EndDate;
+                update.ManningAgencyId = document.ManningAgencyId;
+                update.ReasonOfLeave = document.ReasonOfLeave;
+                _context.SaveChanges();
+            }
+            return Json(new { data = document }, JsonRequestBehavior.AllowGet);
+        }
 
-            _context.CrewWorkExperiences.Add(document);
-            _context.SaveChanges();
-            return Json(new{data=document}, JsonRequestBehavior.AllowGet);
+        [HttpGet]
+        public ActionResult EditWorkExperience(int id)
+        {
+
+            var result = (from c in _context.CrewWorkExperiences
+                          where c.Id == id
+                          select c).SingleOrDefault();
+
+            return Json(result, JsonRequestBehavior.AllowGet);
+
         }
 
         public void DeleteWorkExperience(int id)
@@ -813,7 +868,8 @@ namespace SeaBase.Controllers
                 _context.SaveChanges();
             }
         }
-
+        
+        #endregion
         // Office Remarks
         [HttpGet]
         public ActionResult GetOfficeRemarks(int id)
@@ -890,6 +946,7 @@ namespace SeaBase.Controllers
                 Crews.CreateCrewVaccines(crew.Id);
                 Crews.CreateCrewDocumens(crew.Id);
                 Crews.CreateCrewTrainingsAndSeminar(crew.Id);
+                Crews.CrewCreateStatus(crew);
                 return RedirectToAction("Index", "Applicants");
 
             }
@@ -899,6 +956,10 @@ namespace SeaBase.Controllers
                     .Include("CrewAddress")
                     .Include("CrewFamilyBackground")
                     .Single(m => m.Id == crew.Id);
+                if (update.StatusId != crew.StatusId)
+                {
+                    Crews.CrewCreateStatus(crew);
+                }
                 update.ApplicationDate = crew.ApplicationDate;//Convert.ToDateTime(crew.ApplicationDate.ToString("yyyy-MM-dd"));
                 update.RankId = crew.RankId;
                 update.StatusId = crew.StatusId;
@@ -911,10 +972,10 @@ namespace SeaBase.Controllers
                 update.EmailAddress = crew.EmailAddress;
                 update.TelephoneNo = crew.TelephoneNo;
                 update.Password = crew.Password;
-                update.PassportNo = crew.PassportNo;
-                update.SeamanBookNo = crew.SeamanBookNo;
-                update.SRCNo = crew.SRCNo;
-                update.EregNo = crew.EregNo;
+                //update.PassportNo = crew.PassportNo;
+                //update.SeamanBookNo = crew.SeamanBookNo;
+                //update.SRCNo = crew.SRCNo;
+                //update.EregNo = crew.EregNo;
                 update.MobileNo = crew.MobileNo;
                 update.Gender = crew.Gender;
                 update.CivilStatus = crew.CivilStatus;
@@ -953,13 +1014,10 @@ namespace SeaBase.Controllers
                 update.OthersSpecify = crew.OthersSpecify;
                 update.Remarks = crew.Remarks;
                 update.RecommendedBy = crew.RecommendedBy;
-                update.OtherInfo = crew.OtherInfo;
-
-                
-                
+                update.OtherInfo = crew.OtherInfo;                
                 update.VesselId = crew.VesselId;
                 _context.SaveChanges();
-
+                
                 return RedirectToAction("View", new {id = crew.Id});
 
             }
@@ -978,6 +1036,12 @@ namespace SeaBase.Controllers
             var familybackground = _context.CrewFamilyBackgrounds.SingleOrDefault(c => c.CrewId == id);
             var rank = _context.Ranks.ToList();
             var country = _context.Countries.ToList();
+            //CrewStatus status=new CrewStatus();
+            //using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            //{
+            //    status = db.Query<CrewStatus>("select max(Id) as Id,RankId,StatusId,CrewId from crewstatus where CrewId=@id",new{id=id}).SingleOrDefault();
+            //}
+            var status= _context.CrewStatuses.Where(c => c.CrewId == id).ToList().LastOrDefault();
             var viewModel = new ApplicantVM
             {
                 ManningAgencies = _context.ManningAgencies.ToList(),
@@ -994,8 +1058,8 @@ namespace SeaBase.Controllers
                 Ranks = rank,
                 Countries = country,
                 ApplicationDate = crew.ApplicationDate ?? null,
-                RankId = crew.RankId,
-                StatusId = crew.StatusId,
+                RankId = status.RankId,
+                StatusId = status.StatusId,
                 VesselId = crew.VesselId,
                 Firstname = crew.Firstname,
                 MiddleName = crew.MiddleName,

@@ -219,6 +219,7 @@ namespace SeaBase.Models
         public ICollection<EmbarkationDetails> EmbarkationDetailses { get; set; }
         public ICollection<CrewTravelDocument> CrewTravelDocuments { get; set; }
         public ICollection<CrewAllotee> CrewAllotees { get; set; }
+        public ICollection<CrewStatus> CrewStatuses { get; set; }
 
     }
 }

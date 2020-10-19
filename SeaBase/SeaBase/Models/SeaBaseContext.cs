@@ -73,6 +73,7 @@ namespace SeaBase.Models
         public DbSet<PrincipalDocument> PrincipalDocuments { get; set; }
         public DbSet<CrewAllotee> CrewAllotees { get; set; }
         public DbSet<JobOpening> JobOpenings { get; set; }
+        public DbSet<CrewStatus> CrewStatuses { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

@@ -12,5 +12,6 @@ namespace SeaBase.Models
 
 
         public ICollection<Crew> Crews { get; set; }
+        public ICollection<CrewStatus> CrewStatuses { get; set; }
     }
 }
