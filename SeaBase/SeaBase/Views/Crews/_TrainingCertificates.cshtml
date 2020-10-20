@@ -185,7 +185,12 @@
                 { data: "PlaceIssued" },
                 { data: "IssuedBy" },
                 { data: "STCWCode" },
-                { data: "MLC" },
+                {
+                    data: "MLC",
+                    render: function (data) {
+                        return (data === 1) ? 'Yes' : 'No';
+                    },
+                },
                 {
                     data: "FilePath",
                     render: function (data, type, row, meta) {
@@ -217,7 +222,12 @@
             formData.append('CertificateNo', $('#tcCertificateNo').val());
             formData.append('PlaceIssued', $('#tcPlaceIssued').val());
             formData.append('STCWCode', $('#tcSTCW').val());
-            formData.append('MLC', $('#tcMLC').val());
+            if ($("#tcMLC").is(":checked") == true) {
+                formData.append('MLC', 1);
+
+            } else {
+                formData.append('MLC', 0);
+            }
             formData.append('CrewId', $('#Id').val());
             formData.append('Id', $('#Idtc').val());
             $.ajax({
@@ -274,7 +284,11 @@
                 $('#tcExpiryDate').val(moment(response.ExpiryDate).format("MM/DD/YYYY"));
                 $('#tcIssuedBy').val(response.IssuedBy);
                 $('#tcPlaceIssued').val(response.PlaceIssued);
-                $('#tcMLC').val(response.MLC);
+                if (response.MLC == 1) {
+                    $('#tcMLC').prop("checked", true);
+                } else {
+                    $('#tcMLC').prop("checked", false);
+                }
                 $('#AddOrEditTrainings').modal('show');
             },
             failure: function (response) {

@@ -224,11 +224,11 @@
                 </div>
                 <div class="form-group">
                     <label>Beneficiary:</label>
-                    @Html.DropDownList("ittmBeneficiary", new SelectList(Model.Beneficiaries, "Id", "Name"), "Select Allottee", new { @class = "form-control" })
+                    @Html.DropDownList("ittmBeneficiary", new SelectList(Model.Beneficiaries, "Id", "Name"), "Select Beneficiary", new { @class = "form-control" })
                 </div>
                 <div class="form-group">
                     <label>Visa:</label>
-                    @Html.DropDownList("ittmAllotee", new SelectList(Model.CrewAllotees, "Id", "AccountName"), "Select Allottee", new { @class = "form-control" })
+                    @Html.DropDownList("ittmAllotee", new SelectList(Model.TravelDocs, "Id", "DocumentName"), "Select Visa", new { @class = "form-control" })
                 </div>
                 <div class="form-group">
                     <label>Medical:</label>

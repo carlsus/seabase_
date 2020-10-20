@@ -263,8 +263,26 @@ namespace SeaBase.Controllers
                     
                 });
             }
+            var td = (from c in _context.CrewTravelDocuments
+                join d in _context.Documents on c.DocumentId equals d.Id
+                where c.CrewId == id && d.DocumentName.Contains("Visa")
+                select new
+                {
+                    d.Id,
+                    d.DocumentName,
+                }).ToList();
+            List<TravelDoc> tdl=new List<TravelDoc>();
+            foreach (var c in td)
+            {
+                tdl.Add(new TravelDoc
+                {
+                    Id = c.Id,
+                    DocumentName = c.DocumentName
+                });
+            }
             var viewModel = new ApplicantVM
             {
+                TravelDocs = tdl.ToList(),
                 Banks = _context.Banks.ToList(),
                 Branches = _context.Branches.ToList(),
                 Beneficiaries = ben,

@@ -22,8 +22,8 @@ namespace SeaBase.Models
         [Display(Name = "Certificate No.")]
         public string CertificateNo { get; set; }
 
-        [DefaultValue(false)]
-        public bool MLC { get; set; }
+        [DefaultValue(0)]
+        public int MLC { get; set; }
         [Display(Name = "Issue Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]

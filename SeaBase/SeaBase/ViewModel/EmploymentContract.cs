@@ -15,9 +15,13 @@ namespace SeaBase.ViewModel
         public DateTime BirthDate { get; set; }
         public string BirthPlace { get; set; }
         public string PassportNo { get; set; }
-        public string InternationalSeamansBook { get; set; }
-        public string LocalSeamansBook { get; set; }
+        public DateTime PassportIssueDate { get; set; }
+        public string SeamansBookNo { get; set; }
+        public DateTime SeamansBookIssueDate { get; set; }
         public string SRCNo { get; set; }
+        public DateTime SRCIssueDate { get; set; }
+        public string SIRBNo { get; set; }
+        public DateTime SIRBIssueDate { get; set; }
         public string Nationality { get; set; }
         public string RankName { get; set; }
         public DateTime LastMedical { get; set; }
@@ -57,7 +61,7 @@ namespace SeaBase.ViewModel
         public string MothersMaidenName { get; set; }
 
         public string AccountName { get; set; }
-        public string AlloteeRelationship { get; set; }
+        public string AccountRelationship { get; set; }
         public string BankName { get; set; }
         public string BranchName { get; set; }
         public string AccountNo { get; set; }
@@ -69,5 +73,7 @@ namespace SeaBase.ViewModel
         public double WageTotal { get; set; }
         public double WagePayOnBoard { get; set; }
         public double WageAllotment { get; set; }
+
+        
     }
 }

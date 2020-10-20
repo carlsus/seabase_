@@ -450,6 +450,7 @@
     <Compile Include="ViewModel\PrincipalViewModel.cs" />
     <Compile Include="ViewModel\RankViewModel.cs" />
     <Compile Include="ViewModel\TrainingsReport.cs" />
+    <Compile Include="ViewModel\TravelDoc.cs" />
     <Compile Include="ViewModel\TravelDocumentsReport.cs" />
     <Compile Include="ViewModel\UserViewModel.cs" />
     <Compile Include="ViewModel\VesselsViewModel.cs" />

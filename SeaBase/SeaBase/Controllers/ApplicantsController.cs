@@ -522,8 +522,11 @@ namespace SeaBase.Controllers
             {
                 if (itemToRemove.FilePath != null)
                 {
-                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                    fi.Delete();
+                    if (itemToRemove.FilePath != null)
+                    {
+                        FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                        fi.Delete();
+                    }
 
                 }
                 _context.CrewTrainingCertificates.Remove(itemToRemove);
