@@ -16,14 +16,14 @@ namespace SeaBase.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class DutchContract : ReportClass {
+    public class CV_StandardTrainings : ReportClass {
         
-        public DutchContract() {
+        public CV_StandardTrainings() {
         }
         
         public override string ResourceName {
             get {
-                return "DutchContract.rpt";
+                return "CV_StandardTrainings.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace SeaBase.Reports {
         
         public override string FullResourceName {
             get {
-                return "SeaBase.Reports.DutchContract.rpt";
+                return "SeaBase.Reports.CV_StandardTrainings.rpt";
             }
             set {
                 // Do nothing
@@ -87,20 +87,12 @@ namespace SeaBase.Reports {
                 return this.ReportDefinition.Sections[4];
             }
         }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_ScaleNo {
-            get {
-                return this.DataDefinition.ParameterFields[0];
-            }
-        }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedDutchContract : Component, ICachedReport {
+    public class CachedCV_StandardTrainings : Component, ICachedReport {
         
-        public CachedDutchContract() {
+        public CachedCV_StandardTrainings() {
         }
         
         [Browsable(false)]
@@ -137,7 +129,7 @@ namespace SeaBase.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            DutchContract rpt = new DutchContract();
+            CV_StandardTrainings rpt = new CV_StandardTrainings();
             rpt.Site = this.Site;
             return rpt;
         }

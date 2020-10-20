@@ -26,14 +26,17 @@ namespace SeaBase.Models
         [Display(Name = "Birth Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime Birthdate { get; set; }
+        public DateTime? Birthdate { get; set; }
         [Display(Name = "Place of Birth")]
+        [StringLength(100)]
         public string Birthplace { get; set; }
+        [StringLength(10)]
         public string Gender { get; set; }
+        [StringLength(100)]
         public string Address { get; set; }
         public int Type { get; set; }
+        [StringLength(20)]
         public string ContactNo { get; set; }
-
         public Crew Crew { get; set; }
     }
 }

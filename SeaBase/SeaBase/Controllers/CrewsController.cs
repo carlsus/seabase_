@@ -268,7 +268,7 @@ namespace SeaBase.Controllers
                 where c.CrewId == id && d.DocumentName.Contains("Visa")
                 select new
                 {
-                    d.Id,
+                    c.Id,
                     d.DocumentName,
                 }).ToList();
             List<TravelDoc> tdl=new List<TravelDoc>();
@@ -280,8 +280,32 @@ namespace SeaBase.Controllers
                     DocumentName = c.DocumentName
                 });
             }
+            var medical = (from c in _context.CrewMedicals
+                join d in _context.MedicalCertificates on c.MedicalCertificateId equals d.Id
+                select new
+                {
+                    c.Id,
+                    c.CrewId,
+                    c.ExpiryDate,
+                    c.IssueDate,
+                    d.MedicalCertificateName
+                }
+                ).ToList();
+            List<MedicalReport> med=new List<MedicalReport>();
+            foreach (var j in medical)
+            {
+                med.Add(new MedicalReport
+                {
+                    Id = j.Id,
+                    CrewId = j.CrewId,
+                    MedicalCertificateName = j.MedicalCertificateName,
+                    IssueDate = (DateTime) j.IssueDate,
+                    ExpiryDate = (DateTime) j.ExpiryDate
+                });
+            }
             var viewModel = new ApplicantVM
             {
+                MedicalReports = med,
                 TravelDocs = tdl.ToList(),
                 Banks = _context.Banks.ToList(),
                 Branches = _context.Branches.ToList(),

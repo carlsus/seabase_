@@ -73,7 +73,7 @@ namespace SeaBase.ViewModel
         public double WageTotal { get; set; }
         public double WagePayOnBoard { get; set; }
         public double WageAllotment { get; set; }
-
-        
+        public double LeavePay { get; set; }
+        public double LeaveSubsistence { get; set; }
     }
 }

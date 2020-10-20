@@ -72,13 +72,22 @@ namespace SeaBase.Controllers
         [HttpGet]
         public ActionResult GetBenificiaryChildren(int id, int types)
         {
-            var benificiaryChildren = (from c in _context.CrewBeneficiaryChildrens
-                         let Name=c.Firstname + " " + c.Middlename + " " + c.Lastname
-                         let Age = DateTime.Now.Year - c.Birthdate.Year
-                         where c.CrewId==id && c.Type==types
-                         select new {c.Id,Name,c.Birthdate,c.Gender, c.Address, c.Relationship,Age}
-                ).ToList();
-            return Json(new { data = benificiaryChildren }, JsonRequestBehavior.AllowGet);
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<BeneficiaryChildren>("select c.Id,concat(c.Firstname,' ',c.Middlename,' ',c.Lastname) as Name," +
+                                                           "c.Birthdate,c.Gender,c.Address,c.Relationship," +
+                                                           "(YEAR(CURRENT_DATE)-year(c.Birthdate)) as Age " +
+                                                           "from crewbeneficiarychildrens c " +
+                                                           "where c.CrewId=@cid and c.Type=@ctype", new { cid = id,ctype=types }).ToList();
+                return Json(new { data = result }, JsonRequestBehavior.AllowGet);
+            }
+            //var benificiaryChildren = (from c in _context.CrewBeneficiaryChildrens
+            //             let Name=c.Firstname + " " + c.Middlename + " " + c.Lastname
+            //             let Age = DateTime.Now.Year - c.Birthdate.Year
+            //             where c.CrewId==id && c.Type==types
+            //             select new {c.Id,Name,c.Birthdate,c.Gender, c.Address, c.Relationship,Age}
+            //    ).ToList();
+            
 
         }
 

@@ -131,7 +131,7 @@
                         <th>Gender</th>
                         <th>Birth Date</th>
                         <th>Age</th>
-                        <th>RElationship</th>
+                        <th>Relationship</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -355,9 +355,9 @@
             { data: "Name" },
             { data: "Gender" },
             {
-                'data': 'Birthdate',
+                'data': 'BirthDate',
                 'render': function (data) {
-                    return moment(data).format("MMM DD,YYYY");
+                    return (data === null) ? "" : moment(data).format("MMM DD,YYYY");
                 }
             },
             { data: "Age" },
@@ -371,9 +371,9 @@
             }
         ],
         "columnDefs": [
-                { "width": "42%", "targets": 0 },
+                { "width": "39%", "targets": 0 },
                 { "width": "5%", "targets": 1 },
-                { "width": "10%", "targets": 2 },
+                { "width": "13%", "targets": 2 },
                 { "width": "5%", "targets": 3 },
                 { "width": "5%", "targets": 4 },
                 { "className": "text-center", "width": "5%", "targets": 5 }
@@ -457,9 +457,9 @@
             { data: "Name" },
             { data: "Gender" },
             {
-                'data': 'Birthdate',
+                'data': 'BirthDate',
                 'render': function (data) {
-                    return moment(data).format("MMM DD,YYYY");
+                    return (data === null) ? "" : moment(data).format("MMM DD,YYYY");
                 }
             },
             { data: "Age" },
@@ -473,9 +473,9 @@
             }
         ],
         "columnDefs": [
-                { "width": "16%", "targets": 0 },
-                { "width": "31%", "targets": 1 },
-                { "width": "10%", "targets": 2 },
+                { "width": "39%", "targets": 0 },
+                { "width": "5%", "targets": 1 },
+                { "width": "13%", "targets": 2 },
                 { "width": "5%", "targets": 3 },
                 { "width": "5%", "targets": 4 },
                 { "className": "text-center", "width": "5%", "targets": 5 }

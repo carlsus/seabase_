@@ -12,5 +12,7 @@ namespace SeaBase.ViewModel
         public string Medical { get; set; }
         public int BeneficiaryId { get; set; }
         public int AlloteeId { get; set; }
+        public int VisaId { get; set; }
+        public int MedicalId { get; set; }
     }
 }

@@ -22,16 +22,16 @@ namespace SeaBase.Models
         [Display(Name = "Certificate No.")]
         public string CertificateNo { get; set; }
 
-        [DefaultValue(0)]
+        
         public int MLC { get; set; }
         [Display(Name = "Issue Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime IssueDate { get; set; }
+        public DateTime? IssueDate { get; set; }
         [Display(Name = "Expiry Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
 
         [StringLength(50)]
         [Display(Name = "STCW Code")]

@@ -339,6 +339,12 @@
       <DependentUpon>CV_Standard.rpt</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Reports\CV_StandardTrainings.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>CV_StandardTrainings.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\CV_StandardTravelDocuments.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -362,6 +368,12 @@
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\EmploymentContractCertificates.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>EmploymentContractCertificates.rpt</DependentUpon>
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Reports\FlagStateDocuments.cs">
       <AutoGen>True</AutoGen>
@@ -434,8 +446,10 @@
     <Compile Include="ViewModel\ApplicantViewModel.cs" />
     <Compile Include="ViewModel\ApplicantVM.cs" />
     <Compile Include="ViewModel\Beneficiary.cs" />
+    <Compile Include="ViewModel\BeneficiaryChildren.cs" />
     <Compile Include="ViewModel\COE.cs" />
     <Compile Include="ViewModel\CrewList.cs" />
+    <Compile Include="ViewModel\CVStandardTrainings.cs" />
     <Compile Include="ViewModel\CVStandardTravelDocuments.cs" />
     <Compile Include="ViewModel\CVStandardWorkExperience.cs" />
     <Compile Include="ViewModel\DutchContract.cs" />
@@ -447,6 +461,7 @@
     <Compile Include="ViewModel\JobOpeningViewModel.cs" />
     <Compile Include="ViewModel\JSU.cs" />
     <Compile Include="ViewModel\LOG.cs" />
+    <Compile Include="ViewModel\MedicalReport.cs" />
     <Compile Include="ViewModel\PrincipalViewModel.cs" />
     <Compile Include="ViewModel\RankViewModel.cs" />
     <Compile Include="ViewModel\TrainingsReport.cs" />
@@ -1767,6 +1782,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CV_Standard.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\CV_StandardTrainings.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>CV_StandardTrainings.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\CV_StandardTravelDocuments.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CV_StandardTravelDocuments.cs</LastGenOutput>
@@ -1782,6 +1801,10 @@
     <EmbeddedResource Include="Reports\COE.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>COE.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\EmploymentContractCertificates.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>EmploymentContractCertificates.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\FlagStateDocuments.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

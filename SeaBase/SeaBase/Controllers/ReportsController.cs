@@ -43,61 +43,34 @@ namespace SeaBase.Controllers
                                       "inner join Ranks b on b.Id=a.RankId " +
                                        "where a.Id=@id",new{id=id}).ToList();
                 rd.SetDataSource(result);
-            }
-            //var result = (from c in _context.Crews
-            //              join d in _context.Ranks on c.RankId equals d.Id
-            //              where c.Id == id
-            //              select new
-            //              {
-            //                  c.Id,
-            //                  c.Firstname,
-            //                  c.Lastname,
-            //                  c.MiddleName,
-            //                  c.Nationality,
-            //                  c.Religion,
-            //                  c.CivilStatus,
-            //                  RankName = d.RankName,
-            //                  BirthDate = c.BirthDate == null ? DBNull.Value : c.BirthDate,
-            //                  c.BirthPlace,
-            //                  c.Height,
-            //                  c.Weight,
-            //                  c.EmailAddress,
-            //                  c.ForeignLanguage
-            //              }).ToList();
+
+                var travelDocuments=db.Query<CVStandardTravelDocuments>
+                    ("select c.Id,c.CrewId," +
+                    "c.PlaceIssued,c.IssuedBy,c.ExpiryDate," +
+                    "c.IssueDate,d.DocumentName,c.DocumentNo " +
+                    "from crewtraveldocuments c " +
+                    "inner join documents d on d.Id=c.DocumentId " +
+                    "where c.CrewId=@id",new{id=id}).ToList();
+                rd.Subreports["CV_StandardTravelDocuments.rpt"].SetDataSource(travelDocuments);
+
+                var workExperience = db.Query<CVStandardWorkExperience>("select c.Id,c.CrewId,c.StartDate,c.EndDate,c.VesselName," +
+                                               "d.RankName,e.VesselTypeName " +
+                                               "from CrewWorkExperiences c " +
+                                               "inner join ranks d on d.Id=c.RankId " +
+                                               "inner join vesseltypes e on e.Id=c.VesselTypeId " +
+                                               "inner join manningagencies f on f.Id=c.ManningAgencyId " +
+                                               "where c.CrewId=@id", new { id = id }).ToList();
+                
+                rd.Subreports["CV_StandardWorkExperience.rpt"].SetDataSource(workExperience);
+
+                var trainingCertificate = db.Query<CVStandardTrainings>("select c.*,d.SeminarName,d.SeminarCode " +
+                                                                        "from crewtrainingcertificates c " +
+                                                                        "inner join seminars d on d.Id =c.SeminarId " +
+                                               "where c.CrewId=@id", new { id = id }).ToList();
+
+                rd.Subreports["CV_StandardTrainings.rpt"].SetDataSource(trainingCertificate);
             
-            var travel_documents = (from c in _context.CrewTravelDocuments
-                                    join d in _context.Documents on c.DocumentId equals d.Id
-                                    where c.CrewId==id
-                                    select new
-                                    {
-                                        c.Id,
-                                        c.CrewId,
-                                        c.PlaceIssued,
-                                        c.IssuedBy,
-                                        c.ExpiryDate,
-                                        c.IssueDate,
-                                        d.DocumentName,
-                                        c.DocumentNo
-                                    }).ToList();
-            rd.Subreports["CV_StandardTravelDocuments.rpt"].SetDataSource(travel_documents);
-         
-            var work_experience = (from c in _context.CrewWorkExperiences
-                                   join d in _context.Ranks on c.RankId equals d.Id
-                                   join e in _context.VesselTypes on c.VesselTypeId equals e.Id
-                                   join f in _context.ManningAgencies on c.ManningAgencyId equals f.Id
-                                   where c.CrewId == id
-                                   select new
-                                   {
-                                       c.Id,
-                                       c.CrewId,
-                                       c.StartDate,
-                                       c.EndDate,
-                                       c.VesselName,
-                                       d.RankName,
-                                       e.VesselTypeName,
-                                       ManningAgencyName = f.AgencyName
-                                   }).ToList();
-            rd.Subreports["CV_StandardWorkExperience.rpt"].SetDataSource(work_experience);
+            }
             
             Response.Buffer = false;
             Response.ClearContent();
@@ -129,53 +102,16 @@ namespace SeaBase.Controllers
                 var result = db.Query<EmploymentContract>("select * from vw_crews " +
                                                         "where Id=@id", new { id = ec.Id }).ToList();
                 rd.SetDataSource(result);
+                var trainingCertificate = db.Query<TrainingsReport>("select c.*,d.SeminarName,e.TrainingCenterName " +
+                                                                    "from crewtrainingcertificates c " +
+                                                                    "inner join seminars d on d.Id =c.SeminarId " +
+                                                                    "left join trainingcenters e on e.Id =c.TrainingCenterId " +
+                                                        "where c.CrewId=@id and c.MLC=1", new { id = ec.Id }).ToList();
+                rd.Subreports["EmploymentContractCertificates.rpt"].SetDataSource(trainingCertificate);
 
+                rd.SetParameterValue("HoursWorked", ec.HoursWorked + " hrs/wk");
             }
-            //var result = (from c in _context.Crews
-            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId )
-            //                              .DefaultIfEmpty()
-            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-            //              join e in _context.Ranks on d.RankId equals  e.Id
-            //              join f in _context.Embarkations on d.EmbarkationId equals  f.Id
-            //              join g in _context.Principals on f.PrincipalId equals  g.Id
-            //              join h in _context.Vessels on f.VesselId equals  h.Id
-            //              join i in _context.AirPorts on f.DepartureAirportId equals  i.Id
-            //              join j in _context.Flags on h.FlagId equals  j.Id                          
-            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId==d.RankId)
-            //                              .DefaultIfEmpty()
-            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId==d.RankId)
-            //                              .DefaultIfEmpty()
-            //              where c.Id == ec.Id
-            //              select new
-            //              {
-            //                  c.Id,
-            //                  c.Firstname,
-            //                  c.Lastname,
-            //                  c.MiddleName,
-            //                  c.Nationality,
-            //                  c.Religion,
-            //                  c.CivilStatus,
-            //                  RankName = e.RankName,
-            //                  //BirthDate = c.BirthDate == null ? null : c.BirthDate,
-            //                  c.BirthPlace,
-            //                  c.PassportNo,
-            //                  c.SeamanBookNo,
-            //                  g.PrincipalName,
-            //                  g.Address,
-            //                  h.VesselName,
-            //                  h.IMONumber,
-            //                  f.PointOfHire,
-            //                  g.CBA,
-            //                  i.AirPortName,
-            //                  //f.DepartureDate,
-            //                  //f.EmbarkationDate,
-            //                  j.FlagName,
-            //                  MonthlySalary=k.Monthly,
-            //                  OvertimeSalary=l.Monthly,
-            //                  f.ContractDuration,
-            //                  OverTimeRemarks=l.Remarks,
-            //                  HoursWorked=ec.HoursWorked
-            //              }).ToList();
+            
             
             Response.Buffer = false;
             Response.ClearContent();
@@ -202,42 +138,16 @@ namespace SeaBase.Controllers
             LOG log = (LOG) TempData["log"];
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "LOG.rpt"));
-            var result = (from c in _context.Crews
-                          join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-                          join e in _context.Ranks on d.RankId equals e.Id
-                          join f in _context.Embarkations on d.EmbarkationId equals f.Id
-                          join g in _context.Principals on f.PrincipalId equals g.Id
-                          join h in _context.Vessels on f.VesselId equals h.Id
-                          join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-                          join k in _context.Agents on log.AgentId equals k.Id into ps
-                          from p in ps.DefaultIfEmpty()
-                          where c.Id == log.Id
-                          select new
-                          {
-                              c.Id,
-                              c.Firstname,
-                              c.Lastname,
-                              c.MiddleName,
-                              RankName = e.RankName,
-                              //c.BirthDate,
-                              c.BirthPlace,
-                              c.PassportNo,
-                              c.SeamanBookNo,
-                              g.PrincipalName,
-                              g.Address,
-                              h.VesselName,
-                              i.AirPortName,
-                              //f.DepartureDate,
-                              //f.EmbarkationDate,
-                              DateTravelling = log.DateTravelling,
-                              DateGenerated = log.DateGenerated,
-                              p.AgentName,
-                              p.Telephone,
-                              p.Fax,
-                              AgentAddress = p.Address,
-                              Position=log.Position
-                          }).ToList();
-            rd.SetDataSource(result);
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<EmploymentContract>("select * from vw_crews " +
+                                                          "where Id=@id", new { id = log.Id }).ToList();
+                rd.SetDataSource(result);
+                var signatory = _context.Users.SingleOrDefault(m => m.Position == log.Position);
+                rd.SetParameterValue("Signatory", signatory.Firstname + " " + signatory.Lastname );
+                rd.SetParameterValue("Position", log.Position);
+            }
+            
 
             Response.Buffer = false;
             Response.ClearContent();
@@ -265,51 +175,58 @@ namespace SeaBase.Controllers
             DutchContract dc = (DutchContract) TempData["dutchcontract"];
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "DutchContract.rpt"));
-            var result = (from c in _context.Crews
-                          from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
-                                          .DefaultIfEmpty()
-                          //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-                          join e in _context.Ranks on d.RankId equals e.Id
-                          join f in _context.Embarkations on d.EmbarkationId equals f.Id
-                          join g in _context.Principals on f.PrincipalId equals g.Id
-                          join h in _context.Vessels on f.VesselId equals h.Id
-                          join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-                          join j in _context.Flags on h.FlagId equals j.Id
-                          from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
-                                          .DefaultIfEmpty()
-                          from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
-                                          .DefaultIfEmpty()
-                          where c.Id == dc.Id
-                          select new
-                          {
-                              c.Id,
-                              c.Firstname,
-                              c.Lastname,
-                              c.MiddleName,
-                              c.Nationality,
-                              c.Religion,
-                              c.CivilStatus,
-                              RankName = e.RankName,
-                              //c.BirthDate,
-                              c.BirthPlace,
-                              c.PassportNo,
-                              c.SeamanBookNo,
-                              g.PrincipalName,
-                              g.Address,
-                              h.VesselName,
-                              h.IMONumber,
-                              f.PointOfHire,
-                              g.CBA,
-                              i.AirPortName,
-                              //f.DepartureDate,
-                              //f.EmbarkationDate,
-                              j.FlagName,
-                              MonthlySalary = k.Monthly,
-                              OvertimeSalary = l.Monthly,
-                              f.ContractDuration,
-                              OverTimeRemarks = l.Remarks
-                          }).ToList();
-            rd.SetDataSource(result);
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<EmploymentContract>("select * from vw_crews " +
+                                                          "where Id=@id", new {id = dc.Id}).ToList();
+                rd.SetDataSource(result);
+                rd.SetParameterValue("ScaleNo",dc.ScaleNo);
+            }
+            //var result = (from c in _context.Crews
+            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
+            //                              .DefaultIfEmpty()
+            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
+            //              join e in _context.Ranks on d.RankId equals e.Id
+            //              join f in _context.Embarkations on d.EmbarkationId equals f.Id
+            //              join g in _context.Principals on f.PrincipalId equals g.Id
+            //              join h in _context.Vessels on f.VesselId equals h.Id
+            //              join i in _context.AirPorts on f.DepartureAirportId equals i.Id
+            //              join j in _context.Flags on h.FlagId equals j.Id
+            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
+            //                              .DefaultIfEmpty()
+            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
+            //                              .DefaultIfEmpty()
+            //              where c.Id == dc.Id
+            //              select new
+            //              {
+            //                  c.Id,
+            //                  c.Firstname,
+            //                  c.Lastname,
+            //                  c.MiddleName,
+            //                  c.Nationality,
+            //                  c.Religion,
+            //                  c.CivilStatus,
+            //                  RankName = e.RankName,
+            //                  //c.BirthDate,
+            //                  c.BirthPlace,
+            //                  c.PassportNo,
+            //                  c.SeamanBookNo,
+            //                  g.PrincipalName,
+            //                  g.Address,
+            //                  h.VesselName,
+            //                  h.IMONumber,
+            //                  f.PointOfHire,
+            //                  g.CBA,
+            //                  i.AirPortName,
+            //                  //f.DepartureDate,
+            //                  //f.EmbarkationDate,
+            //                  j.FlagName,
+            //                  MonthlySalary = k.Monthly,
+            //                  OvertimeSalary = l.Monthly,
+            //                  f.ContractDuration,
+            //                  OverTimeRemarks = l.Remarks
+            //              }).ToList();
+            //rd.SetDataSource(result);
             
             Response.Buffer = false;
             Response.ClearContent();
@@ -343,57 +260,7 @@ namespace SeaBase.Controllers
                 rd.SetDataSource(result);
 
             }
-            //var result = (from c in _context.Crews
-            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
-            //                              .DefaultIfEmpty()
-            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-            //              join e in _context.Ranks on d.RankId equals e.Id
-            //              join f in _context.Embarkations on d.EmbarkationId equals f.Id
-            //              join g in _context.Principals on f.PrincipalId equals g.Id
-            //              join h in _context.Vessels on f.VesselId equals h.Id
-            //              join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-            //              join j in _context.Flags on h.FlagId equals j.Id
-            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              join m in _context.VesselTypes on h.VesselTypeId equals m.Id
-            //              where c.Id == jsu.Id
-            //              select new
-            //              {
-            //                  c.Id,
-            //                  c.Firstname,
-            //                  c.Lastname,
-            //                  c.MiddleName,
-            //                  c.Nationality,
-            //                  c.Religion,
-            //                  c.CivilStatus,
-            //                  RankName = e.RankName,
-            //                  //c.BirthDate,
-            //                  c.BirthPlace,
-            //                  c.PassportNo,
-            //                  c.SeamanBookNo,
-            //                  g.PrincipalName,
-            //                  g.Address,
-            //                  h.VesselName,
-            //                  h.IMONumber,
-            //                  f.PointOfHire,
-            //                  g.CBA,
-            //                  i.AirPortName,
-            //                  //f.DepartureDate,
-            //                  //f.EmbarkationDate,
-            //                  j.FlagName,
-            //                  MonthlySalary = k.Monthly,
-            //                  OvertimeSalary = l.Monthly,
-            //                  f.ContractDuration,
-            //                  OverTimeRemarks = l.Remarks,
-            //                  h.GTR,
-            //                  h.YearBuilt,
-            //                  h.ClassificationSociety,
-            //                  m.VesselTypeName
-            //              }).ToList();
-            //rd.SetDataSource(result);
-
+            
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();
@@ -428,62 +295,9 @@ namespace SeaBase.Controllers
                 var result = db.Query<EmploymentContract>("select * from vw_crews " +
                                                         "where Id=@id", new { id = coe.Id }).ToList();
                 rd.SetDataSource(result);
-
+                rd.SetParameterValue("HoursWorked",coe.HoursWorked);
             }
-            //var result = (from c in _context.Crews
-            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
-            //                              .DefaultIfEmpty()
-            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-            //              join e in _context.Ranks on d.RankId equals e.Id
-            //              join f in _context.Embarkations on d.EmbarkationId equals f.Id
-            //              join g in _context.Principals on f.PrincipalId equals g.Id
-            //              join h in _context.Vessels on f.VesselId equals h.Id
-            //              join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-            //              join j in _context.Flags on h.FlagId equals j.Id
-            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              join m in _context.VesselTypes on h.VesselTypeId equals m.Id
-            //              where c.Id == coe.Id
-            //              select new
-            //              {
-            //                  c.Id,
-            //                  c.Firstname,
-            //                  c.Lastname,
-            //                  c.MiddleName,
-            //                  c.Nationality,
-            //                  c.Religion,
-            //                  c.CivilStatus,
-            //                  RankName = e.RankName,
-            //                  //c.BirthDate,
-            //                  c.BirthPlace,
-            //                  c.PassportNo,
-            //                  c.SeamanBookNo,
-            //                  g.PrincipalName,
-            //                  g.Address,
-            //                  h.VesselName,
-            //                  h.IMONumber,
-            //                  f.PointOfHire,
-            //                  g.CBA,
-            //                  i.AirPortName,
-            //                  //f.DepartureDate,
-            //                  //f.EmbarkationDate,
-            //                  j.FlagName,
-            //                  MonthlySalary = k.Monthly,
-            //                  OvertimeSalary = l.Monthly,
-            //                  f.ContractDuration,
-            //                  OverTimeRemarks = l.Remarks,
-            //                  h.GTR,
-            //                  h.YearBuilt,
-            //                  h.ClassificationSociety,
-            //                  m.VesselTypeName,
-            //                  HoursWorked=coe.HoursWorked + " hrs/wk",
-            //                  UserName=user.Firstname + " " + user.Lastname,
-            //                  Position=user.Position
-            //              }).ToList();
-            //rd.SetDataSource(result);
-
+            
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();
@@ -510,67 +324,74 @@ namespace SeaBase.Controllers
            
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "InfoSheet.rpt"));
-            var result = (from c in _context.Crews
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<EmploymentContract>("select * from vw_crews " +
+                                                        "where Id=@id", new { id = id }).ToList();
+                rd.SetDataSource(result);
+                
+            }
+            //var result = (from c in _context.Crews
                           
-                          from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
-                                          .DefaultIfEmpty()
-                          //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-                          join e in _context.Ranks on d.RankId equals e.Id
-                          join f in _context.Embarkations on d.EmbarkationId equals f.Id
-                          join g in _context.Principals on f.PrincipalId equals g.Id
-                          join h in _context.Vessels on f.VesselId equals h.Id
-                          join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-                          join j in _context.Flags on h.FlagId equals j.Id
-                          from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
-                                          .DefaultIfEmpty()
-                          from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
-                                          .DefaultIfEmpty()
-                          join m in _context.VesselTypes on h.VesselTypeId equals m.Id
-                          join n in _context.CrewFamilyBackgrounds on c.Id equals n.CrewId
-                          where c.Id == id
-                          select new
-                          {
-                              c.Id,
-                              c.Firstname,
-                              c.Lastname,
-                              c.MiddleName,
-                              c.Nationality,
-                              c.Religion,
-                              c.CivilStatus,
-                              RankName = e.RankName,
-                              //c.BirthDate,
-                              c.BirthPlace,
-                              c.PassportNo,
-                              c.SeamanBookNo,
-                              g.PrincipalName,
-                              PrincipalAddress=g.Address,
-                              h.VesselName,
-                              h.IMONumber,
-                              f.PointOfHire,
-                              g.CBA,
-                              i.AirPortName,
-                              //f.DepartureDate,
-                              //f.EmbarkationDate,
-                              j.FlagName,
-                              MonthlySalary = k.Monthly,
-                              OvertimeSalary = l.Monthly,
-                              f.ContractDuration,
-                              OverTimeRemarks = l.Remarks,
-                              h.GTR,
-                              h.YearBuilt,
-                              h.ClassificationSociety,
-                              m.VesselTypeName,
-                              c.SSSNo,
-                              c.PhilhealthNo,
-                              c.EmailAddress,
-                              Spouse=n.SpouseFirstname + " " + n.SpouseMiddlename + " " + n.SpouseLastname,
-                              MothersMaidenName=n.MothersName,
-                              c.SRCNo,
-                              c.TelephoneNo,
-                              c.MobileNo,
-                              PrincipalEmailAddress=g.EmailAddress
-                          }).ToList();
-            rd.SetDataSource(result);
+            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
+            //                              .DefaultIfEmpty()
+            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
+            //              join e in _context.Ranks on d.RankId equals e.Id
+            //              join f in _context.Embarkations on d.EmbarkationId equals f.Id
+            //              join g in _context.Principals on f.PrincipalId equals g.Id
+            //              join h in _context.Vessels on f.VesselId equals h.Id
+            //              join i in _context.AirPorts on f.DepartureAirportId equals i.Id
+            //              join j in _context.Flags on h.FlagId equals j.Id
+            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
+            //                              .DefaultIfEmpty()
+            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
+            //                              .DefaultIfEmpty()
+            //              join m in _context.VesselTypes on h.VesselTypeId equals m.Id
+            //              join n in _context.CrewFamilyBackgrounds on c.Id equals n.CrewId
+            //              where c.Id == id
+            //              select new
+            //              {
+            //                  c.Id,
+            //                  c.Firstname,
+            //                  c.Lastname,
+            //                  c.MiddleName,
+            //                  c.Nationality,
+            //                  c.Religion,
+            //                  c.CivilStatus,
+            //                  RankName = e.RankName,
+            //                  //c.BirthDate,
+            //                  c.BirthPlace,
+            //                  c.PassportNo,
+            //                  c.SeamanBookNo,
+            //                  g.PrincipalName,
+            //                  PrincipalAddress=g.Address,
+            //                  h.VesselName,
+            //                  h.IMONumber,
+            //                  f.PointOfHire,
+            //                  g.CBA,
+            //                  i.AirPortName,
+            //                  //f.DepartureDate,
+            //                  //f.EmbarkationDate,
+            //                  j.FlagName,
+            //                  MonthlySalary = k.Monthly,
+            //                  OvertimeSalary = l.Monthly,
+            //                  f.ContractDuration,
+            //                  OverTimeRemarks = l.Remarks,
+            //                  h.GTR,
+            //                  h.YearBuilt,
+            //                  h.ClassificationSociety,
+            //                  m.VesselTypeName,
+            //                  c.SSSNo,
+            //                  c.PhilhealthNo,
+            //                  c.EmailAddress,
+            //                  Spouse=n.SpouseFirstname + " " + n.SpouseMiddlename + " " + n.SpouseLastname,
+            //                  MothersMaidenName=n.MothersName,
+            //                  c.SRCNo,
+            //                  c.TelephoneNo,
+            //                  c.MobileNo,
+            //                  PrincipalEmailAddress=g.EmailAddress
+            //              }).ToList();
+            //rd.SetDataSource(result);
 
             Response.Buffer = false;
             Response.ClearContent();
@@ -598,39 +419,35 @@ namespace SeaBase.Controllers
 
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "SeafarerInfoSheet.rpt"));
-            var result = (from c in _context.Crews
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<EmploymentContract>("select * from vw_crews " +
+                                                        "where Id=@id", new { id = id }).ToList();
+                rd.SetDataSource(result);
 
-                          where c.Id == id
-                          select new
-                          {
-                              c.Id,
-                              c.Firstname,
-                              c.Lastname,
-                              c.MiddleName,
-                              c.CivilStatus,
-                              //c.BirthDate,
-                              c.BirthPlace,
-                              c.PassportNo,
-                              c.SeamanBookNo,
-                              c.TelephoneNo
-                              
-                          }).ToList();
-            rd.SetDataSource(result);
-            var beneficiary = (from c in _context.CrewBeneficiaryChildrens
-                                    where c.CrewId == id  && c.Type==0
-                                    select new
-                                    {
-                                        c.Id,
-                                        c.CrewId,
-                                        c.Firstname,
-                                        c.Middlename,
-                                        c.Lastname,
-                                        c.Gender,
-                                        c.Birthdate,
-                                        c.Address,
-                                        c.Relationship
-                                    }).ToList();
-            rd.Subreports["SeafarerBeneficiary.rpt"].SetDataSource(beneficiary);
+                var beneficiary = db.Query<Beneficiary>("select c.Id,c.Firstname,c.Middlename,c.Lastname, " +
+                                                                "CONCAT(c.Firstname,' ',c.Middlename,' ',c.Lastname) as Name," +
+                                                                "c.Relationship,c.Gender," +
+                                                                "c.Birthplace,c.Address,c.Birthdate," +
+                                                                "(year(CURRENT_DATE)-year(c.Birthdate)) as Age,c.ContactNo " +
+                                                                "from crewbeneficiarychildrens c " +
+                                                                "where c.CrewId=@id and c.Type=0", new { id = id }).ToList();
+                rd.Subreports["SeafarerBeneficiary.rpt"].SetDataSource(beneficiary);
+            }
+            //var beneficiary = (from c in _context.CrewBeneficiaryChildrens
+            //                   where c.CrewId == id && c.Type == 0
+            //                   select new
+            //                   {
+            //                       c.Id,
+            //                       c.CrewId,
+            //                       c.Firstname,
+            //                       c.Middlename,
+            //                       c.Lastname,
+            //                       c.Gender,
+            //                       c.Birthdate,
+            //                       c.Address,
+            //                       c.Relationship
+            //                   }).ToList();
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();
@@ -658,133 +475,90 @@ namespace SeaBase.Controllers
 
             ReportDocument rd = new ReportDocument();
             rd.Load(Path.Combine(Server.MapPath("~/Reports"), "InfoToTheMaster.rpt"));
-            var beneficiary = (from c in _context.CrewBeneficiaryChildrens
-                where c.Id == ittm.BeneficiaryId
-                select c).SingleOrDefault();
-            var allotee = (from c in _context.CrewAllotees
-                join d in _context.Banks on c.BankId equals d.Id
-                join e in _context.Branches on c.BranchId equals e.Id
-                where c.Id == ittm.AlloteeId
-                select c).SingleOrDefault();
-            var allotee_result = _context.CrewAllotees.Where(m => m.CrewId == ittm.Id).ToList();
-            double total_allotee = 0;
+            //var beneficiary = (from c in _context.CrewBeneficiaryChildrens
+            //    where c.Id == ittm.BeneficiaryId
+            //    select c).SingleOrDefault();
+            //var allotee = (from c in _context.CrewAllotees
+            //    join d in _context.Banks on c.BankId equals d.Id
+            //    join e in _context.Branches on c.BranchId equals e.Id
+            //    where c.Id == ittm.AlloteeId
+            //    select c).SingleOrDefault();
+            //var allotee_result = _context.CrewAllotees.Where(m => m.CrewId == ittm.Id).ToList();
+            //double total_allotee = 0;
             
-            foreach (var a in allotee_result)
-            {
-                total_allotee += a.Allotment;
-            }
+            //foreach (var a in allotee_result)
+            //{
+            //    total_allotee += a.Allotment;
+            //}
             using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
             {
                 var result = db.Query<EmploymentContract>("select * from vw_info_master " +
                                                         "where Id=@id and BeneficiaryId=@bid and AlloteeId=@aid", new { id = ittm.Id, bid = ittm.BeneficiaryId, aid = ittm.AlloteeId }).ToList();
                 rd.SetDataSource(result);
 
-            }
-            //var result = (from c in _context.Crews
-            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
-            //                              .DefaultIfEmpty()
-            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-            //              join e in _context.Ranks on d.RankId equals e.Id
-            //              join f in _context.Embarkations on d.EmbarkationId equals f.Id
-            //              join g in _context.Principals on f.PrincipalId equals g.Id
-            //              join h in _context.Vessels on f.VesselId equals h.Id
-            //              join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-            //              join j in _context.Flags on h.FlagId equals j.Id
-            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              where c.Id == ittm.Id
-            //              select new
-            //              {
-            //                  c.Id,
-            //                  c.Firstname,
-            //                  c.Lastname,
-            //                  c.MiddleName,
-            //                  c.Nationality,
-            //                  c.Religion,
-            //                  c.CivilStatus,
-            //                  RankName = e.RankName,
-            //                  //c.BirthDate,
-            //                  c.BirthPlace,
-            //                  c.PassportNo,
-            //                  c.SeamanBookNo,
-            //                  g.PrincipalName,
-            //                  g.Address,
-            //                  h.VesselName,
-            //                  h.IMONumber,
-            //                  f.PointOfHire,
-            //                  g.CBA,
-            //                  i.AirPortName,
-            //                  //f.DepartureDate,
-            //                  //f.EmbarkationDate,
-            //                  j.FlagName,
-            //                  MonthlySalary = k.Monthly,
-            //                  OvertimeSalary = l.Monthly,
-            //                  f.ContractDuration,
-            //                  OverTimeRemarks = l.Remarks,
-            //                  BeneficiaryName = beneficiary.Firstname + " " + beneficiary.Middlename + " " + beneficiary.Lastname,
-            //                  BeneficiaryRelationship=beneficiary.Relationship,
-            //                  AccountName=allotee.AccountName,
-            //                  AlloteeRelationship=allotee.Relationship,
-            //                  BankName="sddsf.",
-            //                  BranchName="sdfs",
-            //                  AccountNo=allotee.AccountNo,
-            //                  WageTotal = k.Monthly+l.Monthly,
-            //                  WageAllotment = total_allotee,
-            //                  WagePayOnBoard = (k.Monthly + l.Monthly)-total_allotee
+                var travelDocuments = db.Query<CVStandardTravelDocuments>
+                    ("select c.Id,c.CrewId," +
+                    "c.ExpiryDate," +
+                    "c.IssueDate,d.DocumentName,c.DocumentNo " +
+                    "from crewtraveldocuments c " +
+                    "inner join documents d on d.Id=c.DocumentId " +
+                    "where c.CrewId=@id and c.DocumentId in(55,56,51,45) or c.Id=@visaid", new { id = ittm.Id,visaid=ittm.VisaId }).ToList();
+                var medical =
+                    db.Query<MedicalReport>("select c.*,d.MedicalCertificateName " +
+                                            "from crewmedicals c " +
+                                            "inner join medicalcertificates d on d.Id=c.MedicalCertificateId " +
+                                            "where c.Id=@mid", new {mid = ittm.MedicalId}).SingleOrDefault();
+                travelDocuments.Add(new CVStandardTravelDocuments
+                {
+                    Id = 0,
+                    CrewId = ittm.CrewId,
+                    DocumentName = medical.MedicalCertificateName,
+                    IssueDate = medical.IssueDate,
+                    ExpiryDate = medical.ExpiryDate,
+                    DocumentNo = medical.CertificateNo
+                });
+                rd.Subreports["TravelDocuments.rpt"].SetDataSource(travelDocuments);
+                //var trainings = (from c in _context.CrewTrainingCertificates
+                //                 join d in _context.Seminars on c.SeminarId equals d.Id
+                //                 join e in _context.TrainingCenters on c.TrainingCenterId equals e.Id
+                //                 where c.CrewId == ittm.Id
+                //                 select new
+                //                 {
+                //                     c.Id,
+                //                     c.CrewId,
+                //                     c.PlaceIssued,
+                //                     c.IssuedBy,
+                //                     c.ExpiryDate,
+                //                     c.IssueDate,
+                //                     d.SeminarName,
+                //                     e.TrainingCenterName
+                //                 }).ToList();
+                var trainingCertificate = db.Query<CVStandardTrainings>("select c.*,d.SeminarName,d.SeminarCode " +
+                                                                       "from crewtrainingcertificates c " +
+                                                                       "inner join seminars d on d.Id =c.SeminarId " +
+                                              "where c.CrewId=@id", new { id = ittm.Id }).ToList();
 
-            //              }).ToList();
-            //rd.SetDataSource(result);
-            //rd.SetParameterValue("BeneficiaryRelationship", beneficiary.Relationship);
-            //rd.SetParameterValue("AccountName", allotee.AccountName);
-            //rd.SetParameterValue("AccountRelationship", allotee.Relationship);
-            //rd.SetParameterValue("AccountNo", allotee.AccountNo);
-            //rd.SetParameterValue("WageAllotment", total_allotee);
-            var travel_documents = (from c in _context.CrewTravelDocuments
-                                    join d in _context.Documents on c.DocumentId equals d.Id
-                                    where c.CrewId == ittm.Id
-                                    select new
-                                    {
-                                        c.Id,
-                                        c.CrewId,
-                                        c.PlaceIssued,
-                                        c.IssuedBy,
-                                        c.ExpiryDate,
-                                        c.IssueDate,
-                                        d.DocumentName,
-                                        c.DocumentNo
-                                    }).ToList();
-            rd.Subreports["TravelDocuments.rpt"].SetDataSource(travel_documents);
-            var trainings = (from c in _context.CrewTrainingCertificates
-                                    join d in _context.Seminars on c.SeminarId equals d.Id
-                                    join e in _context.TrainingCenters on c.TrainingCenterId equals e.Id
-                                    where c.CrewId == ittm.Id
-                                    select new
-                                    {
-                                        c.Id,
-                                        c.CrewId,
-                                        c.PlaceIssued,
-                                        c.IssuedBy,
-                                        c.ExpiryDate,
-                                        c.IssueDate,
-                                        d.SeminarName,
-                                        e.TrainingCenterName
-                                    }).ToList();
-            rd.Subreports["Trainings.rpt"].SetDataSource(trainings);
-            var flagstatedocument = (from c in _context.CrewFlagStateDocuments
-                             join d in _context.Flags on c.FlagId equals d.Id
-                             where c.CrewId == ittm.Id
-                             select new
-                             {
-                                 c.Id,
-                                 c.CrewId,
-                                 c.IssuedBy,
-                                 c.ExpiryDate,
-                                 c.IssueDate,
-                                d.FlagName
-                             }).ToList();
-            rd.Subreports["FlagStateDocuments.rpt"].SetDataSource(flagstatedocument);
+                rd.Subreports["Trainings.rpt"].SetDataSource(trainingCertificate);
+                //var flagstatedocument = (from c in _context.CrewFlagStateDocuments
+                //                         join d in _context.Flags on c.FlagId equals d.Id
+                //                         where c.CrewId == ittm.Id
+                //                         select new
+                //                         {
+                //                             c.Id,
+                //                             c.CrewId,
+                //                             c.IssuedBy,
+                //                             c.ExpiryDate,
+                //                             c.IssueDate,
+                //                             d.FlagName
+                //                         }).ToList();
+                var flagStateDocument = db.Query<FlagStateReport>("select c.*,d.FlagName " +
+                                                                  "from crewflagstatedocuments c " +
+                                                                  "inner join flags d on d.Id=c.FlagId " +
+                                                                  "where c.CrewId=@id", new { id = ittm.Id }).ToList();
+
+                rd.Subreports["FlagStateDocuments.rpt"].SetDataSource(flagStateDocument);
+            
+            }
             Response.Buffer = false;
             Response.ClearContent();
             Response.ClearHeaders();

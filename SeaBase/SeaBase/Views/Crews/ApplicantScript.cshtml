@@ -270,6 +270,8 @@
             formData.append('Medical', $('#ittmmedical').val());
             formData.append('BeneficiaryId', $('#ittmBeneficiary').val());
             formData.append('AlloteeId', $('#ittmAllotee').val());
+            formData.append('VisaId', $('#ittmVisa').val());
+            formData.append('MedicalId', $('#ittmMedical').val());
             $.ajax({
                 type: "POST",
                 url: "/Reports/ShowInfoToTheMaster",

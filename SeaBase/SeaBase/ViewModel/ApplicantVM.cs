@@ -30,6 +30,7 @@ namespace SeaBase.ViewModel
         public IEnumerable<Branch> Branches { get; set; }
         public IEnumerable<Bank> Banks { get; set; }
         public IEnumerable<TravelDoc> TravelDocs { get; set; }
+        public IEnumerable<MedicalReport> MedicalReports { get; set; }
 
         public string RankName { get; set; }
         [Key]
