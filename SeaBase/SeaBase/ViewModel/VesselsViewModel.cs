@@ -42,11 +42,10 @@ namespace SeaBase.ViewModel
         public Country CountryDestination { get; set; }
         [Display(Name = "Enroll With")]
         public string EnrolledWith { get; set; }
-        [Required]
         [Display(Name = "Enrollment Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EnrollmentDate { get; set; }
+        public DateTime? EnrollmentDate { get; set; }
         [ForeignKey("TradingArea")]
         [Display(Name = "Route/Trading Area")]
         public int TradingAreaId { get; set; }
@@ -71,16 +70,14 @@ namespace SeaBase.ViewModel
         [Display(Name = "Vessel Union")]
         public int VesselUnionId { get; set; }
         public VesselUnion VesselUnion { get; set; }
-        [Required]
         [Display(Name = "Effective Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EffectiveDate { get; set; }
-        [Required]
+        public DateTime? EffectiveDate { get; set; }
         [Display(Name = "Expiry Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
 
 
 
@@ -116,6 +113,7 @@ namespace SeaBase.ViewModel
         public string ImagePath { get; set; }
         [NotMapped]
         public HttpPostedFileBase ImageFile { get; set; }
+        public string SalaryType { get; set; }
         public ICollection<CrewIncident> CrewIncidents { get; set; }
     }
 }

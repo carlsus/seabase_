@@ -82,6 +82,7 @@
                 formImage.append('ImageFile', files);
                 formImage.append('VesselCode', $('#VesselCode').val());
                 var formData = {
+                    Id: $('#Id').val(),
                     VesselCode: $('#VesselCode').val(),
                     VesselName: $('#VesselName').val(),
                     CallSign: $('#CallSign').val(),
@@ -117,6 +118,7 @@
                     ClassificationSociety: $('#ClassificationSociety').val(),
                     NRT: $('#NRT').val(),
                     Particulars: $('#Particulars').val(),
+                    SalaryType: $('#SalaryType').val()
                 }
 
                 $.ajax({

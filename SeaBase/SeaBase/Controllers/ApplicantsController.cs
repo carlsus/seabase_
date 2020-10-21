@@ -198,7 +198,7 @@ namespace SeaBase.Controllers
                 update.IssueDate = license.IssueDate;
                 update.IssuedBy = license.IssuedBy;
                 update.Remarks = license.Remarks;
-                update.FilePath = fileName;
+                update.FilePath = fileName==""?null:fileName;
                 _context.SaveChanges();
             }
             license = new CrewLicense();
@@ -226,8 +226,11 @@ namespace SeaBase.Controllers
 
                 if (itemToRemove.FilePath != null)
                 {
-                    FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
-                    fi.Delete();
+                    if (itemToRemove.FilePath != null)
+                    {
+                        FileInfo fi = new FileInfo(Server.MapPath("~/Files/" + itemToRemove.CrewId + "/" + itemToRemove.FilePath));
+                        fi.Delete();
+                    }
                 }
                 _context.CrewLicenses.Remove(itemToRemove);
                 _context.SaveChanges();
@@ -301,7 +304,7 @@ namespace SeaBase.Controllers
                 update.ExpiryDate = flag.ExpiryDate;
                 update.IssuedBy = flag.IssuedBy;
                 update.Remarks = flag.Remarks;
-                update.FilePath = fileName;
+                update.FilePath = fileName == "" ? null : fileName;
                 _context.SaveChanges();
             }
             
@@ -400,7 +403,7 @@ namespace SeaBase.Controllers
                 update.ExpiryDate = document.ExpiryDate;
                 update.IssuedBy = document.IssuedBy;
                 update.PlaceIssued = document.PlaceIssued;
-                update.FilePath = fileName;
+                update.FilePath = fileName == "" ? null : fileName;
                 _context.SaveChanges();
             }
            
@@ -506,7 +509,7 @@ namespace SeaBase.Controllers
                 update.PlaceIssued = document.PlaceIssued;
                 update.IssuedBy = document.IssuedBy;
                 update.MLC = document.MLC;
-                update.FilePath = fileName;
+                update.FilePath = fileName == "" ? null : fileName;
                 _context.SaveChanges();
             }
             
@@ -584,7 +587,7 @@ namespace SeaBase.Controllers
 
                 var update = _context.CrewDocumentLibraries.Single(m => m.Id == document.Id);
                 update.DocumentNameType = document.DocumentNameType;
-                update.FilePath = fileName;
+                update.FilePath = fileName == "" ? null : fileName;
                 _context.SaveChanges();
             }
             
@@ -679,7 +682,7 @@ namespace SeaBase.Controllers
                 update.IssueDate = document.IssueDate;
                 update.ExpiryDate = document.ExpiryDate;
                 update.Remarks = document.Remarks;
-                update.FilePath = fileName;
+                update.FilePath = fileName == "" ? null : fileName;
                 _context.SaveChanges();
             }
             
@@ -768,7 +771,7 @@ namespace SeaBase.Controllers
                 var update = _context.CrewVaccines.Single(m => m.Id == document.Id);
                 update.VaccineId = document.VaccineId;
                 update.ImmunizationDate = document.ImmunizationDate;
-                update.FilePath = fileName;
+                update.FilePath = fileName == "" ? null : fileName;
                 _context.SaveChanges();
             }
             

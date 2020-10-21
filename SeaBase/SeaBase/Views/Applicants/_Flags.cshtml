@@ -44,7 +44,7 @@
             <div class="modal-body">
 
                 <form id="flags" method="post" name="flags">
-                    <input type="hidden" id="Idf" name="Idf"/>
+                    <input type="hidden" id="Idf" name="Idf" />
                     <div class="row-fluid">
                         <div class="form-group col-md-6">
                             <label>Flag Type</label>
@@ -52,7 +52,7 @@
                         </div>
                         <div class="form-group col-md-6">
                             <label>License Type</label>
-                            @Html.DropDownList("fLicenseId", new SelectList(Model.Licenses, "Id", "LicenseName"), "Select License", new {@class = "form-control"})
+                            @Html.DropDownList("fLicenseId", new SelectList(Model.Licenses, "Id", "LicenseName"), "Select License", new { @class = "form-control" })
                         </div>
                         <div class="form-group col-md-6">
                             <label>Document Number</label>
@@ -78,21 +78,22 @@
                                     <i class="fa fa-calendar"></i>
                                 </div>
                                 <input type="text" class="form-control" id="fExpiryDate" name="fExpiryDate" />
-                            </div>                        </div>
+                            </div>
+                        </div>
                         <div class="form-group col-md-12">
                             <label>Issued by</label>
-                            <input type="text" class="form-control" id="fIssuedBy" name="fIssuedBy"/>
+                            <input type="text" class="form-control" id="fIssuedBy" name="fIssuedBy" />
                         </div>
                         <div class="form-group col-md-12">
                             <label>Remarks</label>
-                            <input type="text" class="form-control" id="fRemarks" name="fRemarks"/>
+                            <input type="text" class="form-control" id="fRemarks" name="fRemarks" />
                         </div>
                         <div class="form-group col-md-12">
                             <label>File Attachment</label>
                             <input id="FlagFileAttachment" title="Upload a attachment"
                                    type="file" name="FlagFileAttachment" />
                         </div>
-                       
+
                     </div>
                     @Html.AntiForgeryToken()
                     &nbsp;
@@ -168,13 +169,13 @@
                 {
                     'data': 'IssueDate',
                     'render': function (data) {
-                        return moment(data).format("MMM DD,YYYY");
+                        return (data === null) ? "" : moment(data).format("MMM DD,YYYY");
                     }
                 },
                 {
                     'data': 'ExpiryDate',
                     'render': function (data) {
-                        return moment(data).format("MMM DD,YYYY");
+                        return (data === null) ? "" : moment(data).format("MMM DD,YYYY");
                     }
                 },
                 { data: "IssuedBy" },
@@ -195,22 +196,22 @@
 
         });
 
-        $('#btnFlag').on('click',function (e) {
+        $('#btnFlag').on('click', function (e) {
             e.preventDefault();
-            
+
             var formData = new FormData();
             var files = $('#FlagFileAttachment')[0].files[0];
-                formData.append('FileAttachment', files);
-                formData.append('FlagId', $('#fFlagId').val());
-                formData.append('LicenseId', $('#fLicenseId').val());
-                formData.append('RankId', $('#fRankId').val());
-                formData.append('DocumentNo', $('#fDocumentNo').val());
-                formData.append('IssueDate', $('#fIssueDate').val());
-                formData.append('ExpiryDate', $('#fExpiryDate').val());
-                formData.append('IssuedBy', $('#fIssuedBy').val());
-                formData.append('Remarks', $('#fRemarks').val());
-                formData.append('CrewId', $('#CrewId').val());
-                formData.append('Id', $('#Idf').val());
+            formData.append('FileAttachment', files);
+            formData.append('FlagId', $('#fFlagId').val());
+            formData.append('LicenseId', $('#fLicenseId').val());
+            formData.append('RankId', $('#fRankId').val());
+            formData.append('DocumentNo', $('#fDocumentNo').val());
+            formData.append('IssueDate', $('#fIssueDate').val());
+            formData.append('ExpiryDate', $('#fExpiryDate').val());
+            formData.append('IssuedBy', $('#fIssuedBy').val());
+            formData.append('Remarks', $('#fRemarks').val());
+            formData.append('CrewId', $('#CrewId').val());
+            formData.append('Id', $('#Idf').val());
             $.ajax({
                 type: "POST",
                 url: "/Applicants/AddFlags",
@@ -235,22 +236,22 @@
                 }
             });
         });
-});
-
-
-function remove_flag(id) {
-    bootbox.confirm("Are you sure you want to delete this record?", function (result) {
-        if (result) {
-            $.ajax({
-                url: "@Url.Action("DeleteFlag","Applicants")/" + id,
-
-                success: function () {
-                    table_flags.ajax.reload();
-                }
-            });
-        }
     });
-}
+
+
+    function remove_flag(id) {
+        bootbox.confirm("Are you sure you want to delete this record?", function (result) {
+            if (result) {
+                $.ajax({
+                    url: "@Url.Action("DeleteFlag","Applicants")/" + id,
+
+                    success: function () {
+                        table_flags.ajax.reload();
+                    }
+                });
+            }
+        });
+    }
 
     function edit_flag(id) {
         $.ajax({
@@ -282,12 +283,6 @@ function remove_flag(id) {
     }
 
 </script>
-@Scripts.Render("~/AdminLTE/plugins/datepicker/script")
-@Scripts.Render("~/AdminLTE/plugins/datatables/script")
-@Scripts.Render("~/AdminLTE/plugins/momentjs/script")
-
-
-
 
 
 

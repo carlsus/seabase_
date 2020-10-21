@@ -1,4 +1,5 @@
-﻿@model SeaBase.ViewModel.VesselsViewModel
+﻿@using SeaBase.Models
+@model SeaBase.ViewModel.VesselsViewModel
 @Styles.Render("~/AdminLTE/plugins/datepicker/styles")
 @Styles.Render("~/AdminLTE/plugins/datatables/styles")
 
@@ -50,13 +51,14 @@
     <div class="box-body">
        
             @Html.ValidationSummary(true, "Please fix the following errors.")
-            <div class="form-group col-md-3">
-                <a href="#">
-                    <img class="media-object center" src="" alt="..." id="imgupload" name="imgupload">
-                    <input id="ImageFile" title="Upload a product image"
-                           type="file" name="ImageFile" style="display: none" accept="image/*" />
-                </a>
-            </div>
+        <div class="form-group col-md-3">
+            <a href="#">
+                <img class="media-object center" src="" alt="..." id="imgupload" name="imgupload">
+                <input id="ImageFile" title="Upload a product image"
+                       type="file" name="ImageFile" style="display: none" accept="image/*"/>
+            </a>
+        </div>
+        @Html.HiddenFor(m=>m.Id)
             <div class="form-group col-md-3">
                 @Html.LabelFor(m => m.VesselCode)
                 @Html.TextBoxFor(m => m.VesselCode, new { @class = "form-control", @readonly = "readonly" })
@@ -167,7 +169,12 @@
                     @Html.ValidationMessageFor(m => m.ExpiryDate)
                 </div>
             </div>
-
+            <div class="col-md-3">
+                @Html.LabelFor(m => m.SalaryType)
+                @Html.DropDownListFor(m => m.SalaryType, new SelectList(Enum.GetValues(typeof(Vessel.SalaryTypes))),
+                                                        "Select Type", new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.SalaryType)
+            </div>
             
 
        

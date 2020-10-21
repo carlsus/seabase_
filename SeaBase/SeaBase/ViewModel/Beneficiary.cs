@@ -18,5 +18,6 @@ namespace SeaBase.ViewModel
         public string Address { get; set; }
         public string Relationship { get; set; }
         public int Age { get; set; }
+        public int Type { get; set; }
     }
 }

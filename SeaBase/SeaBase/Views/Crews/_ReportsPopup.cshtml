@@ -253,3 +253,38 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+
+<div class="modal fade" id="Certificate">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="modal-title">Certificate of Service</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="form-group">
+                    <label>Kindly Choose signatory:</label>
+                    @Html.DropDownList("certPositionId", new SelectList(Model.Users, "Position", "Position"), "Select Signatory", new { @class = "form-control" })
+                </div>
+                
+                <div class="form-group">
+                    <label>Number of work experiance:</label>
+                    
+                    <input type="number" class="form-control" id="certWorkExperience" name="certWorkExperience" />
+                </div>
+               
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" id="btnViewCertificate">View</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

@@ -143,7 +143,7 @@
 
                 },
                 failure: function (response) {
-                    alert('faile');
+                    alert('failed');
                 },
                 error: function (response) {
                     alert('error');
@@ -173,7 +173,7 @@
 
                 },
                 failure: function (response) {
-                    alert('faile');
+                    alert('failed');
                 },
                 error: function (response) {
                     alert('error');
@@ -202,7 +202,7 @@
 
                 },
                 failure: function (response) {
-                    alert('faile');
+                    alert('failed');
                 },
                 error: function (response) {
                     alert('error');
@@ -231,7 +231,7 @@
 
                 },
                 failure: function (response) {
-                    alert('faile');
+                    alert('failed');
                 },
                 error: function (response) {
                     alert('error');
@@ -255,7 +255,7 @@
                     window.open('/Reports/EmploymentContract/', '_blank').focus();
                 },
                 failure: function (response) {
-                    alert('faile');
+                    alert('failed');
                 },
                 error: function (response) {
                     alert('error');
@@ -284,7 +284,34 @@
                     window.open('/Reports/InfoToTheMaster/', '_blank').focus();
                 },
                 failure: function (response) {
-                    alert('faile');
+                    alert('failed');
+                },
+                error: function (response) {
+                    alert('error');
+                }
+            });
+        });
+
+        $('#btnViewCertificate').on('click', function (e) {
+            var formData = new FormData();
+
+            formData.append('CrewId', $('#Id').val());
+            formData.append('WorkExperience', $('#certWorkExperience').val());
+            formData.append('Position', $('#certPositionId').val());
+            
+            $.ajax({
+                type: "POST",
+                url: "/Reports/ShowCertificate",
+                data: formData,
+                contentType: false,
+                processData: false,
+                dataType: "json",
+                success: function (response) {
+                    $('#Certificate').modal('hide');
+                    window.open('/Reports/Certificate/', '_blank').focus();
+                },
+                failure: function (response) {
+                    alert('failed');
                 },
                 error: function (response) {
                     alert('error');
@@ -364,7 +391,7 @@
 
             },
             failure: function (response) {
-                alert('faile');
+                alert('failed');
             },
             error: function (response) {
                 alert('error');
@@ -407,7 +434,7 @@
                 window.open('/Reports/POEAInfoSheet/', '_blank').focus();
             },
             failure: function (response) {
-                alert('faile');
+                alert('failed');
             },
             error: function (response) {
                 alert('error');
@@ -430,7 +457,7 @@
                 window.open('/Reports/POEASeafarerInfoSheet/', '_blank').focus();
             },
             failure: function (response) {
-                alert('faile');
+                alert('failed');
             },
             error: function (response) {
                 alert('error');
@@ -441,7 +468,9 @@
     function InfoToTheMaster() {
         $('#ITTM').modal('show');
     }
-
+    function Certificate(id) {
+        $('#Certificate').modal('show');
+    }
     function SPA() {
         var formData = new FormData();
 
@@ -458,7 +487,7 @@
                 window.open('/Reports/SPA/', '_blank').focus();
             },
             failure: function (response) {
-                alert('faile');
+                alert('failed');
             },
             error: function (response) {
                 alert('error');

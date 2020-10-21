@@ -26,11 +26,10 @@ namespace SeaBase.Models
         public Country Country { get; set; }
         public int NextDestinationId { get; set; }
         public string EnrolledWith { get; set; }
-        [Required]
         [Display(Name = "Enrollment Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EnrollmentDate { get; set; }
+        public DateTime? EnrollmentDate { get; set; }
         [ForeignKey("TradingArea")]
         public int TradingAreaId { get; set; }
         public TradingArea TradingArea { get; set; }
@@ -52,16 +51,14 @@ namespace SeaBase.Models
         [ForeignKey("VesselUnion")]
         public int VesselUnionId { get; set; }
         public VesselUnion VesselUnion { get; set; }
-        [Required]
         [Display(Name = "Effective Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime EffectiveDate { get; set; }
-        [Required]
+        public DateTime? EffectiveDate { get; set; }
         [Display(Name = "Expiry Date")]
         [DataType(DataType.DateTime)]
         [DisplayFormat(DataFormatString = "{0:MMM dd, yyyy}", ApplyFormatInEditMode = true)]
-        public DateTime ExpiryDate { get; set; }
+        public DateTime? ExpiryDate { get; set; }
 
         //Tech Specs
         [ForeignKey("Flag")]
@@ -88,6 +85,13 @@ namespace SeaBase.Models
         public string ImagePath { get; set; }
         [NotMapped]
         public HttpPostedFileBase ImageFile { get; set; }
+
+        public string SalaryType { get; set; }
+        public enum SalaryTypes
+        {
+            Dutch,
+            ITF
+        }
         public ICollection<CrewIncident> CrewIncidents { get; set; }
         public ICollection<Embarkation> Embarkations { get; set; }
         public ICollection<VesselSalaryDetail> VesselSalaryDetails { get; set; }

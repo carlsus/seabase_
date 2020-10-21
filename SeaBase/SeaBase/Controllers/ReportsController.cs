@@ -110,6 +110,10 @@ namespace SeaBase.Controllers
                 rd.Subreports["EmploymentContractCertificates.rpt"].SetDataSource(trainingCertificate);
 
                 rd.SetParameterValue("HoursWorked", ec.HoursWorked + " hrs/wk");
+                var medical = _context.CrewMedicals.Where(m => m.CrewId == ec.Id).ToList();
+                var lastOrDefault = medical.LastOrDefault();
+                if (lastOrDefault != null)
+                    rd.SetParameterValue("LastMedical", lastOrDefault.IssueDate);
             }
             
             
@@ -329,69 +333,20 @@ namespace SeaBase.Controllers
                 var result = db.Query<EmploymentContract>("select * from vw_crews " +
                                                         "where Id=@id", new { id = id }).ToList();
                 rd.SetDataSource(result);
-                
+                var beneficiary = db.Query<Beneficiary>
+                    ("select c.*,Concat(c.Firstname,' ',c.Middlename,' ',c.Lastname) as Name from crewbeneficiarychildrens c  " +
+                    "where c.CrewId=@id", new { id = id }).ToList();
+                List<string> allotee = _context.CrewAllotees.Where(m => m.CrewId == id).Select(m=>m.AccountName).ToList();
+                var names = String.Join(", ", allotee.ToArray());
+
+                rd.Subreports["Beneficiary.rpt"].SetDataSource(beneficiary.Where(m=>m.Type==0).ToList());
+                rd.Subreports["Dependent.rpt"].SetDataSource(beneficiary.Where(m=>m.Type==1).ToList());
+                rd.SetParameterValue("Allotee",names);
+                var school = _context.CrewEducations.Where (m => m.CrewId == id).ToList();
+                var lastOrDefault = school.LastOrDefault();
+                if (lastOrDefault != null)
+                    rd.SetParameterValue("EducationalAttainment",lastOrDefault.SchoolName);
             }
-            //var result = (from c in _context.Crews
-                          
-            //              from d in _context.EmbarkationDetailses.Where(x => c.Id == x.CrewId)
-            //                              .DefaultIfEmpty()
-            //              //join d in _context.EmbarkationDetailses on c.Id equals d.CrewId
-            //              join e in _context.Ranks on d.RankId equals e.Id
-            //              join f in _context.Embarkations on d.EmbarkationId equals f.Id
-            //              join g in _context.Principals on f.PrincipalId equals g.Id
-            //              join h in _context.Vessels on f.VesselId equals h.Id
-            //              join i in _context.AirPorts on f.DepartureAirportId equals i.Id
-            //              join j in _context.Flags on h.FlagId equals j.Id
-            //              from k in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Basic Pay" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              from l in _context.VesselSalaryDetails.Where(x => f.VesselId == x.VesselId && x.Description == "Overtime" && x.RankId == d.RankId)
-            //                              .DefaultIfEmpty()
-            //              join m in _context.VesselTypes on h.VesselTypeId equals m.Id
-            //              join n in _context.CrewFamilyBackgrounds on c.Id equals n.CrewId
-            //              where c.Id == id
-            //              select new
-            //              {
-            //                  c.Id,
-            //                  c.Firstname,
-            //                  c.Lastname,
-            //                  c.MiddleName,
-            //                  c.Nationality,
-            //                  c.Religion,
-            //                  c.CivilStatus,
-            //                  RankName = e.RankName,
-            //                  //c.BirthDate,
-            //                  c.BirthPlace,
-            //                  c.PassportNo,
-            //                  c.SeamanBookNo,
-            //                  g.PrincipalName,
-            //                  PrincipalAddress=g.Address,
-            //                  h.VesselName,
-            //                  h.IMONumber,
-            //                  f.PointOfHire,
-            //                  g.CBA,
-            //                  i.AirPortName,
-            //                  //f.DepartureDate,
-            //                  //f.EmbarkationDate,
-            //                  j.FlagName,
-            //                  MonthlySalary = k.Monthly,
-            //                  OvertimeSalary = l.Monthly,
-            //                  f.ContractDuration,
-            //                  OverTimeRemarks = l.Remarks,
-            //                  h.GTR,
-            //                  h.YearBuilt,
-            //                  h.ClassificationSociety,
-            //                  m.VesselTypeName,
-            //                  c.SSSNo,
-            //                  c.PhilhealthNo,
-            //                  c.EmailAddress,
-            //                  Spouse=n.SpouseFirstname + " " + n.SpouseMiddlename + " " + n.SpouseLastname,
-            //                  MothersMaidenName=n.MothersName,
-            //                  c.SRCNo,
-            //                  c.TelephoneNo,
-            //                  c.MobileNo,
-            //                  PrincipalEmailAddress=g.EmailAddress
-            //              }).ToList();
-            //rd.SetDataSource(result);
 
             Response.Buffer = false;
             Response.ClearContent();
@@ -653,5 +608,52 @@ namespace SeaBase.Controllers
             return new FileStreamResult(stream, "application/pdf");
         }
 
+
+        public ActionResult ShowCertificate(SeaServiceReport certificate)
+        {
+            TempData["certificate"] = certificate;
+            return Json(new { Success = "Success" }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult Certificate()
+        {
+            SeaServiceReport cert = (SeaServiceReport) TempData["certificate"];
+
+            var position = _context.Users.SingleOrDefault(m => m.Position == cert.Position);
+            ReportDocument rd = new ReportDocument();
+            rd.Load(Path.Combine(Server.MapPath("~/Reports"), "Certificate.rpt"));
+            using (var db = new MySqlConnection(ConfigurationManager.ConnectionStrings["sbentity"].ConnectionString))
+            {
+                var result = db.Query<SeaServiceReport>
+                    ("select c.Id,i.Lastname, " +
+                     "concat(i.Firstname,' ',i.MiddleName,' ',i.Lastname) as Name," +
+                     "e.VesselName,f.VesselTypeName,e.GTR,h.RankName," +
+                     "d.EmbarkationDate as StartDate,c.SignOffDate as EndDate,g.TradingAreaName " +
+                     "from embarkationdetails c " +
+                     "inner join embarkations d on d.Id=c.EmbarkationId " +
+                     "inner join vessels e on e.Id=d.VesselId " +
+                     "inner join vesseltypes f on f.Id=e.VesselTypeId " +
+                     "inner join tradingareas g on g.Id=e.TradingAreaId " +
+                     "inner join ranks h on h.Id=c.RankId " +
+                     "inner join crews i on i.Id=c.CrewId " +
+                    "where i.Id=@id", new { id = cert.CrewId }).ToList();
+                rd.SetDataSource(result);
+                rd.SetParameterValue("PositionName",position.Firstname + " " + position.Lastname);
+                rd.SetParameterValue("Position", cert.Position);
+            }
+
+            Response.Buffer = false;
+            Response.ClearContent();
+            Response.ClearHeaders();
+
+
+            rd.PrintOptions.PaperOrientation = CrystalDecisions.Shared.PaperOrientation.Portrait;
+            rd.PrintOptions.PaperSize = CrystalDecisions.Shared.PaperSize.PaperA4;
+
+            Stream stream = rd.ExportToStream(CrystalDecisions.Shared.ExportFormatType.PortableDocFormat);
+            stream.Seek(0, SeekOrigin.Begin);
+
+            return new FileStreamResult(stream, "application/pdf");
+        }
     }
 }

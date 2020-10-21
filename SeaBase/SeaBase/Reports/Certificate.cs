@@ -16,14 +16,14 @@ namespace SeaBase.Reports {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class InfoSheet : ReportClass {
+    public class Certificate : ReportClass {
         
-        public InfoSheet() {
+        public Certificate() {
         }
         
         public override string ResourceName {
             get {
-                return "InfoSheet.rpt";
+                return "Certificate.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace SeaBase.Reports {
         
         public override string FullResourceName {
             get {
-                return "SeaBase.Reports.InfoSheet.rpt";
+                return "SeaBase.Reports.Certificate.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection2 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection3 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,7 +82,7 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection4 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,39 +90,7 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
-            get {
-                return this.ReportDefinition.Sections[5];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section DetailSection5 {
-            get {
-                return this.ReportDefinition.Sections[6];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
-            get {
-                return this.ReportDefinition.Sections[7];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
-            get {
-                return this.ReportDefinition.Sections[8];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_Allotee {
+        public CrystalDecisions.Shared.IParameterField Parameter_PositionName {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -130,7 +98,7 @@ namespace SeaBase.Reports {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_EducationalAttainment {
+        public CrystalDecisions.Shared.IParameterField Parameter_Position {
             get {
                 return this.DataDefinition.ParameterFields[1];
             }
@@ -138,9 +106,9 @@ namespace SeaBase.Reports {
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedInfoSheet : Component, ICachedReport {
+    public class CachedCertificate : Component, ICachedReport {
         
-        public CachedInfoSheet() {
+        public CachedCertificate() {
         }
         
         [Browsable(false)]
@@ -177,7 +145,7 @@ namespace SeaBase.Reports {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            InfoSheet rpt = new InfoSheet();
+            Certificate rpt = new Certificate();
             rpt.Site = this.Site;
             return rpt;
         }

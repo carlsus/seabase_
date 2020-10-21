@@ -74,6 +74,7 @@ namespace SeaBase.Models
         public DbSet<CrewAllotee> CrewAllotees { get; set; }
         public DbSet<JobOpening> JobOpenings { get; set; }
         public DbSet<CrewStatus> CrewStatuses { get; set; }
+        public DbSet<Signatory> Signatories { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

@@ -257,6 +257,7 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SeaPortsController.cs" />
     <Compile Include="Controllers\SeminarsController.cs" />
+    <Compile Include="Controllers\SignatoriesController.cs" />
     <Compile Include="Controllers\TradingAreasController.cs" />
     <Compile Include="Controllers\TrainingCentersController.cs" />
     <Compile Include="Controllers\TravelAgenciesController.cs" />
@@ -316,6 +317,7 @@
     <Compile Include="Models\SalaryScaleDetail.cs" />
     <Compile Include="Models\SeaBaseContext.cs" />
     <Compile Include="Models\SeaPort.cs" />
+    <Compile Include="Models\Signatory.cs" />
     <Compile Include="Models\Status.cs" />
     <Compile Include="Models\TradingArea.cs" />
     <Compile Include="Models\TrainingCenter.cs" />
@@ -333,6 +335,24 @@
     <Compile Include="Models\VesselUnion.cs" />
     <Compile Include="Models\WorkingGear.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Reports\Certificate.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Certificate.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Reports\Dependent.cs">
+      <DependentUpon>Dependent.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <Compile Include="Reports\Beneficiary.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Beneficiary.rpt</DependentUpon>
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Reports\CV_Standard.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -464,6 +484,7 @@
     <Compile Include="ViewModel\MedicalReport.cs" />
     <Compile Include="ViewModel\PrincipalViewModel.cs" />
     <Compile Include="ViewModel\RankViewModel.cs" />
+    <Compile Include="ViewModel\SeaServiceReport.cs" />
     <Compile Include="ViewModel\TrainingsReport.cs" />
     <Compile Include="ViewModel\TravelDoc.cs" />
     <Compile Include="ViewModel\TravelDocumentsReport.cs" />
@@ -1776,8 +1797,22 @@
     <Content Include="Views\Announcements\ListScript.cshtml" />
     <Content Include="Views\Crews\_ReportsPopup.cshtml" />
     <Content Include="Views\Crews\_Reports.cshtml" />
+    <Content Include="Views\Signatories\List.cshtml" />
+    <Content Include="Views\Signatories\ListScript.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Reports\Certificate.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Certificate.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Dependent.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Dependent.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Beneficiary.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>Beneficiary.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\CV_Standard.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>CV_Standard.cs</LastGenOutput>

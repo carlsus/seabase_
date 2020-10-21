@@ -1,4 +1,4 @@
-﻿@model SeaBase.Models.Agent
+﻿@model SeaBase.Models.Signatory
 @Styles.Render("~/AdminLTE/plugins/datatables/styles")
 
 @{
@@ -17,9 +17,8 @@
                 <table id="data-table" class="table table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th>Agent</th>
-                            <th>Telephone</th>
-                            <th>Fax</th>
+                            <th>Name</th>
+                            <th>Position</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -42,30 +41,31 @@
                 <h4 class="modal-title" id="modal-title"></h4>
             </div>
             <div class="modal-body">
-               @using (Html.BeginForm("Save", "Agents", FormMethod.Post,
+               @using (Html.BeginForm("Save", "Signatories", FormMethod.Post,
                     new { id = "form0", name = "form0" }))
                {
                 @Html.AntiForgeryToken()
                 @Html.ValidationSummary(true, "Please fix the following errors.")
                    <div class="form-group">
-                       @Html.LabelFor(m => m.AgentName)
-                       @Html.TextBoxFor(m => m.AgentName, new {@class = "form-control"})
-                       @Html.ValidationMessageFor(m => m.AgentName)
+                       @Html.LabelFor(m => m.Firstname)
+                       @Html.TextBoxFor(m => m.Firstname, new {@class = "form-control"})
+                       @Html.ValidationMessageFor(m => m.Firstname)
+                   </div>
+                
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Middlename)
+                    @Html.TextBoxFor(m => m.Middlename,  new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Middlename)
+                </div>
+                   <div class="form-group">
+                       @Html.LabelFor(m => m.Lastname)
+                       @Html.TextBoxFor(m => m.Lastname, new {@class = "form-control"})
+                       @Html.ValidationMessageFor(m => m.Lastname)
                    </div>
                 <div class="form-group">
-                    @Html.LabelFor(m => m.Address)
-                    @Html.TextAreaFor(m => m.Address,  new { @class = "form-control",@row="2" })
-                    @Html.ValidationMessageFor(m => m.Address)
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Telephone)
-                    @Html.TextBoxFor(m => m.Telephone, "{0:d MMM yyyy}", new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Telephone)
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Fax)
-                    @Html.TextBoxFor(m => m.Fax, "{0:d MMM yyyy}", new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Fax)
+                    @Html.LabelFor(m => m.Position)
+                    @Html.TextBoxFor(m => m.Position, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Position)
                 </div>
                 @Html.HiddenFor(m => m.Id)
                 <div class="modal-footer">
@@ -82,7 +82,7 @@
 
 
 @section Scripts {
-    @RenderPage("~/Views/Agents/ListScript.cshtml")
+    @RenderPage("~/Views/Signatories/ListScript.cshtml")
 }
 
 
