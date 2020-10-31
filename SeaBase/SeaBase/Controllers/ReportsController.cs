@@ -43,7 +43,9 @@ namespace SeaBase.Controllers
                                       "inner join Ranks b on b.Id=a.RankId " +
                                        "where a.Id=@id",new{id=id}).ToList();
                 rd.SetDataSource(result);
-
+                var school = _context.CrewEducations.Where(m => m.CrewId == id).ToList();
+                var lastOrDefault = school.LastOrDefault();
+            
                 var travelDocuments=db.Query<CVStandardTravelDocuments>
                     ("select c.Id,c.CrewId," +
                     "c.PlaceIssued,c.IssuedBy,c.ExpiryDate," +
@@ -69,7 +71,8 @@ namespace SeaBase.Controllers
                                                "where c.CrewId=@id", new { id = id }).ToList();
 
                 rd.Subreports["CV_StandardTrainings.rpt"].SetDataSource(trainingCertificate);
-            
+                rd.SetParameterValue("Education", lastOrDefault.CourseDegree ?? null);
+
             }
             
             Response.Buffer = false;
@@ -345,7 +348,7 @@ namespace SeaBase.Controllers
                 var school = _context.CrewEducations.Where (m => m.CrewId == id).ToList();
                 var lastOrDefault = school.LastOrDefault();
                 if (lastOrDefault != null)
-                    rd.SetParameterValue("EducationalAttainment",lastOrDefault.SchoolName);
+                    rd.SetParameterValue("EducationalAttainment",lastOrDefault.CourseDegree);
             }
 
             Response.Buffer = false;
