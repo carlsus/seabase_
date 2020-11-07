@@ -175,10 +175,7 @@ namespace SeaBase.Controllers
                 update.EmailAddress = crew.EmailAddress;
                 update.TelephoneNo = crew.TelephoneNo;
                 update.Password = crew.Password;
-                update.PassportNo = crew.PassportNo;
-                update.SeamanBookNo = crew.SeamanBookNo;
-                update.SRCNo = crew.SRCNo;
-                update.EregNo = crew.EregNo;
+                
                 update.MobileNo = crew.MobileNo;
                 update.Gender = crew.Gender;
                 update.CivilStatus = crew.CivilStatus;

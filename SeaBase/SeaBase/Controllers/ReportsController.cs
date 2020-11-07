@@ -572,8 +572,7 @@ namespace SeaBase.Controllers
                               RankName = e.RankName,
                               //c.BirthDate,
                               c.BirthPlace,
-                              c.PassportNo,
-                              c.SeamanBookNo,
+                              
                               g.PrincipalName,
                               PrincipalAddress=g.Address,
                               g.Address,
